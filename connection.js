@@ -1,7 +1,8 @@
 'use strict';
 (() => {
   const pages = window.KUBIK_PAGES === true;
-  const base = pages ? (localStorage.getItem('kubik.pi') || '') : '';
+  const configured = typeof window.KUBIK_API_BASE === 'string' ? window.KUBIK_API_BASE.replace(/\/$/, '') : '';
+  const base = pages ? (configured || localStorage.getItem('kubik.pi') || '') : '';
   window.kubikTransport = {
     url(path) { return base + path; },
     async fetch(path, options = {}) {
@@ -16,7 +17,7 @@
   };
   const setup = document.querySelector('#connectionSetup');
   if (pages && !base) setup.hidden = false;
-  if (pages) {
+  if (pages && !configured) {
     for (const target of document.querySelectorAll('#authForm, #adminLogin, .sidebar-bottom, .admin-nav')) {
       const button = document.createElement('button');
       button.type = 'button'; button.className = 'text-button connection-change';
