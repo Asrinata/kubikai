@@ -1,5 +1,13 @@
-# Kübik Pages
+# Kübik — kolay GitHub Pages paketi
 
-Statik siteyi GitHub deposuna yükle; Settings > Pages > Source: GitHub Actions seç. Sohbet kök adreste, yönetim panel/ altında. Model ve hesaplar Pi API üzerinde çalışır. İlk girişte Pi HTTPS adresini gir. Pi tüneli yeniden başladığında adresi yeniden kaydetmen gerekebilir.
+Bu pakette klasör gerekmez. ZIP'i çıkart; içindeki index.html, panel.html, JavaScript ve CSS dosyalarını deponun ana dizinine yükle. Dosya isimlerini değiştirme; index (1).html yerine index.html kullanılır. Aynı isimli mevcut dosyaları güncelle.
 
-Bu depoya parola, yayın anahtarı veya model dosyası ekleme. Eğitim bilgisayarının köprüsünü açıp panelde Eğitim merkezi bölümünden yönetebilirsin.
+Settings > Pages > Source: Deploy from a branch > Branch: main > Folder: /(root) > Save.
+Bu pakette GitHub Actions iş akışı gerekmez. Önceden ana dizine konulan pages.yml iş akışı olarak çalışmaz.
+
+Sohbet: https://Asrinata.github.io/kubik/
+Panel: https://Asrinata.github.io/kubik/panel.html
+
+Yayın tamamlanınca Ctrl+F5 ile yenile. Pi adresi istenirse Pi'de sudo cat /var/lib/kubik/public-sites.json komutunun api_url değerini kullan. Tünel yeniden başlarsa adresi yenile.
+
+Bu pakette model, kullanıcı veritabanı, yönetici parolası veya yayın anahtarı yoktur. Pi'ye tekrar model paketi indirmen gerekmez; bu düzeltme yalnız web dosyaları içindir.
