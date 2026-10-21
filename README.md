@@ -5,8 +5,8 @@ Bu pakette klasör gerekmez. ZIP'i çıkart; içindeki index.html, panel.html, J
 Settings > Pages > Source: Deploy from a branch > Branch: main > Folder: /(root) > Save.
 Bu pakette GitHub Actions iş akışı gerekmez. Önceden ana dizine konulan pages.yml iş akışı olarak çalışmaz.
 
-Sohbet: https://Asrinata.github.io/kubik/
-Panel: https://Asrinata.github.io/kubik/panel.html
+Sohbet: https://asrinata.github.io/kubikai/
+Panel: https://asrinata.github.io/kubikai/panel.html
 
 Yayın tamamlanınca Ctrl+F5 ile yenile. Pi adresi istenirse Pi'de sudo cat /var/lib/kubik/public-sites.json komutunun api_url değerini kullan. Tünel yeniden başlarsa adresi yenile.
 

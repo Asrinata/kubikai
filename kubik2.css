@@ -1,0 +1,49 @@
+/* Kübik 2.0: uyku modu, planlar, ayarlar, komut ipucu */
+.notice.hibernation{display:flex;align-items:center;gap:10px;background:#fff6d6;border:1px solid #f0d77a;color:#6b5410;font-weight:600}
+.snowflake,.snow{color:#e0a800;font-size:18px;line-height:1;text-shadow:0 0 6px rgba(224,168,0,.35)}
+.model-hibernating{color:#b58700;font-weight:600}
+.plan-button small{font-weight:700;color:var(--accent)}
+.setting-row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid var(--line)}
+.setting-row span{display:flex;flex-direction:column;gap:3px}
+.setting-row select{min-width:190px;padding:8px 10px;border-radius:9px;border:1px solid var(--line);background:var(--card)}
+.command-hint{font-size:12px;color:var(--muted);padding:4px 2px 6px;display:flex;flex-wrap:wrap;gap:6px}
+.command-hint button{border:1px solid var(--line);background:var(--card);border-radius:7px;padding:3px 8px;font-size:12px;color:var(--ink)}
+.memory-dialog.plans-dialog{width:min(1040px,calc(100vw - 24px));max-width:none}
+/* planlar yan yana; dar ekranda yatay kaydırılır */
+.plan-cards{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(210px,1fr);gap:12px;margin-top:8px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory}
+.plan-card{scroll-snap-align:start}
+.plan-card{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--card);display:flex;flex-direction:column;gap:8px}
+.plan-card.current{border-color:var(--accent);box-shadow:0 0 0 2px rgba(168,50,60,.15)}
+.plan-card h3{margin:0;font-size:19px}
+.plan-card ul{margin:0;padding-left:18px;font-size:13px;line-height:1.7;color:var(--ink)}
+.plan-card .tag{font-size:10px;letter-spacing:1px;font-weight:700;color:#b58700}
+.plan-card button{margin-top:auto}
+.request-row{display:flex;align-items:center;gap:8px;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
+.request-row .button-row{display:flex;gap:6px}
+.message-label .consulted{font-weight:400;color:var(--muted);margin-left:6px}
+body.code-theme .notice.hibernation{background:#3a3218;border-color:#6b5a20;color:#f4dd8f}
+/* Düşünme / Web / Ayarlar: hap şeklinde, okunaklı */
+.composer .composer-controls select,.composer .settings-button{appearance:none;-webkit-appearance:none;height:32px;border:1px solid #dfe3e8;border-radius:999px;background-color:#fff;color:#2e3642;font-size:12px;font-weight:600;padding:0 30px 0 13px;cursor:pointer;transition:border-color .15s,box-shadow .15s,background-color .15s;box-shadow:0 1px 2px rgba(20,30,45,.06)}
+.composer .composer-controls select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23818a98' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.composer .settings-button{padding:0 13px;display:inline-flex;align-items:center;gap:6px}
+.composer .settings-button::before{content:'⚙';font-size:14px;color:#818a98}
+.composer .composer-controls select:hover,.composer .settings-button:hover{border-color:#b9c1cc;background-color:#f7f8fa}
+.composer .composer-controls select:focus-visible,.composer .settings-button:focus-visible{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(168,50,60,.15)}
+.composer .composer-controls select:disabled{opacity:.55;cursor:not-allowed}
+.composer .composer-controls #searchEffort{width:auto;max-width:none}
+.code-theme .composer .composer-controls select,.code-theme .composer .settings-button{background-color:#242a33;border-color:#36404e;color:#d5dde8;box-shadow:none}
+.code-theme .composer .composer-controls select:hover,.code-theme .composer .settings-button:hover{background-color:#2c3440;border-color:#4a5566}
+@media (max-width:760px){.composer .composer-controls select,.composer .settings-button{height:30px;font-size:11px}.composer .composer-controls{flex-wrap:wrap}}
+@media (max-width:700px){.setting-row{flex-direction:column;align-items:stretch}.setting-row select{min-width:0}}
+/* KVKK / gizlilik */
+.link-button{background:none;border:0;padding:0;color:var(--accent);font:inherit;text-decoration:underline;cursor:pointer}
+.sidebar-bottom>.privacy-link{display:block;font-size:10px;color:var(--muted);margin:2px 6px 6px;text-decoration:none}
+.sidebar-bottom>.privacy-link:hover{color:var(--ink);text-decoration:underline}
+.privacy-dialog{overflow:auto}
+.privacy-text{font-size:13px;line-height:1.7}
+.privacy-text h3{font-size:14px;margin:18px 0 6px}
+.privacy-text ul{margin:0;padding-left:18px}
+.privacy-text li{margin:4px 0}
+.delete-account{border-top:1px solid var(--line);margin-top:20px;padding-top:16px;display:flex;flex-direction:column;gap:8px}
+.delete-account h3{margin:0;font-size:14px;color:#9b3038}
+.delete-account .danger{align-self:flex-start}

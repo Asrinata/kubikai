@@ -2,7 +2,66 @@
 const $ = s => document.querySelector(s);
 let account = null, registerMode = false, current = null, job = null, mode = 'chat', siteStatus = {};
 let selectedModel = null;
-const modelName = id => id === 'auto' ? 'Otomatik' : id === 'apex-5.5' ? 'Apex 5.5' : 'Kübik 1.0';
+const store = { get(k, d) { try { return localStorage.getItem(k) ?? d; } catch { return d; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
+let lang = store.get('kubik-lang', 'tr');
+const T = {
+  tr: {new_chat:'Yeni sohbet', your_chats:'SOHBETLERİN', search_chats:'Sohbetlerde ara', my_plan:'Planım', plan_requests:'Abonelik istekleri', memory:'Hafızam',
+    attach:'+ Dosya / fotoğraf', thinking:'Düşünme', fast:'Hızlı', balanced:'Dengeli', deep:'Derin', ultra_think:'Ultra Think', web_search:'Web araması',
+    web_off:'Web kapalı', web_quick:'Web · Hızlı', web_balanced:'Web · Dengeli', web_deep:'Web · Derin', deepsearch:'Deep Search', supersearch:'Super Search',
+    settings:'Ayarlar', stop:'Durdur', footnote:'Kübik hata yapabilir. Önemli bilgileri kaynaklarıyla kontrol et.', built_on:'Kübik 2.0 şu açık modellerle çalışır:', privacy_title:'Gizlilik, çerezler ve koşullar', privacy_link:'Gizlilik ve koşullar', delete_title:'Hesabımı ve verilerimi sil', delete_help:'Sohbetlerin, hafızan, dosyaların ve Code projelerin kalıcı olarak silinir. Geri alınamaz.', password_ph:'Parolan', delete_button:'Kalıcı olarak sil', delete_confirm:'Hesabın ve tüm verilerin kalıcı olarak silinecek. Emin misin?', quality:'Verimlilik',
+    quality_help:'Hız ile doğruluk arasındaki denge. Ultra Reliable her soruyu birkaç kez çözüp en tutarlı cevabı seçer.', q_efficient:'Verimli (en hızlı)',
+    q_reliable:'Güvenilir (kontrol turu)', q_ultrareliable:'Ultra Reliable', multitask:'Yapay zeka multitask',
+    multitask_help:'Kübik 2.0 bir soruyu kaç modele sorsun? Cevaplar karşılaştırılır, en iyisi seçilir. Çok model = daha yavaş.', m_auto:'Otomatik',
+    m_cok_az:'Çok az (1 YZ)', m_az:'Az (2 YZ)', m_orta:'Orta (3 YZ)', m_fazla:'Fazla (4 YZ)', m_cok_fazla:'Çok fazla (5 YZ)', m_ultraai:'UltraAI (6 YZ)', m_hepsi:'Hepsi',
+    language:'Dil', language_help:'Arayüz ve cevap dili.', plans:'Planlar', plans_help:'Planlar ücretsizdir; istek gönderirsin, onaylanınca planın değişir. Haklar her gün gece yarısı yenilenir.',
+    members:'Plan sahipleri', hibernating_banner:'Sunucu uyku modunda. Sohbete devam etmek için sohbet penceresine bir şey yaz.', hibernating:'uyku modunda',
+    ready:'hazır', selected:'seçildi', not_installed:'kurulu değil', unreachable:'Sunucuya ulaşılamıyor', ask:'Kübik’e bir şey sor…', ask_code:'Ne geliştirmek istiyorsun?',
+    commands:'Komutlar', commands_help:'Bir modeli tek başına kullanmak için mesajın başına komut yaz:', unlimited:'Sınırsız (token bitene kadar)', per_day:'/ gün',
+    storage:'depolama', tokens:'token', messages_l:'mesaj', photos:'fotoğraf', wait_yes:'Yoğunlukta sıra beklenir', wait_no:'Bekleme yok', code_yes:'Kübik Code var', code_no:'Code yok',
+    current_plan:'Mevcut planın', request:'İstek gönder', requested:'İstek gönderildi · geri çek', need_account:'Plan için hesap aç', accept:'Kabul', reject:'Reddet',
+    no_requests:'Bekleyen istek yok.', no_members:'Henüz plan sahibi yok.', request_sent:'İsteğin gönderildi. Onaylanınca planın değişir.', ultrapack_locked:'Ultrapack',
+    consulted:'model karşılaştırıldı', chose:'seçilen', welcome_eyebrow:'BİRLİKTE BİR ADIM İLERİ', welcome_title:'Aklında ne var?', welcome_sub:'Bir soruyla başla. Bir fikri geliştir. Yeni bir şey keşfet.',
+    code_eyebrow:'FİKRİNDEN İLK SATIRA', code_title:'Birlikte ne üretelim?', code_sub:'Bir fikir anlat. Kübik planlasın, kodlasın ve denesin.', today:'Bugün'},
+  en: {new_chat:'New chat', your_chats:'YOUR CHATS', search_chats:'Search chats', my_plan:'My plan', plan_requests:'Subscription requests', memory:'Memory',
+    attach:'+ File / photo', thinking:'Thinking', fast:'Fast', balanced:'Balanced', deep:'Deep', ultra_think:'Ultra Think', web_search:'Web search',
+    web_off:'Web off', web_quick:'Web · Fast', web_balanced:'Web · Balanced', web_deep:'Web · Deep', deepsearch:'Deep Search', supersearch:'Super Search',
+    settings:'Settings', stop:'Stop', footnote:'Kübik can make mistakes. Check important information with its sources.', built_on:'Kübik 2.0 runs on these open models:', privacy_title:'Privacy, cookies and terms', privacy_link:'Privacy and terms', delete_title:'Delete my account and data', delete_help:'Your chats, memory, files and Code projects are permanently deleted. This cannot be undone.', password_ph:'Your password', delete_button:'Delete permanently', delete_confirm:'Your account and all your data will be permanently deleted. Are you sure?', quality:'Efficiency',
+    quality_help:'Balance between speed and accuracy. Ultra Reliable solves each question several times and picks the most consistent answer.', q_efficient:'Efficient (fastest)',
+    q_reliable:'Reliable (review pass)', q_ultrareliable:'Ultra Reliable', multitask:'AI multitask',
+    multitask_help:'How many models should Kübik 2.0 ask? Answers are compared and the best one wins. More models = slower.', m_auto:'Automatic',
+    m_cok_az:'Very few (1 AI)', m_az:'Few (2 AI)', m_orta:'Medium (3 AI)', m_fazla:'Many (4 AI)', m_cok_fazla:'Very many (5 AI)', m_ultraai:'UltraAI (6 AI)', m_hepsi:'All',
+    language:'Language', language_help:'Interface and reply language.', plans:'Plans', plans_help:'Plans are free: send a request and your plan changes once it is approved. Limits reset every day at midnight.',
+    members:'Plan holders', hibernating_banner:'Server is hibernating. To continue chatting, write something in the chat window.', hibernating:'hibernating',
+    ready:'ready', selected:'selected', not_installed:'not installed', unreachable:'Server unreachable', ask:'Ask Kübik anything…', ask_code:'What do you want to build?',
+    commands:'Commands', commands_help:'To use a single model, start your message with a command:', unlimited:'Unlimited (until tokens run out)', per_day:'/ day',
+    storage:'storage', tokens:'tokens', messages_l:'messages', photos:'photos', wait_yes:'Waits in queue when busy', wait_no:'No waiting', code_yes:'Kübik Code included', code_no:'No Code',
+    current_plan:'Your current plan', request:'Send request', requested:'Request sent · withdraw', need_account:'Create an account first', accept:'Accept', reject:'Reject',
+    no_requests:'No pending requests.', no_members:'No plan holders yet.', request_sent:'Request sent. Your plan changes once it is approved.', ultrapack_locked:'Ultrapack',
+    consulted:'models compared', chose:'chosen', welcome_eyebrow:'ONE STEP FURTHER, TOGETHER', welcome_title:'What’s on your mind?', welcome_sub:'Start with a question. Grow an idea. Discover something new.',
+    code_eyebrow:'FROM IDEA TO FIRST LINE', code_title:'What shall we build?', code_sub:'Describe an idea. Kübik plans, codes and tests it.', today:'Today'}
+};
+const t = key => T[lang]?.[key] ?? T.tr[key] ?? key;
+const ULTRAPACK = {effort:['ultra'], searchEffort:['supersearch'], quality:['ultrareliable'], multitask:['ultraai','hepsi']};
+function applyLanguage() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(element => { element.dataset.base = t(element.dataset.i18n); element.textContent = element.dataset.base; });
+  document.querySelectorAll('[data-i18n-ph]').forEach(element => { element.placeholder = t(element.dataset.i18nPh); });
+  document.querySelectorAll('[data-lang]').forEach(element => { element.hidden = element.dataset.lang !== lang; });
+  $('#prompt').placeholder = mode === 'code' ? t('ask_code') : t('ask');
+  lockUltrapack();
+}
+function lockUltrapack() {
+  const allowed = !!account?.plan?.ultrapack;
+  for (const [id, values] of Object.entries(ULTRAPACK)) {
+    const select = $('#' + id); if (!select) continue;
+    for (const option of select.options) if (values.includes(option.value)) {
+      option.disabled = !allowed; option.textContent = (option.dataset.base || option.textContent) + (allowed ? '' : ' · ' + t('ultrapack_locked'));
+    }
+    if (select.selectedOptions[0]?.disabled) select.value = {effort:'balanced', quality:'balanced', searchEffort:'off', multitask:'auto'}[id];
+  }
+}
+const modelName = id => id === 'kubik-2.0' || id === 'auto' ? 'Kübik 2.0' : (siteStatus.models?.find(model => model.id === id)?.name || (id === 'apex-5.5' ? 'Apex 5.5' : 'Kübik 1.0'));
+const formatBytes = value => value >= 1e9 ? (value / 1e9).toLocaleString(lang, {maximumFractionDigits: 1}) + ' GB' : value >= 1e6 ? (value / 1e6).toLocaleString(lang, {maximumFractionDigits: 1}) + ' MB' : (value / 1e3).toLocaleString(lang, {maximumFractionDigits: 1}) + ' KB';
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 function toast(message) { $('#toast').textContent = message; $('#toast').classList.add('show'); setTimeout(() => $('#toast').classList.remove('show'), 5000); }
 async function api(path, options = {}) {
@@ -18,17 +77,22 @@ function node(tag, className, text) { const element = document.createElement(tag
 function welcome() {
   $('#messages').replaceChildren();
   const box = node('div', 'welcome');
-  box.append(node('span', 'cube large'), node('p', 'eyebrow', mode === 'code' ? 'FİKRİNDEN İLK SATIRA' : 'BİRLİKTE BİR ADIM İLERİ'));
-  box.append(node('h1', '', mode === 'code' ? 'Birlikte ne üretelim?' : 'Aklında ne var?'));
+  box.append(node('span', 'cube large'), node('p', 'eyebrow', t(mode === 'code' ? 'code_eyebrow' : 'welcome_eyebrow')));
+  box.append(node('h1', '', t(mode === 'code' ? 'code_title' : 'welcome_title')));
   box.lastChild.style.whiteSpace = 'pre-line';
-  box.append(node('p', 'muted', mode === 'code' ? 'Bir fikir anlat. Kübik planlasın, kodlasın ve denesin.' : 'Bir soruyla başla. Bir fikri geliştir. Yeni bir şey keşfet.'));
+  box.append(node('p', 'muted', t(mode === 'code' ? 'code_sub' : 'welcome_sub')));
   const suggestions = node('div', 'suggestions');
-  for (const [title, subtitle, prompt] of [
+  for (const [title, subtitle, prompt] of (lang === 'en' ? [
+    ['Develop an idea', 'Let’s start from the first step', 'Where should I start to turn an idea into a project?'],
+    ['Understand a topic', 'Make the hard parts simple', 'Teach me a new topic with simple examples.'],
+    ['Make a plan', 'Draw a path through scattered ideas', 'Help me prepare a practical plan to reach my goal.'],
+    ['Write together', 'Find your words, sharpen your writing', 'Help me make a text I wrote clearer and more natural.']
+  ] : [
     ['Bir fikir geliştirelim', 'İlk adımdan birlikte başlayalım', 'Bir fikri projeye dönüştürmek için nereden başlamalıyım?'],
     ['Bir konuyu anlayalım', 'Zor görüneni birlikte sadeleştirelim', 'Bana yeni bir konuyu basit örneklerle öğret.'],
     ['Bir plan hazırlayalım', 'Dağınık fikirlerine bir yol çiz', 'Hedefime ulaşmam için uygulanabilir bir plan hazırlamama yardım et.'],
     ['Birlikte yazalım', 'Kelimelerini bul, anlatımını güçlendir', 'Yazdığım bir metni daha anlaşılır ve doğal hâle getirmeme yardım et.']
-  ]) { const button = node('button'); button.append(node('span', '', title), node('small', '', subtitle)); button.onclick = () => { $('#prompt').value = prompt; $('#prompt').focus(); }; suggestions.append(button); }
+  ])) { const button = node('button'); button.append(node('span', '', title), node('small', '', subtitle)); button.onclick = () => { $('#prompt').value = prompt; $('#prompt').focus(); }; suggestions.append(button); }
   if (mode === 'code') { suggestions.replaceChildren(); for (const [title, prompt] of [['Bir web sitesi yap', 'Sade ve kullanışlı bir web sitesi oluştur. Dosyalarını yaz ve kontrol et.'], ['Bir projeyi tamamla', 'Projem için önce kısa bir plan çıkar, sonra dosyaları oluşturup çalışmasını kontrol et.']]) { const button=node('button'); button.append(node('span','',title), node('small','','Planla, geliştir, dene')); button.onclick=()=>{$('#prompt').value=prompt;$('#prompt').focus();}; suggestions.append(button); } }
   box.append(suggestions); $('#messages').append(box);
 }
@@ -36,7 +100,11 @@ function updateWorkspaceLabel() { const label = $('.terminal-heading span'); if 
 function addMessage(role, text, sources = [], extra = {}) {
   $('#welcome')?.remove(); $('.messages > .welcome')?.remove();
   const row = node('article', 'message ' + role);
-  if (role === 'assistant') { const label = node('div', 'message-label'); label.append(node('span', 'cube'), node('span', '', extra.model_id ? modelName(extra.model_id) : 'KÜBİK')); row.append(label); }
+  if (role === 'assistant') {
+    const label = node('div', 'message-label'); label.append(node('span', 'cube'), node('span', '', extra.model_id ? modelName(extra.model_id) : 'KÜBİK'));
+    if (extra.consulted?.length > 1) label.append(node('span', 'consulted', `· ${extra.consulted.length} ${t('consulted')}, ${t('chose')}: ${extra.answered_by}`));
+    row.append(label);
+  }
   if (role === 'user') row.textContent = text;
   else {
     const regex = /```([\w+-]*)\n?([\s\S]*?)```/g; let end = 0, match;
@@ -77,14 +145,20 @@ async function refreshAccount() {
   account = await api('/me');
   const guest = account.role === 'guest';
   $('#memoryButton').hidden = guest;
-  $('#memoryUsage').textContent = (account.memory_bytes/1000).toFixed(1) + ' KB / 1 MB';
-  $('#mode').querySelector('[value=code]').disabled = guest;
-  document.querySelector('[data-mode=code]').hidden = guest;
+  $('#memoryUsage').textContent = formatBytes(account.memory_bytes) + ' / ' + formatBytes(account.memory_limit);
+  const codeAllowed = !guest && account.plan?.code;
+  $('#mode').querySelector('[value=code]').disabled = !codeAllowed;
+  document.querySelector('[data-mode=code]').hidden = !codeAllowed;
+  $('#planName').textContent = account.plan?.name + (account.pending_tier ? ' · ⏳' : '');
+  $('#requestsButton').hidden = !account.owner;
+  if (account.owner) api('/subscription/requests').then(data => { $('#requestCount').textContent = data.pending.length ? data.pending.length + ' ⏳' : ''; }).catch(() => {});
+  lockUltrapack();
   $('#logout').title = guest ? 'Hesabına giriş yap' : 'Çıkış yap';
   $('#accountName').textContent = guest ? 'Misafir' : account.username; $('#avatar').textContent = account.username[0].toUpperCase();
   $('#accountRole').textContent = account.role === 'admin' ? 'Yönetici' : guest ? 'Code ve hafıza için giriş yap' : 'Kübik hesabı'; $('#adminLink').hidden = account.role !== 'admin';
   const used = account.usage, limits = account.limits;
-  $('#quota').textContent = account.role === 'admin' ? `Bugün ${used.messages} mesaj · ${used.tokens.toLocaleString('tr')} token` : `Bugün ${used.messages} / ${limits.daily_messages} mesaj\n${used.tokens.toLocaleString('tr')} / ${limits.daily_tokens.toLocaleString('tr')} token`;
+  const messageLimit = limits.daily_messages >= 1e9 ? '∞' : limits.daily_messages;
+  $('#quota').textContent = account.role === 'admin' ? `${t('today')} ${used.messages} ${t('messages_l')} · ${used.tokens.toLocaleString(lang)} ${t('tokens')}` : `${t('today')} ${used.messages} / ${messageLimit} ${t('messages_l')}\n${used.tokens.toLocaleString(lang)} / ${limits.daily_tokens.toLocaleString(lang)} ${t('tokens')}\n${used.photos || 0} / ${limits.daily_photos} ${t('photos')}`;
   $('#quota').style.whiteSpace = 'pre-line';
 }
 async function refreshConversations() {
@@ -121,37 +195,40 @@ async function refreshSite() {
     $('#keyLabel').hidden = siteStatus.access_mode !== 'beta';
     $('#maintenance').hidden = !siteStatus.maintenance;
     $('#maintenance').textContent = siteStatus.maintenance_message;
-    if (!selectedModel) {
-      try { selectedModel = localStorage.getItem('kubik-model-v2'); } catch {}
-      if (selectedModel !== 'auto' && !siteStatus.models?.some(model => model.id === selectedModel && model.installed)) selectedModel = siteStatus.default_model;
-    }
-    const picker = $('#modelPicker');
-    const routedId = selectedModel === 'auto' ? siteStatus.model_routing?.[mode] : selectedModel;
-    for (const option of picker.options) {
-      if (option.value === 'auto') { option.disabled = false; option.textContent = 'Otomatik'; continue; }
-      const info = siteStatus.models?.find(model => model.id === option.value);
-      option.disabled = !info?.installed;
-      option.textContent = modelName(option.value) + (info?.installed ? '' : ' · kurulu değil');
-    }
+    // Tek model görünür: Kübik 2.0. Tek tek modeller yalnız /komut/ ile kullanılır.
+    selectedModel = 'kubik-2.0';
+    const picker = $('#modelPicker'), sleeping = !!siteStatus.hibernating;
+    const option = node('option', '', (sleeping ? '❄ ' : '') + 'Kübik 2.0' + (sleeping ? ' · ' + t('hibernating') : ''));
+    option.value = selectedModel; if (sleeping) option.style.color = '#b58700';
+    picker.replaceChildren(option);
     picker.value = selectedModel;
     picker.disabled = !!job;
+    const routedId = selectedModel === 'kubik-2.0' ? siteStatus.model_routing?.[mode] : selectedModel;
     const chosen = siteStatus.models?.find(model => model.id === routedId);
-    $('#modelStatus').textContent = !chosen?.installed ? modelName(routedId) + ' · kurulu değil' : modelName(routedId) + (chosen.loaded ? ' · hazır' : ' · seçildi');
+    const status = $('#modelStatus'); status.replaceChildren();
+    if (sleeping) { status.append(node('span', 'snowflake', '❄'), node('span', 'model-hibernating', ' ' + modelName(selectedModel) + ' · ' + t('hibernating'))); }
+    else status.textContent = !chosen?.installed ? modelName(selectedModel) + ' · ' + t('not_installed') : modelName(selectedModel) + ' · ' + (chosen.loaded ? t('ready') : t('selected'));
+    $('#hibernation').hidden = !sleeping || !!job; $('#hibernationText').textContent = t('hibernating_banner');
     $('#send').disabled = !!job || siteStatus.maintenance || !chosen?.installed;
     $('#startVM').disabled = siteStatus.maintenance;
-    const ranks = ['off', 'quick', 'balanced', 'deep'];
-    [...$('#searchEffort').options].forEach(option => { option.disabled = option.value !== 'off' && (!siteStatus.search_enabled || ranks.indexOf(option.value) > ranks.indexOf(siteStatus.search_max_effort)); });
+    const ranks = ['off', 'quick', 'balanced', 'deep', 'deepsearch', 'supersearch'];
+    const maxRank = siteStatus.search_max_effort === 'deep' ? ranks.length - 1 : ranks.indexOf(siteStatus.search_max_effort);
+    [...$('#searchEffort').options].forEach(option => { option.disabled = option.value !== 'off' && (!siteStatus.search_enabled || ranks.indexOf(option.value) > maxRank); });
+    // Lisans gereği: hangi açık modellerin çalıştığı ve Llama için "Built with Llama" görünür olmalı
+    const used = (siteStatus.models || []).filter(m => m.installed && m.extra).map(m => m.name);
+    $('#modelCredits').textContent = used.length ? '· ' + t('built_on') + ' ' + used.join(', ') + (used.some(n => /llama/i.test(n)) ? ' · Built with Llama' : '') : '';
+    lockUltrapack();
     if ($('#searchEffort').selectedOptions[0].disabled) $('#searchEffort').value = 'off';
     if (!account && siteStatus.maintenance) $('#authError').textContent = siteStatus.maintenance_message;
-  } catch { $('#modelStatus').textContent = 'Sunucuya ulaşılamıyor'; }
+  } catch { $('#modelStatus').textContent = t('unreachable'); }
 }
 $('#modelPicker').onchange = () => {
   if (job) { $('#modelPicker').value = selectedModel; return toast('Önce devam eden yanıtı durdur.'); }
   selectedModel = $('#modelPicker').value;
-  try { localStorage.setItem('kubik-model-v2', selectedModel); } catch {}
+  store.set('kubik-model-v3', selectedModel);
   refreshSite();
 };
-async function enter() { await refreshAccount(); $('#auth').hidden = true; $('#workspace').hidden = false; welcome(); await refreshConversations(); await refreshSite(); }
+async function enter() { await refreshAccount(); $('#auth').hidden = true; $('#workspace').hidden = false; applyLanguage(); welcome(); await refreshConversations(); await refreshSite(); }
 $('#authToggle').onclick = () => { registerMode = !registerMode; $('#authTitle').textContent = registerMode ? 'Kübik’e hoş geldin.' : 'Tekrar hoş geldin.'; $('#authSubmit').textContent = registerMode ? 'Hesap oluştur' : 'Giriş yap'; $('#authToggle').textContent = registerMode ? 'Zaten hesabın var mı? Giriş yap' : 'Hesabın yok mu? Kayıt ol'; $('#password').autocomplete = registerMode ? 'new-password' : 'current-password'; $('#authError').textContent = ''; };
 $('#authForm').onsubmit = async event => { event.preventDefault(); $('#authError').textContent = ''; $('#authSubmit').disabled = true; try { await api('/auth/' + (registerMode ? 'register' : 'login'), {method:'POST', body:{username:$('#username').value, password:$('#password').value, access_key:$('#accessKey').value.trim()}}); $('#password').value = ''; await enter(); } catch(error) { $('#authError').textContent = error.message; } finally { $('#authSubmit').disabled = false; } };
 $('#logout').onclick = async () => { await api('/auth/logout', {method:'POST'}); kubikTransport.clearToken(); location.reload(); };
@@ -167,7 +244,7 @@ async function changeMode(next) {
   document.querySelectorAll('[data-mode]').forEach(button => { button.classList.toggle('selected', button.dataset.mode === mode); button.setAttribute('aria-pressed', String(button.dataset.mode === mode)); });
   $('#modeTitle').textContent = mode === 'code' ? 'Kübik Code' : 'Kübik Chat';
   $('#codePanel').hidden = mode !== 'code';
-  $('#prompt').placeholder = mode === 'code' ? 'Ne geliştirmek istiyorsun?' : 'Kübik’e bir şey sor…';
+  $('#prompt').placeholder = mode === 'code' ? t('ask_code') : t('ask');
   $('.sidebar').classList.remove('open');
   welcome();
   try { await refreshConversations(); await refreshSite(); if (mode === 'code') refreshVM(); }
@@ -184,8 +261,8 @@ $('#guestContinue').onclick = async () => {
 };
 async function loadMemory() {
   const data = await api('/memory');
-  $('#memoryMeter').value = data.bytes;
-  $('#memoryMeterLabel').textContent = (data.bytes/1000).toLocaleString('tr', {maximumFractionDigits:1}) + ' KB / 1 MB';
+  $('#memoryMeter').max = data.limit; $('#memoryMeter').value = data.storage_used ?? data.bytes;
+  $('#memoryMeterLabel').textContent = formatBytes(data.storage_used ?? data.bytes) + ' / ' + formatBytes(data.limit) + ' ' + t('storage');
   $('#memoryList').replaceChildren();
   for (const item of data.items) {
     const row=node('div','memory-item'); row.append(node('p','',item.content));
@@ -207,7 +284,8 @@ async function sendTurn(message, extras = {}) {
   const editing = Boolean(extras.edit_message_id);
   $('#send').disabled = true; $('#modelPicker').disabled = true;
   try {
-    const started = await api('/chat', {method:'POST',body:{message, conversation_id:current, mode, model_id:selectedModel, effort:$('#effort').value, search_effort:$('#searchEffort').value, attachment_ids:editing?[]:pendingAttachments.map(a=>a.id), ...extras}});
+    $('#hibernation').hidden = true; $('#commandHint').hidden = true;
+    const started = await api('/chat', {method:'POST',body:{message, conversation_id:current, mode, model_id:selectedModel, effort:$('#effort').value, search_effort:$('#searchEffort').value, quality:$('#quality').value, multitask:$('#multitask').value, language:lang, attachment_ids:editing?[]:pendingAttachments.map(a=>a.id), ...extras}});
     current=started.conversation_id; job=started.job_id; $('#modelPicker').disabled=true;
     if(editing) $('#messages').replaceChildren();
     addMessage('user',message,[],{attachments:editing?[]:pendingAttachments});
@@ -246,7 +324,7 @@ function renderAttachmentDrafts(){
 $('#attachFile').onclick=()=>$('#fileInput').click();
 $('#fileInput').onchange=async()=>{
   if(uploadBusy||job)return;
-  uploadBusy=true;$('#attachFile').disabled=true;$('#attachmentStatus').textContent='Dosya okunuyor…';
+  uploadBusy=true;$('#attachFile').disabled=true;$('#attachmentStatus').textContent=[...$('#fileInput').files].some(f=>/\.(png|jpe?g|webp)$/i.test(f.name))?'Fotoğraf inceleniyor…':'Dosya okunuyor…';
   try{for(const file of [...$('#fileInput').files]){
     if(pendingAttachments.length>=3){toast('Bir mesajda en fazla 3 dosya ekleyebilirsin.');break;}
     if(file.size>5*1024*1024)throw new Error('Dosya en fazla 5 MB olabilir.');
@@ -290,4 +368,65 @@ $('#openPreview').onclick=async()=>{const button=$('#openPreview');button.disabl
 $('#refreshPreview').onclick=async()=>{try{await refreshProjectPreview();}catch(error){$('#previewStatus').textContent=error.message;}};
 $('#closePreview').onclick=()=>{$('#previewDialog').close();$('#previewFrame').removeAttribute('src');};
 $('#downloadProject').onclick=async()=>{if(!current)return toast('Önce bir Code projesi oluştur.');const button=$('#downloadProject');button.disabled=true;try{const response=await kubikTransport.fetch('/api/vm/project.zip?'+new URLSearchParams({workspace_id:current}));if(!response.ok){const error=await response.json();throw new Error(error.detail||'Proje indirilemedi.');}const url=URL.createObjectURL(await response.blob()),a=node('a');a.href=url;a.download='kubik-project.zip';a.click();setTimeout(()=>URL.revokeObjectURL(url),30000);}catch(error){toast(error.message);}finally{button.disabled=false;}};
+// ---------------- Kübik 2.0: ayarlar, planlar, abonelik istekleri, slash komutları
+$('#quality').value = store.get('kubik-quality', 'balanced'); $('#multitask').value = store.get('kubik-multitask', 'auto'); $('#language').value = lang;
+$('#quality').onchange = () => store.set('kubik-quality', $('#quality').value);
+$('#multitask').onchange = () => store.set('kubik-multitask', $('#multitask').value);
+$('#language').onchange = () => { lang = $('#language').value; store.set('kubik-lang', lang); applyLanguage(); if (!current) welcome(); refreshSite(); if (account) refreshAccount().catch(() => {}); };
+function commandList() { return ['kubik2', ...(siteStatus.models || []).filter(m => m.installed).map(m => m.command || m.id)]; }
+$('#openSettings').onclick = () => { $('#commandsHelp').textContent = t('commands_help') + ' ' + commandList().map(c => '/' + c + '/').join('  '); $('#settingsDialog').showModal(); };
+$('#closeSettings').onclick = () => $('#settingsDialog').close();
+$('#prompt').addEventListener('input', () => {
+  const value = $('#prompt').value, hint = $('#commandHint');
+  if (!/^\/[\w.-]*$/.test(value)) { hint.hidden = true; return; }
+  const typed = value.slice(1).toLowerCase(), matches = commandList().filter(c => c.startsWith(typed));
+  hint.replaceChildren(node('span', '', t('commands') + ':'), ...matches.map(c => { const b = node('button', '', '/' + c + '/'); b.type = 'button'; b.onclick = () => { $('#prompt').value = '/' + c + '/ '; hint.hidden = true; $('#prompt').focus(); }; return b; }));
+  hint.hidden = !matches.length;
+});
+async function renderPlans() {
+  const tiers = siteStatus.tiers || {}, cards = $('#planCards'); cards.replaceChildren();
+  for (const [id, plan] of Object.entries(tiers)) {
+    const card = node('div', 'plan-card' + (account?.tier === id ? ' current' : '')), list = node('ul');
+    card.append(node('h3', '', plan.name));
+    if (plan.ultrapack) card.append(node('span', 'tag', 'ULTRAPACK'));
+    for (const line of [`${formatBytes(plan.storage)} ${t('storage')}`, `${plan.tokens.toLocaleString(lang)} ${t('tokens')} ${t('per_day')}`,
+      plan.messages ? `${plan.messages} ${t('messages_l')} ${t('per_day')}` : t('unlimited'), `${plan.photos} ${t('photos')} ${t('per_day')}`,
+      t(plan.wait ? 'wait_yes' : 'wait_no'), t(plan.code ? 'code_yes' : 'code_no')]) list.append(node('li', '', line));
+    card.append(list);
+    const button = node('button', 'secondary');
+    if (account?.tier === id) { button.textContent = t('current_plan'); button.disabled = true; }
+    else if (account?.role === 'guest') { button.textContent = t('need_account'); button.disabled = true; }
+    else if (account?.pending_tier === id) { button.textContent = t('requested'); button.onclick = async () => { try { await api('/subscription/request', {method:'DELETE'}); await refreshAccount(); renderPlans(); } catch (error) { toast(error.message); } }; }
+    else { button.textContent = t('request'); button.className = 'primary'; button.onclick = async () => { button.disabled = true; try { await api('/subscription/request', {method:'POST', body:{tier:id}}); toast(t('request_sent')); await refreshAccount(); renderPlans(); } catch (error) { toast(error.message); button.disabled = false; } }; }
+    card.append(button); cards.append(card);
+  }
+}
+// Pencere önce açılır; sunucu cevap vermezse içinde hata yazar (eskiden sessizce açılmıyordu).
+$('#planButton').onclick = async () => {
+  if (!$('#plansDialog').open) $('#plansDialog').showModal();
+  if (siteStatus.tiers) await renderPlans(); else $('#planCards').replaceChildren(node('p', 'muted', '…'));
+  try { if (!siteStatus.tiers) await refreshSite(); await refreshAccount(); await renderPlans();
+    if (!siteStatus.tiers) $('#planCards').replaceChildren(node('p', 'muted', t('unreachable'))); }
+  catch (error) { $('#planCards').replaceChildren(node('p', 'muted', error.message)); }
+};
+$('#closePlans').onclick = () => $('#plansDialog').close();
+async function renderRequests() {
+  const data = await api('/subscription/requests'), tiers = siteStatus.tiers || {};
+  $('#requestList').replaceChildren(...(data.pending.length ? data.pending.map(item => {
+    const row = node('div', 'request-row'), buttons = node('div', 'button-row');
+    row.append(node('span', '', `${item.name}: ${tiers[item.current]?.name || item.current} → ${tiers[item.tier]?.name || item.tier}`));
+    for (const [decision, label, cls] of [['accept', t('accept'), 'primary'], ['reject', t('reject'), 'secondary']]) {
+      const b = node('button', cls, label); b.onclick = async () => { b.disabled = true; try { await api('/subscription/requests/' + item.id, {method:'POST', body:{decision}}); await renderRequests(); refreshAccount().catch(() => {}); } catch (error) { toast(error.message); b.disabled = false; } }; buttons.append(b);
+    }
+    row.append(buttons); return row;
+  }) : [node('p', 'muted', t('no_requests'))]));
+  $('#memberList').replaceChildren(...(data.members.length ? data.members.map(m => node('div', 'request-row', `${m.name} · ${tiers[m.tier]?.name || m.tier}`)) : [node('p', 'muted', t('no_members'))]));
+}
+$('#requestsButton').onclick = async () => { try { if (!siteStatus.tiers) await refreshSite(); await renderRequests(); $('#requestsDialog').showModal(); } catch (error) { toast(error.message); } };
+$('#closeRequests').onclick = () => $('#requestsDialog').close();
+// KVKK: gizlilik metni ve hesabı kalıcı silme
+document.querySelectorAll('.privacy-link').forEach(link => link.onclick = () => { $('#deleteAccountForm').hidden = !account || account.role === 'admin' || account.owner; $('#deletePassword').hidden = account?.role === 'guest'; $('#privacyDialog').showModal(); });
+$('#closePrivacy').onclick = () => $('#privacyDialog').close();
+$('#deleteAccountForm').onsubmit = async event => { event.preventDefault(); if (!confirm(t('delete_confirm'))) return; try { await api('/account/delete', {method:'POST', body:{password:$('#deletePassword').value}}); kubikTransport.clearToken(); location.reload(); } catch (error) { toast(error.message); } };
+applyLanguage();
 refreshSite();enter().catch(()=>{account=null;});
