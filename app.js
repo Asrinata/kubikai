@@ -68,7 +68,7 @@ function lockUltrapack() {
     store.set('kubik-' + id, select.value);
   }
 }
-const modelName = id => id === 'kubik-2.0' || id === 'auto' ? 'Kübik 2.0' : (siteStatus.models?.find(model => model.id === id)?.name || (id === 'apex-5.5' ? 'Apex 5.5' : 'Kübik 1.0'));
+const modelName = id => id === 'kubik-2.0' || id === 'auto' ? (siteStatus.ensemble?.name || 'Kübik 2.0') : (siteStatus.models?.find(model => model.id === id)?.name || (id === 'apex-5.5' ? 'Apex 5.5' : 'Kübik 1.0'));
 const formatBytes = value => value >= 1e9 ? (value / 1e9).toLocaleString(lang, {maximumFractionDigits: 1}) + ' GB' : value >= 1e6 ? (value / 1e6).toLocaleString(lang, {maximumFractionDigits: 1}) + ' MB' : (value / 1e3).toLocaleString(lang, {maximumFractionDigits: 1}) + ' KB';
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 function toast(message) { $('#toast').textContent = message; $('#toast').classList.add('show'); setTimeout(() => $('#toast').classList.remove('show'), 5000); }
@@ -222,7 +222,7 @@ async function refreshSite() {
     // Tek model görünür: Kübik 2.0. Tek tek modeller yalnız /komut/ ile kullanılır.
     selectedModel = 'kubik-2.0';
     const picker = $('#modelPicker'), sleeping = !!siteStatus.hibernating;
-    const option = node('option', '', (sleeping ? '❄ ' : '') + 'Kübik 2.0' + (sleeping ? ' · ' + t('hibernating') : ''));
+    const option = node('option', '', (sleeping ? '❄ ' : '') + modelName('kubik-2.0') + (sleeping ? ' · ' + t('hibernating') : ''));
     option.value = selectedModel; if (sleeping) option.style.color = '#b58700';
     picker.replaceChildren(option);
     picker.value = selectedModel;
@@ -239,7 +239,7 @@ async function refreshSite() {
     const maxRank = siteStatus.search_max_effort === 'deep' ? ranks.length - 1 : ranks.indexOf(siteStatus.search_max_effort);
     [...$('#searchEffort').options].forEach(option => { option.dataset.serverOff = option.value !== 'off' && (!siteStatus.search_enabled || ranks.indexOf(option.value) > maxRank) ? '1' : ''; });
     // Lisans gereği: hangi açık modellerin çalıştığı ve Llama için "Built with Llama" görünür olmalı
-    const used = (siteStatus.models || []).filter(m => m.installed && m.extra).map(m => m.name);
+    const used = (siteStatus.models || []).filter(m => m.installed && m.extra).map(m => m.id.startsWith('x-kubik3') ? 'Kübik 3.0 (Qwen3-30B-A3B YOYO-V4 tabanlı)' : m.name);
     $('#modelCredits').textContent = used.length ? '· ' + t('built_on') + ' ' + used.join(', ') + (used.some(n => /llama/i.test(n)) ? ' · Built with Llama' : '') : '';
     lockUltrapack();
     if ($('#searchEffort').selectedOptions[0].disabled) $('#searchEffort').value = 'off';
