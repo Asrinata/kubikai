@@ -80,3 +80,39 @@ async function loadCorrections(){
 action($('#refreshCorrections'),()=>loadCorrections());
 document.querySelector('[data-tab=corrections]').addEventListener('click',()=>loadCorrections().catch(error=>toast(error.message)));
 enter().catch(()=>{});
+
+// Planlar ve Küp: fiyat, limit, paket ve özellikler panelden değişir
+const PLAN_COLUMNS = [['name','Ad','text'],['price','Fiyat','number'],['tokens','Token/5 sa','number'],['weekly','Haftalık token','number'],
+  ['messages','Mesaj/5 sa','number'],['storage','Depolama (MB)','mb'],['photos','Foto/gün','number'],['pack','Paket','pack'],
+  ['code','Code','check'],['work','Work','check'],['wait','Bekleme','check'],['visible','Satışta','check']];
+async function loadPlans() {
+  const data = await api('/admin/plans'), table = $('#plansTable'); table.replaceChildren();
+  const head = node('tr'); head.append(node('th', '', 'Plan')); PLAN_COLUMNS.forEach(([, title]) => head.append(node('th', '', title))); table.append(head);
+  for (const [tier, plan] of Object.entries(data.plans)) {
+    const row = node('tr'); row.dataset.tier = tier; row.append(node('td', '', tier));
+    for (const [key, , kind] of PLAN_COLUMNS) {
+      const cell = node('td'); let input;
+      if (kind === 'pack') { input = node('select'); data.packs.forEach(p => { const o = node('option', '', p); o.value = p; input.append(o); }); input.value = plan[key]; }
+      else { input = node('input'); input.type = kind === 'check' ? 'checkbox' : kind === 'text' ? 'text' : 'number';
+        if (kind === 'check') input.checked = !!plan[key]; else if (kind === 'mb') input.value = Math.round(plan[key] / 1e6); else input.value = plan[key] ?? ''; }
+      input.dataset.key = key; input.dataset.kind = kind; input.setAttribute('aria-label', tier + ' ' + key); cell.append(input); row.append(cell);
+    }
+    table.append(row);
+  }
+  $('#workVisible').checked = !!data.work_addon.visible; $('#workPrice').value = data.work_addon.price;
+}
+submit($('#plansForm'), async () => {
+  const plans = {};
+  for (const row of document.querySelectorAll('#plansTable tr[data-tier]')) {
+    const fields = {};
+    for (const input of row.querySelectorAll('[data-key]')) {
+      const {key, kind} = input.dataset;
+      fields[key] = kind === 'check' ? input.checked : kind === 'text' || kind === 'pack' ? input.value
+        : kind === 'mb' ? Math.round(Number(input.value) * 1e6) : key === 'messages' && input.value === '' ? null : Number(input.value);
+    }
+    plans[row.dataset.tier] = fields;
+  }
+  await api('/admin/plans', {method:'PUT', body:{plans, work_addon:{visible:$('#workVisible').checked, price:Number($('#workPrice').value)}}});
+  toast('Planlar kaydedildi.'); await loadPlans();
+});
+document.querySelector('[data-tab=plans]').addEventListener('click', () => loadPlans().catch(error => toast(error.message)));
