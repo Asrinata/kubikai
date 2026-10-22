@@ -158,3 +158,4 @@ body.code-theme #stars{opacity:1}
 .auth-download{display:block;text-align:center;text-decoration:none;margin:14px 0 6px;font-weight:600}
 .auth-download:hover{text-decoration:none}
 .sha{font-size:10px;text-align:center;overflow-wrap:anywhere;margin:0 0 8px}.sha code{font-size:9px}
+.terms-check{font-weight:400;font-size:12px;line-height:1.5;margin:6px 0 4px!important}.terms-check input{margin-top:2px}

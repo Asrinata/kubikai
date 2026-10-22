@@ -1,13 +1,51 @@
-# Kübik — kolay GitHub Pages paketi
+# Kübik
 
-Bu pakette klasör gerekmez. ZIP'i çıkart; içindeki index.html, panel.html, JavaScript ve CSS dosyalarını deponun ana dizinine yükle. Dosya isimlerini değiştirme; index (1).html yerine index.html kullanılır. Aynı isimli mevcut dosyaları güncelle.
+Kübik, Raspberry Pi üzerinde çalışan Türkçe bir yapay zekâ sohbet uygulamasıdır. Bu depo sitenin ön yüzünü
+(GitHub Pages) ve Windows masaüstü uygulamasının kaynak kodunu içerir. Sunucu, modeller ve kullanıcı verisi
+bu depoda **yoktur**; Pi'de durur.
 
-Settings > Pages > Source: Deploy from a branch > Branch: main > Folder: /(root) > Save.
-Bu pakette GitHub Actions iş akışı gerekmez. Önceden ana dizine konulan pages.yml iş akışı olarak çalışmaz.
+- Sohbet: https://asrinata.github.io/kubikai/
+- Yönetim paneli: https://asrinata.github.io/kubikai/panel.html
+- Kübik Work (herkese açık mesaj sayfası): `https://asrinata.github.io/kubikai/work.html?w=<kod>`
+- Gizlilik, çerezler ve kullanım koşulları: sitede **Gizlilik ve koşullar** bağlantısı
+  (Veri sorumlusu: Asrın Ata Yılmazok · kubik.iletisim@gmail.com)
 
-Sohbet: https://asrinata.github.io/kubikai/
-Panel: https://asrinata.github.io/kubikai/panel.html
+## Kübik Masaüstü (Windows)
 
-Yayın tamamlanınca Ctrl+F5 ile yenile. Pi adresi istenirse Pi'de sudo cat /var/lib/kubik/public-sites.json komutunun api_url değerini kullan. Tünel yeniden başlarsa adresi yenile.
+İndir: [KubikMasaustu.exe](https://github.com/Asrinata/kubikai/releases/latest/download/KubikMasaustu.exe) ·
+Kaynak kodu: [`masaustu/kubik_masaustu.py`](masaustu/kubik_masaustu.py) · SHA256 değeri her sürümün notunda ve sitede yazar.
 
-Bu pakette model, kullanıcı veritabanı, yönetici parolası veya yayın anahtarı yoktur. Pi'ye tekrar model paketi indirmen gerekmez; bu düzeltme yalnız web dosyaları içindir.
+Uygulama bu siteyi bir pencerede açar; kendi başına veri toplamaz, ayarlarını yalnız
+`%APPDATA%\KubikMasaustu` klasöründe saklar. İmzasız olduğu için Windows ilk açılışta "bilinmeyen yayıncı"
+uyarısı verebilir (Ek bilgi → Yine de çalıştır). İndirdiğin dosyayı doğrulamak için:
+
+```powershell
+Get-FileHash KubikMasaustu.exe -Algorithm SHA256
+```
+
+### PC erişimi
+
+Kübik'in bu bilgisayarda iş yapabilmesi isteğe bağlıdır ve **varsayılan olarak kapalıdır**. Ayarlar → PC erişimi:
+
+| Mod | Ne yapabilir |
+|---|---|
+| Kapalı | Hiçbir şey |
+| Sadece klasör | Seçtiğin klasörde dosya listeleme, okuma, yazma |
+| Klasör + onaylı komut | Yukarıdakiler + komut çalıştırma; her komut için Windows onay penceresi |
+| Bypass | Klasör + komut, onaysız |
+| Tam kontrol | Her yer + ekran görüntüsü, fare ve klavye. Ekranın etrafında kırmızı çerçeve olur, üstteki **DURDUR** ile anında kapanır |
+
+Güvenlik:
+- Yetkiyi her artırmada **Windows'un kendi onay penceresi** çıkar; web sayfası yetki yükseltemez ve onayı atlayamaz
+  (denetim uygulamanın Python tarafındadır, sayfa yalnız `pc_durum`, `pc_islem`, `pc_klasor`, `pc_mod` çağırabilir).
+- Klasör modlarında seçili klasörün dışına çıkılamaz. Tam kontrol her açılışta yeniden onay ister.
+- Kübik'in okuduğu dosyalar, komut çıktıları ve ekran görüntüsü açıklamaları sohbet mesajı olarak Kübik
+  sunucusuna gönderilir ve sohbet geçmişinde saklanır. Kişisel ya da gizli dosyaların olduğu klasörleri seçme.
+
+Derleme: `py -3.13 -m PyInstaller --onefile --windowed --name KubikMasaustu masaustu/kubik_masaustu.py`
+(gerekenler: `pywebview`, `pillow`).
+
+## Lisans notu
+
+Kübik'in kullandığı açık modeller (Qwen, Kumru, Phi, EuroLLM vb.) kendi lisanslarıyla (Apache 2.0 / MIT) gelir;
+hangilerinin çalıştığı sohbet ekranının altında yazar.
