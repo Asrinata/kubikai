@@ -719,12 +719,12 @@ function renderPc() {
 async function pcRefresh() { pc.info = await window.pywebview.api.pc_durum(); renderPc(); }
 window.kubikPcChanged = () => pcRefresh();
 window.addEventListener('pywebviewready', async () => {
-  $('#pcSettings').hidden = false; $('#desktopApp').hidden = true;
+  $('#pcSettings').hidden = false; document.querySelectorAll('.desktop-download').forEach(e => e.hidden = true);
   await pcRefresh();
   $('#pcMode').onchange = async () => { pc.info = await window.pywebview.api.pc_mod($('#pcMode').value); renderPc(); };
   $('#pcFolderButton').onclick = async () => { pc.info = await window.pywebview.api.pc_klasor(); renderPc(); };
 });
-if (/Windows/.test(navigator.userAgent) && !window.pywebview) $('#desktopApp').hidden = false;
+if (/Windows/.test(navigator.userAgent) && !window.pywebview) document.querySelectorAll('.desktop-download').forEach(e => e.hidden = false);
 
 // KVKK: gizlilik metni ve hesabı kalıcı silme
 document.querySelectorAll('.privacy-link').forEach(link => link.onclick = () => { $('#deleteAccountForm').hidden = !account || account.role === 'admin' || account.owner; $('#deletePassword').hidden = account?.role === 'guest'; $('#privacyDialog').showModal(); });
