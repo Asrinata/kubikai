@@ -90,7 +90,7 @@ async function openProfile() {
     // bağlantılar
     const links = node('div', 'button-row');
     const apiButton = node('button', 'secondary', '⌘ API platformu'); apiButton.type = 'button';
-    apiButton.onclick = () => { if (!p.api) return toast('API platformu Max+ ve üstü planlarda var.'); dialog.close(); openApi(); };
+    apiButton.onclick = () => { if (!p.api) return toast('API platformu Max+ ve üstü planlarda var.'); location.href = asset('gelistirici.html'); };
     const tour = node('button', 'secondary', 'Rehberi tekrar göster'); tour.type = 'button'; tour.onclick = () => { dialog.close(); startTour(true); };
     links.append(apiButton, tour);
     if (isApp) { const scan = node('button', 'primary', '✦ Cube Connect · bilgisayarda giriş'); scan.type = 'button'; scan.onclick = () => { dialog.close(); openScanner(); }; links.prepend(scan); }
@@ -103,39 +103,6 @@ async function openProfile() {
 }
 $('#profileButton').onclick = () => account?.role === 'guest' ? toast('Profil için hesap oluşturman gerekiyor.') : openProfile();
 $('#closeProfile').onclick = () => $('#profileDialog').close();
-
-// ---------------------------------------------------------------- API platformu
-async function openApi() {
-  const dialog = $('#apiDialog'); if (!dialog.open) dialog.showModal();
-  const box = $('#apiBody');
-  try {
-    const data = await api('/developer/keys'), list = node('div', 'memory-list');
-    for (const key of data.keys) {
-      const row = node('div', 'request-row' + (key.revoked ? ' revoked' : ''));
-      row.append(node('span', '', `${key.name} · ${key.prefix}… · ${key.requests} istek · ${key.tokens.toLocaleString(lang)} token` + (key.last_used ? ` · son ${new Date(key.last_used * 1000).toLocaleString(lang)}` : '') + (key.revoked ? ' · iptal' : '')));
-      if (!key.revoked) { const b = node('button', 'secondary', 'İptal et'); b.onclick = async () => { if (!confirm('Bu anahtar iptal edilsin mi? Kullanan uygulamalar çalışmaz.')) return; await api('/developer/keys/' + key.id, {method: 'DELETE'}); openApi(); }; row.append(b); }
-      list.append(row);
-    }
-    if (!data.keys.length) list.append(node('p', 'muted', 'Henüz anahtar yok.'));
-    // son 14 gün: istek sayısı çubukları
-    const peak = Math.max(1, ...data.daily.map(d => d.requests)), chart = node('div', 'api-chart');
-    for (const d of data.daily) { const bar = node('div', 'api-bar'), fill = node('span'); fill.style.height = Math.max(2, 100 * d.requests / peak) + '%';
-      bar.title = `${d.day}: ${d.requests} istek, ${d.tokens.toLocaleString(lang)} token`; bar.append(fill, node('small', '', d.day.slice(8))); chart.append(bar); }
-    const total = data.daily.reduce((s, d) => ({r: s.r + d.requests, t: s.t + d.tokens}), {r: 0, t: 0});
-    const form = node('form', 'inline-form'), name = node('input'); name.placeholder = 'Anahtar adı (ör. Discord botum)'; name.maxLength = 40;
-    form.append(name, node('button', 'primary', 'Yeni anahtar'));
-    form.onsubmit = async event => { event.preventDefault();
-      try { const {key} = await api('/developer/keys', {method: 'POST', body: {name: name.value}}); await openApi();
-        const shown = node('pre', 'secret-display', key + '\nBu anahtarı şimdi kopyala; bir daha gösterilmez.'); $('#apiBody').prepend(shown);
-        try { await navigator.clipboard.writeText(key); toast('Anahtar panoya kopyalandı.'); } catch {} }
-      catch (error) { toast(error.message); } };
-    const docs = node('p', 'fine'); const docLink = node('a', '', 'API belgeleri'), lib = node('a', '', 'kubik.py kütüphanesi');
-    docLink.href = asset('docs.html#api'); docLink.target = '_blank'; lib.href = asset('kubik.py'); lib.download = 'kubik.py';
-    docs.append(docLink, ' · ', lib, ` · saatte en fazla ${data.hourly_limit} istek`);
-    box.replaceChildren(form, node('h3', '', 'Anahtarların'), list, node('h3', '', `Son 14 gün · ${total.r} istek · ${total.t.toLocaleString(lang)} token`), chart, docs);
-  } catch (error) { box.replaceChildren(node('p', 'muted', error.message)); }
-}
-$('#closeApi').onclick = () => $('#apiDialog').close();
 
 // ---------------------------------------------------------------- rehber turu (ilk girişte bir kez)
 const TOUR = [

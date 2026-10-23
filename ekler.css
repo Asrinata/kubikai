@@ -34,10 +34,6 @@
 .profile-dialog .button-row a.secondary{display:inline-flex;align-items:center;text-decoration:none}
 
 /* API */
-.api-chart{display:flex;align-items:flex-end;gap:4px;height:120px;padding:8px;border-radius:10px;background:#f1f0ea;margin-bottom:10px}
-.api-bar{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px}
-.api-bar span{width:100%;border-radius:4px 4px 0 0;background:var(--accent);min-height:2px}
-.api-bar small{font-size:9px}
 .request-row.revoked{opacity:.5}
 .secret-display{white-space:pre-wrap;word-break:break-all;background:#202330;color:#e8ecff;padding:12px;border-radius:9px}
 

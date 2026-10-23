@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#121417"><title>Kübik API Tesisi</title>
+<link rel="stylesheet" href="gelistirici.css?v=7"></head>
+<body class="plant">
+<div class="hazard" aria-hidden="true"></div>
+<header class="plant-top">
+  <a class="plate" href="./"><span class="plate-cube"></span><span><b>KÜBİK</b><small>API TESİSİ · MK-III</small></span></a>
+  <div class="sys"><span id="sysLed" class="led"></span><span id="sysText">SİSTEM KONTROLÜ…</span></div>
+  <nav><a href="docs.html#api">BELGELER</a><a href="kubik.py" download>KUBIK.PY</a><a href="./">← KÜBİK</a></nav>
+</header>
+
+<main class="floor">
+  <section class="intro">
+    <span class="stencil">BÖLÜM 00 / GİRİŞ</span>
+    <h1>Kübik’i makinene bağla.</h1>
+    <p>Anahtar üret, yükü izle, isteği burada dene, kodu kopyala. Botun, siten ya da betiğin Kübik ile konuşsun.</p>
+  </section>
+
+  <div id="locked" class="panel locked" hidden><span class="stencil">ERİŞİM KİLİTLİ</span><h2 id="lockedText">API platformu Max+ ve üstü planlarda var.</h2><a class="btn amber" href="./">Kübik’e dön → Planım</a></div>
+
+  <section id="readouts" class="readouts">
+    <div class="readout"><small>AKTİF ANAHTAR</small><b id="rKeys">0/5</b></div>
+    <div class="readout"><small>İSTEK · 14 GÜN</small><b id="rReq">0</b></div>
+    <div class="readout"><small>TOKEN · 14 GÜN</small><b id="rTok">0</b></div>
+    <div class="readout"><small>SAATLİK LİMİT</small><b id="rLim">60</b></div>
+  </section>
+
+  <div class="bays">
+    <section class="panel">
+      <header class="panel-head"><span class="stencil">PANEL 01</span><h2>Anahtar dolabı</h2><span class="rivets"></span></header>
+      <form id="keyForm" class="row-form"><input id="keyName" maxlength="40" placeholder="ANAHTAR ADI · ör. Discord botum" aria-label="Anahtar adı"><button class="btn amber">+ ÜRET</button></form>
+      <div id="fresh" class="fresh" hidden><span class="stencil">YENİ ANAHTAR · BİR KEZ GÖSTERİLİR</span><code id="freshKey"></code><button id="copyFresh" type="button" class="btn">KOPYALA</button></div>
+      <div id="keys" class="keys"><p class="dim">Yükleniyor…</p></div>
+    </section>
+
+    <section class="panel">
+      <header class="panel-head"><span class="stencil">PANEL 02</span><h2>Yük grafiği</h2>
+        <div class="switch" role="group" aria-label="Grafik"><button type="button" data-metric="requests" class="on">İSTEK</button><button type="button" data-metric="tokens">TOKEN</button></div></header>
+      <div id="chart" class="chart"></div>
+      <p id="chartNote" class="dim small">Son 14 gün</p>
+    </section>
+  </div>
+
+  <section class="panel">
+    <header class="panel-head"><span class="stencil">PANEL 03</span><h2>Test istasyonu</h2><span class="rivets"></span></header>
+    <p class="dim small">Anahtarın yalnız bu sekmede kalır, kaydedilmez. İstek gerçek bir API çağrısıdır ve limitinden düşer.</p>
+    <form id="bench" class="bench">
+      <input id="benchKey" type="password" autocomplete="off" placeholder="kbk_…" aria-label="API anahtarı">
+      <textarea id="benchMsg" rows="3" aria-label="Mesaj">Merhaba! Kendini bir cümleyle tanıt.</textarea>
+      <button id="benchRun" class="btn amber big">▶ ÇALIŞTIR</button>
+    </form>
+    <pre id="console" class="console" aria-live="polite">&gt; hazır_</pre>
+  </section>
+
+  <section class="panel">
+    <header class="panel-head"><span class="stencil">PANEL 04</span><h2>Hızlı başlangıç</h2>
+      <div class="switch" role="group" aria-label="Dil"><button type="button" data-lang="python" class="on">PYTHON</button><button type="button" data-lang="curl">CURL</button><button type="button" data-lang="js">JS</button></div></header>
+    <div class="code"><button id="copyCode" type="button" class="btn">KOPYALA</button><pre><code id="snippet"></code></pre></div>
+    <div class="specs">
+      <div><small>UÇ NOKTA</small><code>POST /api/v1/chat</code><span>İş açar → id</span></div>
+      <div><small>UÇ NOKTA</small><code>GET /api/v1/chat/{id}</code><span>queued · running · done</span></div>
+      <div><small>UÇ NOKTA</small><code>GET /api/v1/models</code><span>Modeller</span></div>
+    </div>
+  </section>
+</main>
+<footer class="plant-foot"><span>SERİ NO KBK-API-001</span><span>ANAHTARINI TARAYICI KODUNA KOYMA</span><span>KÜBİK · RASPBERRY PI 5</span></footer>
+<div id="toast" class="toast"></div>
+<script src="config.js?v=7"></script><script src="connection.js?v=7"></script><script src="gelistirici.js?v=7" defer></script>
+</body></html>
