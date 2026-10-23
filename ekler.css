@@ -82,7 +82,7 @@
 
 /* yazı çubuğunun üstündeki maskot */
 .composer-area{position:relative}
-.peek{position:absolute;right:28px;top:-74px;z-index:3;display:flex;align-items:flex-end;gap:8px;pointer-events:none}
+.peek{position:absolute;right:28px;top:-46px;z-index:3;display:flex;align-items:flex-end;gap:8px;pointer-events:none}
 .peek.visit{animation:peekIn .5s ease-out}
 .peek-button{pointer-events:auto;border:0;background:none;padding:0;cursor:pointer}
 .peek-button .maskot{width:54px;height:70px;transform-origin:bottom center}

@@ -262,7 +262,7 @@ function warp(veil, duration) {
   const canvas = node('canvas'), ctx = canvas.getContext('2d'), w = innerWidth, h = innerHeight, cx = w / 2, cy = h / 2;
   canvas.width = w; canvas.height = h; veil.append(canvas);
   const stars = Array.from({length: 320}, () => ({a: Math.random() * Math.PI * 2, d: Math.random() * 40 + 2, s: Math.random() * .6 + .4}));
-  const start = performance.now();
+  const start = performance.now(); let done = false;
   return new Promise(resolve => {
     function frame(now) {
       const p = Math.min(1, (now - start) / duration), speed = 2 + p * p * 70;
@@ -275,7 +275,9 @@ function warp(veil, duration) {
         ctx.beginPath(); ctx.moveTo(cx + cos * from, cy + sin * from); ctx.lineTo(cx + cos * star.d, cy + sin * star.d); ctx.stroke();
       }
       if (p > .82) { ctx.fillStyle = `rgba(200,215,255,${(p - .82) * 3})`; ctx.fillRect(0, 0, w, h); }
-      if (p < 1) requestAnimationFrame(frame); else { setTimeout(() => canvas.remove(), 500); resolve(); }
+      // süre dolunca geçiş devam eder ama yıldızlar perde kapanana kadar akmaya devam eder (son karede donmasın)
+      if (p >= 1 && !done) { done = true; setTimeout(() => canvas.remove(), 600); resolve(); }
+      if (canvas.isConnected) requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
   });
@@ -301,9 +303,13 @@ async function changeMode(next) {
   $('#prompt').placeholder = mode === 'code' ? t('ask_code') : t('ask');
   $('.sidebar').classList.remove('open');
   welcome();
-  try { if (mode !== 'work') await refreshConversations(); await refreshSite(); if (mode === 'code') refreshVM(); }
-  catch (error) { toast(error.message); }
-  finally { $('#modeTransition').classList.add('leaving'); await delay(still ? 0 : 380); $('#modeTransition').className = 'mode-transition'; if (mode === 'code') refreshFiles(); }
+  // Geçiş sunucuyu beklemez: perde hemen açılır, liste ve durum arkadan gelir (Pi yavaşken animasyon donmasın)
+  veil.classList.add('leaving');
+  (async () => {
+    try { if (mode !== 'work') await refreshConversations(); await refreshSite(); if (mode === 'code') { refreshVM(); refreshFiles(); } }
+    catch (error) { toast(error.message); }
+  })();
+  await delay(still ? 0 : 380); veil.className = 'mode-transition';
 }
 $('#mode').onchange = () => changeMode($('#mode').value);
 document.querySelectorAll('[data-mode]').forEach(button => button.onclick = () => changeMode(button.dataset.mode));
