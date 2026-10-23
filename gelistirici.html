@@ -1,69 +1,72 @@
 <!doctype html>
-<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#121417"><title>Kübik API Tesisi</title>
-<link rel="stylesheet" href="gelistirici.css?v=7"></head>
-<body class="plant">
-<div class="hazard" aria-hidden="true"></div>
-<header class="plant-top">
-  <a class="plate" href="./"><span class="plate-cube"></span><span><b>KÜBİK</b><small>API TESİSİ · MK-III</small></span></a>
-  <div class="sys"><span id="sysLed" class="led"></span><span id="sysText">SİSTEM KONTROLÜ…</span></div>
-  <nav><a href="docs.html#api">BELGELER</a><a href="kubik.py" download>KUBIK.PY</a><a href="./">← KÜBİK</a></nav>
-</header>
-
-<main class="floor">
-  <section class="intro">
-    <span class="stencil">BÖLÜM 00 / GİRİŞ</span>
-    <h1>Kübik’i makinene bağla.</h1>
-    <p>Anahtar üret, yükü izle, isteği burada dene, kodu kopyala. Botun, siten ya da betiğin Kübik ile konuşsun.</p>
-  </section>
-
-  <div id="locked" class="panel locked" hidden><span class="stencil">ERİŞİM KİLİTLİ</span><h2 id="lockedText">API platformu Max+ ve üstü planlarda var.</h2><a class="btn amber" href="./">Kübik’e dön → Planım</a></div>
-
-  <section id="readouts" class="readouts">
-    <div class="readout"><small>AKTİF ANAHTAR</small><b id="rKeys">0/5</b></div>
-    <div class="readout"><small>İSTEK · 14 GÜN</small><b id="rReq">0</b></div>
-    <div class="readout"><small>TOKEN · 14 GÜN</small><b id="rTok">0</b></div>
-    <div class="readout"><small>SAATLİK LİMİT</small><b id="rLim">60</b></div>
-  </section>
-
-  <div class="bays">
-    <section class="panel">
-      <header class="panel-head"><span class="stencil">PANEL 01</span><h2>Anahtar dolabı</h2><span class="rivets"></span></header>
-      <form id="keyForm" class="row-form"><input id="keyName" maxlength="40" placeholder="ANAHTAR ADI · ör. Discord botum" aria-label="Anahtar adı"><button class="btn amber">+ ÜRET</button></form>
-      <div id="fresh" class="fresh" hidden><span class="stencil">YENİ ANAHTAR · BİR KEZ GÖSTERİLİR</span><code id="freshKey"></code><button id="copyFresh" type="button" class="btn">KOPYALA</button></div>
-      <div id="keys" class="keys"><p class="dim">Yükleniyor…</p></div>
-    </section>
-
-    <section class="panel">
-      <header class="panel-head"><span class="stencil">PANEL 02</span><h2>Yük grafiği</h2>
-        <div class="switch" role="group" aria-label="Grafik"><button type="button" data-metric="requests" class="on">İSTEK</button><button type="button" data-metric="tokens">TOKEN</button></div></header>
-      <div id="chart" class="chart"></div>
-      <p id="chartNote" class="dim small">Son 14 gün</p>
-    </section>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f8f7f3"><title>Kübik API Platformu</title>
+<link rel="stylesheet" href="style.css?v=8"><link rel="stylesheet" href="gelistirici.css?v=8"></head>
+<body class="dev">
+<aside class="dev-side">
+  <a class="brand" href="./"><span class="cube"></span>Kübik <span class="badge">API</span></a>
+  <nav>
+    <a href="#genel" class="active">Genel bakış</a>
+    <a href="#anahtarlar">API anahtarları</a>
+    <a href="#kullanim">Kullanım</a>
+    <a href="#dene">Deneme alanı</a>
+    <a href="#baslangic">Hızlı başlangıç</a>
+  </nav>
+  <div class="side-foot">
+    <a href="docs.html#api">Belgeler ↗</a>
+    <a href="kubik.py" download>kubik.py indir</a>
+    <a href="./">← Kübik’e dön</a>
   </div>
+</aside>
 
-  <section class="panel">
-    <header class="panel-head"><span class="stencil">PANEL 03</span><h2>Test istasyonu</h2><span class="rivets"></span></header>
-    <p class="dim small">Anahtarın yalnız bu sekmede kalır, kaydedilmez. İstek gerçek bir API çağrısıdır ve limitinden düşer.</p>
-    <form id="bench" class="bench">
-      <input id="benchKey" type="password" autocomplete="off" placeholder="kbk_…" aria-label="API anahtarı">
-      <textarea id="benchMsg" rows="3" aria-label="Mesaj">Merhaba! Kendini bir cümleyle tanıt.</textarea>
-      <button id="benchRun" class="btn amber big">▶ ÇALIŞTIR</button>
-    </form>
-    <pre id="console" class="console" aria-live="polite">&gt; hazır_</pre>
+<main class="dev-main">
+  <header id="genel" class="dev-head">
+    <div><span class="eyebrow">GELİŞTİRİCİ</span><h1>API Platformu</h1><p class="muted">Kübik’i kendi uygulamana, botuna ya da siteye bağla. Anahtarlarını yönet, kullanımını izle.</p></div>
+    <div class="sys"><span id="sysLed" class="dot"></span><span id="sysText">Durum kontrol ediliyor…</span></div>
+  </header>
+
+  <div id="locked" class="dev-card locked" hidden><h2 id="lockedText">API platformu Max+ ve üstü planlarda var.</h2><p class="muted">Planını Kübik’te Planım penceresinden Küp ile yükseltebilirsin.</p><a class="primary" href="./">Kübik’e dön</a></div>
+
+  <section class="stats">
+    <div class="stat"><small>Aktif anahtar</small><b id="rKeys">0/5</b></div>
+    <div class="stat"><small>İstek · son 14 gün</small><b id="rReq">0</b></div>
+    <div class="stat"><small>Token · son 14 gün</small><b id="rTok">0</b></div>
+    <div class="stat"><small>Saatlik limit</small><b><span id="rLim">60</span> <em>istek / anahtar</em></b></div>
   </section>
 
-  <section class="panel">
-    <header class="panel-head"><span class="stencil">PANEL 04</span><h2>Hızlı başlangıç</h2>
-      <div class="switch" role="group" aria-label="Dil"><button type="button" data-lang="python" class="on">PYTHON</button><button type="button" data-lang="curl">CURL</button><button type="button" data-lang="js">JS</button></div></header>
-    <div class="code"><button id="copyCode" type="button" class="btn">KOPYALA</button><pre><code id="snippet"></code></pre></div>
-    <div class="specs">
-      <div><small>UÇ NOKTA</small><code>POST /api/v1/chat</code><span>İş açar → id</span></div>
-      <div><small>UÇ NOKTA</small><code>GET /api/v1/chat/{id}</code><span>queued · running · done</span></div>
-      <div><small>UÇ NOKTA</small><code>GET /api/v1/models</code><span>Modeller</span></div>
-    </div>
+  <section id="anahtarlar" class="dev-card">
+    <div class="card-head"><div><h2>API anahtarları</h2><p class="muted">En fazla 5 aktif anahtar. Anahtar yalnız oluşturulurken bir kez gösterilir.</p></div></div>
+    <form id="keyForm" class="row-form"><input id="keyName" maxlength="40" placeholder="Anahtar adı, ör. Discord botu" aria-label="Anahtar adı"><button class="primary">Anahtar oluştur</button></form>
+    <div id="fresh" class="fresh" hidden><div><b>Yeni anahtarın</b><span class="muted"> · şimdi kopyala, bir daha gösterilmez</span></div><code id="freshKey"></code><button id="copyFresh" type="button" class="secondary">Kopyala</button></div>
+    <div class="table-wrap"><table class="keys-table"><thead><tr><th>Ad</th><th>Anahtar</th><th>İstek</th><th>Token</th><th>Son kullanım</th><th></th></tr></thead><tbody id="keys"><tr><td colspan="6" class="muted">Yükleniyor…</td></tr></tbody></table></div>
+  </section>
+
+  <section id="kullanim" class="dev-card">
+    <div class="card-head"><div><h2>Kullanım</h2><p id="chartNote" class="muted">Son 14 gün</p></div>
+      <div class="switch" role="group" aria-label="Grafik"><button type="button" data-metric="requests" class="on">İstek</button><button type="button" data-metric="tokens">Token</button></div></div>
+    <div id="chart" class="chart"></div>
+  </section>
+
+  <section id="dene" class="dev-card">
+    <div class="card-head"><div><h2>Deneme alanı</h2><p class="muted">Bir anahtarla gerçek bir istek gönder. Anahtar bu sekmede kalır, kaydedilmez; istek limitinden düşer.</p></div></div>
+    <form id="bench" class="bench">
+      <label>API anahtarı<input id="benchKey" type="password" autocomplete="off" placeholder="kbk_…"></label>
+      <label>Mesaj<textarea id="benchMsg" rows="3">Merhaba! Kendini bir cümleyle tanıt.</textarea></label>
+      <button id="benchRun" class="primary">İsteği gönder</button>
+    </form>
+    <pre id="console" class="console" aria-live="polite">Yanıt burada görünecek.</pre>
+  </section>
+
+  <section id="baslangic" class="dev-card">
+    <div class="card-head"><div><h2>Hızlı başlangıç</h2><p class="muted">API eşzamansızdır: önce iş açarsın, sonra sonucunu sorarsın.</p></div>
+      <div class="switch" role="group" aria-label="Dil"><button type="button" data-lang="python" class="on">Python</button><button type="button" data-lang="curl">curl</button><button type="button" data-lang="js">JavaScript</button></div></div>
+    <div class="code"><button id="copyCode" type="button" class="secondary">Kopyala</button><pre><code id="snippet"></code></pre></div>
+    <div class="table-wrap"><table class="keys-table endpoints"><thead><tr><th>Uç nokta</th><th>Açıklama</th></tr></thead><tbody>
+      <tr><td><code>POST /api/v1/chat</code></td><td>İş açar, <code>id</code> döner</td></tr>
+      <tr><td><code>GET /api/v1/chat/{id}</code></td><td><code>queued</code> · <code>running</code> · <code>done</code> · <code>error</code>; bitince <code>text</code> ve <code>usage</code></td></tr>
+      <tr><td><code>GET /api/v1/models</code></td><td>Kullanılabilir modeller</td></tr></tbody></table></div>
+    <p class="fine">Anahtarını tarayıcıda çalışan koda koyma. API mesajları da kurallara ve planının limitlerine tabidir.</p>
   </section>
 </main>
-<footer class="plant-foot"><span>SERİ NO KBK-API-001</span><span>ANAHTARINI TARAYICI KODUNA KOYMA</span><span>KÜBİK · RASPBERRY PI 5</span></footer>
 <div id="toast" class="toast"></div>
-<script src="config.js?v=7"></script><script src="connection.js?v=7"></script><script src="gelistirici.js?v=7" defer></script>
+<script src="config.js?v=8"></script><script src="connection.js?v=8"></script><script src="gelistirici.js?v=8" defer></script>
 </body></html>

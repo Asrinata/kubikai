@@ -1,5 +1,5 @@
 'use strict';
-// API tesisi: anahtarlar, 14 günlük yük grafiği, canlı test istasyonu ve kod örnekleri
+// API platformu: anahtarlar, 14 günlük kullanım grafiği, deneme alanı ve kod örnekleri
 const $ = selector => document.querySelector(selector);
 const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
 const fmt = value => Number(value || 0).toLocaleString('tr');
@@ -20,44 +20,47 @@ async function load() {
   try { data = await api('/developer/keys'); }
   catch (error) {
     $('#locked').hidden = false; $('#lockedText').textContent = error.status === 401 ? 'Önce Kübik’e giriş yap.' : error.message;
-    for (const n of document.querySelectorAll('.readouts, .bays, .panel:not(.locked)')) n.hidden = true;
+    for (const n of document.querySelectorAll('.stats, .dev-card:not(.locked)')) n.hidden = true;
     return;
   }
-  const live = data.keys.filter(k => !k.revoked);
-  $('#rKeys').textContent = `${live.length}/5`;
+  $('#rKeys').textContent = `${data.keys.filter(k => !k.revoked).length}/5`;
   $('#rReq').textContent = fmt(data.daily.reduce((s, d) => s + d.requests, 0));
   $('#rTok').textContent = fmt(data.daily.reduce((s, d) => s + d.tokens, 0));
   $('#rLim').textContent = data.hourly_limit;
-  $('#keys').replaceChildren(...(data.keys.length ? data.keys.map(keyRow) : [el('p', 'dim', 'Dolap boş. İlk anahtarını üret.')]));
+  $('#keys').replaceChildren(...(data.keys.length ? data.keys.map(keyRow) : [emptyRow()]));
   drawChart();
 }
 
+function emptyRow() { const tr = el('tr'), td = el('td', 'muted', 'Henüz anahtar yok. İlk anahtarını oluştur.'); td.colSpan = 6; tr.append(td); return tr; }
 function keyRow(key) {
-  const row = el('div', 'key' + (key.revoked ? ' off' : '')), info = el('div', 'key-info');
-  info.append(el('b', '', key.name), el('code', '', key.prefix + '…'),
-    el('small', '', `${fmt(key.requests)} istek · ${fmt(key.tokens)} token` + (key.last_used ? ` · son ${new Date(key.last_used * 1000).toLocaleString('tr')}` : ' · hiç kullanılmadı')));
-  row.append(el('span', 'led ' + (key.revoked ? 'red' : 'green')), info);
-  if (key.revoked) row.append(el('span', 'tag', 'İPTAL'));
+  const tr = el('tr', key.revoked ? 'off' : ''), cell = (...parts) => { const td = el('td'); td.append(...parts); tr.append(td); };
+  cell(el('b', '', key.name), ...(key.revoked ? [' ', el('span', 'pill', 'İptal edildi')] : []));
+  cell(el('code', '', key.prefix + '…'));
+  cell(fmt(key.requests));
+  cell(fmt(key.tokens));
+  cell(key.last_used ? new Date(key.last_used * 1000).toLocaleString('tr', {dateStyle: 'short', timeStyle: 'short'}) : '—');
+  if (key.revoked) cell('');
   else {
-    const b = el('button', 'btn danger', 'İPTAL ET'); b.type = 'button';
+    const b = el('button', 'text-button', 'İptal et'); b.type = 'button';
     b.onclick = async () => { if (!confirm(`“${key.name}” iptal edilsin mi? Kullanan uygulamalar çalışmaz.`)) return;
       try { await api('/developer/keys/' + key.id, {method: 'DELETE'}); load(); } catch (error) { toast(error.message); } };
-    row.append(b);
+    cell(b);
   }
-  return row;
+  return tr;
 }
 
 function drawChart() {
   const peak = Math.max(1, ...data.daily.map(d => d[metric]));
   $('#chart').replaceChildren(...data.daily.map(d => {
-    const col = el('div', 'col'), fill = el('span', 'fill');
-    fill.style.height = (100 * d[metric] / peak) + '%';
+    const col = el('div', 'col'), bar = el('span', 'bar');
+    bar.style.height = (100 * d[metric] / peak) + '%';
     col.title = `${d.day}: ${fmt(d.requests)} istek, ${fmt(d.tokens)} token`;
-    col.append(el('i', 'val', d[metric] ? fmt(d[metric]) : ''), el('span', 'tube'), el('small', '', d.day.slice(8)));
-    col.querySelector('.tube').append(fill);
+    const track = el('span', 'track'); track.append(bar);
+    col.append(track, el('small', '', d.day.slice(8)));
     return col;
   }));
-  $('#chartNote').textContent = `Son 14 gün · en yüksek ${fmt(peak)} ${metric === 'requests' ? 'istek' : 'token'}`;
+  const total = data.daily.reduce((s, d) => s + d[metric], 0);
+  $('#chartNote').textContent = `Son 14 gün · toplam ${fmt(total)} ${metric === 'requests' ? 'istek' : 'token'}`;
 }
 for (const b of document.querySelectorAll('[data-metric]')) b.onclick = () => {
   metric = b.dataset.metric; document.querySelectorAll('[data-metric]').forEach(x => x.classList.toggle('on', x === b)); if (data) drawChart(); };
@@ -72,8 +75,8 @@ $('#keyForm').onsubmit = async event => {
 };
 $('#copyFresh').onclick = () => copy($('#freshKey').textContent);
 
-// ---------------------------------------------------------------- test istasyonu
-const log = line => { const c = $('#console'); c.textContent += `\n[${new Date().toLocaleTimeString('tr')}] ${line}`; c.scrollTop = c.scrollHeight; };
+// ---------------------------------------------------------------- deneme alanı
+const log = line => { const c = $('#console'); c.textContent += `\n${new Date().toLocaleTimeString('tr')}  ${line}`; c.scrollTop = c.scrollHeight; };
 async function v1(path, key, body) {
   const response = await fetch(base + '/api/v1' + path, {method: body ? 'POST' : 'GET',
     headers: {Authorization: 'Bearer ' + key, ...(body ? {'Content-Type': 'application/json'} : {})}, body: body && JSON.stringify(body)});
@@ -86,32 +89,32 @@ $('#bench').onsubmit = async event => {
   const key = $('#benchKey').value.trim(), message = $('#benchMsg').value.trim(), run = $('#benchRun');
   if (!key.startsWith('kbk_')) return toast('Geçerli bir kbk_ anahtarı gir.');
   if (!message) return;
-  run.disabled = true; $('#console').textContent = '> POST /api/v1/chat';
+  run.disabled = true; $('#console').textContent = 'POST /api/v1/chat';
   const started = Date.now();
   try {
     const job = await v1('/chat', key, {message});
-    log(`iş açıldı · id ${job.id}`);
+    log(`İş açıldı · ${job.id}`);
     let last = '';
     for (;;) {
       await new Promise(r => setTimeout(r, 2000));
       const state = await v1('/chat/' + job.id, key);
-      if (state.status !== last) { log(`durum: ${state.status}`); last = state.status; }
+      if (state.status !== last) { log(`Durum: ${state.status}`); last = state.status; }
       if (state.status === 'done') {
         const u = state.usage || {};
         log(`${state.model || 'Kübik'} · ${((Date.now() - started) / 1000).toFixed(1)} sn · ${fmt(u.prompt_tokens)} giriş + ${fmt(u.completion_tokens)} çıkış token`);
-        $('#console').textContent += '\n\n' + state.text + '\n\n> bitti_';
+        $('#console').textContent += '\n\n' + state.text;
         break;
       }
-      if (state.status === 'error') { log('HATA: ' + (state.error || state.text || 'bilinmiyor')); break; }
+      if (state.status === 'error') { log('Hata: ' + (state.error || state.text || 'bilinmiyor')); break; }
     }
     load();
-  } catch (error) { log('HATA ' + error.message); }
+  } catch (error) { log('Hata: ' + error.message); }
   finally { run.disabled = false; }
 };
 
 // ---------------------------------------------------------------- kod örnekleri
 const SNIPPETS = {
-  python: `from kubik import Kubik          # kubik.py: üstteki KUBIK.PY bağlantısı
+  python: `from kubik import Kubik          # kubik.py: soldaki menüden indir
 
 kubik = Kubik("kbk_ANAHTARIN")
 print(kubik.sor("Merhaba! Kendini bir cümleyle tanıt."))
@@ -136,10 +139,13 @@ for (const b of document.querySelectorAll('[data-lang]')) b.onclick = () => show
 $('#copyCode').onclick = () => copy($('#snippet').textContent);
 showSnippet('python');
 
-// ---------------------------------------------------------------- sistem LED'i
+// sol menü: tıklanan bölümü vurgula
+for (const a of document.querySelectorAll('.dev-side nav a'))
+  a.addEventListener('click', () => document.querySelectorAll('.dev-side nav a').forEach(x => x.classList.toggle('active', x === a)));
+
 (async () => {
   try { const r = await kubikTransport.fetch('/api/status'); if (!r.ok) throw 0;
-    $('#sysLed').className = 'led green'; $('#sysText').textContent = 'SİSTEM ÇEVRİMİÇİ'; }
-  catch { $('#sysLed').className = 'led red'; $('#sysText').textContent = 'SUNUCUYA ULAŞILAMIYOR'; }
+    $('#sysLed').className = 'dot ok'; $('#sysText').textContent = 'Tüm sistemler çalışıyor'; }
+  catch { $('#sysLed').className = 'dot bad'; $('#sysText').textContent = 'Sunucuya ulaşılamıyor'; }
 })();
 load();
