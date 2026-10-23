@@ -93,7 +93,8 @@ async function openProfile() {
     apiButton.onclick = () => { if (!p.api) return toast('API platformu Max+ ve üstü planlarda var.'); location.href = asset('gelistirici.html'); };
     const tour = node('button', 'secondary', 'Rehberi tekrar göster'); tour.type = 'button'; tour.onclick = () => { dialog.close(); startTour(true); };
     links.append(apiButton, tour);
-    if (isApp) { const scan = node('button', 'primary', '✦ Cube Connect · bilgisayarda giriş'); scan.type = 'button'; scan.onclick = () => { dialog.close(); openScanner(); }; links.prepend(scan); }
+    if (isApp) { const scan = node('button', 'primary', '✦ Cube Connect · bilgisayarda giriş'); scan.type = 'button'; scan.onclick = () => { dialog.close(); openScanner('approve'); }; links.prepend(scan); }
+    else if (!isPhone) { const share = node('button', 'primary', '✦ Cube Connect · telefona giriş'); share.type = 'button'; share.onclick = () => { dialog.close(); openCube('share'); }; links.prepend(share); }
     for (const [href, text] of [['docs.html', 'Kübik Docs'], ['modeller.html', 'Model ömürleri']]) { const a = node('a', 'secondary', text); a.href = asset(href); a.target = '_blank'; a.rel = 'noopener'; links.append(a); }
     box.replaceChildren(head, node('h3', '', 'Kostümler'), skins, shopButton,
       node('h3', '', `Arkadaş davet et · ${p.invite.used}/${p.invite.limit}`), node('p', 'fine', 'Arkadaşın bu linkle kayıt olunca ikiniz de Max+ (30 gün) ve 500 Küp alırsınız.'), inviteRow,
@@ -141,7 +142,7 @@ const FAQ = [
   [/davet|arkada/i, 'Profil > Arkadaş davet et’teki linki paylaş. Arkadaşın kayıt olunca ikiniz de Max+ ve 500 Küp alırsınız (en fazla 3 davet).'],
   [/mağaza|magaza|kostüm|skin|maskot/i, 'Maskot kostümleri Mağaza’da Küp ile alınır (Planım ya da Profil > Mağaza). Aldığın kostümü Profil’den değiştirebilirsin.'],
   [/api|anahtar|geliştir/i, 'API platformu Max+ ve üstünde: Profil > API platformu. Belgeler Kübik Docs sayfasında.'],
-  [/cube|telefon|qr|bağlan/i, 'Cube Connect: bilgisayardaki giriş ekranında “Cube Connect” yıldız kodunu açıp telefondaki Kübik uygulamasıyla okut.'],
+  [/cube|telefon|qr|bağlan/i, 'Cube Connect iki yönlü: bilgisayarda giriş için giriş ekranındaki yıldız kodunu telefondaki Kübik uygulamasıyla (Profil → Cube Connect) okut. Telefonda giriş için bilgisayarda Profil → “Cube Connect · telefona giriş” kodunu aç, telefonun giriş ekranında “Cube Connect · kodu okut”a dokun.'],
   [/e-?posta|mail/i, 'Profil > E-posta: adresini yaz, gelen 6 haneli kodu gir.'],
   [/limit|token|sınır|yenile/i, 'Limit 5 saatlik oturum ve haftalık. Model adının yanındaki halkaya tıkla; “Token yenile” 1000 Küp.'],
   [/sil|kvkk|gizlilik/i, 'Hesabını “Gizlilik ve koşullar” penceresinin en altından silebilirsin.'],
@@ -208,14 +209,19 @@ setInterval(() => {
 
 // ---------------------------------------------------------------- Cube Connect
 const isApp = /KubikApp/.test(navigator.userAgent), isPhone = /Android|iPhone|iPad|Mobile/.test(navigator.userAgent);
-$('#cubeConnect').hidden = isApp || isPhone;
+// Giriş ekranında: bilgisayar yıldız kodunu gösterir, telefon (uygulama ya da tarayıcı) bilgisayardaki kodu okutur
+if (isApp || isPhone) $('#cubeConnect').textContent = '✦ Cube Connect · kodu okut';
 if (/Android/.test(navigator.userAgent) && !isApp) document.querySelectorAll('.android-download').forEach(e => { e.hidden = false; });
 const cube = {timer: null, frame: 0};
-async function openCube() {
+// mode 'login': giriş ekranındaki bilgisayar kod gösterir, girişli telefon onaylar.
+// mode 'share': girişli bilgisayar kod gösterir, giriş ekranındaki telefon okutup o hesaba girer.
+async function openCube(mode = 'login') {
   const dialog = $('#cubeDialog'), canvas = $('#cubeCanvas'); if (!dialog.open) dialog.showModal();
   clearTimeout(cube.timer); cancelAnimationFrame(cube.frame);
+  $('#cubeTitle').textContent = mode === 'share' ? 'Telefona giriş' : 'Telefonla giriş';
+  $('#cubeHint').textContent = mode === 'share' ? 'Telefonda Kübik’in giriş ekranındaki' : 'Telefonundaki Kübik uygulamasında Profil →';
   try {
-    const link = await api('/cube/new', {method: 'POST'}), start = performance.now();
+    const link = await api(mode === 'share' ? '/cube/share' : '/cube/new', {method: 'POST'}), start = performance.now();
     (function paint(now) { kubikCube.draw(canvas, link.code, now - start);
       const left = Math.max(0, link.expires - Date.now() / 1000); $('#cubeTimer').textContent = `${Math.ceil(left)} sn`;
       if (dialog.open) cube.frame = requestAnimationFrame(paint); })(start);
@@ -223,19 +229,26 @@ async function openCube() {
       if (!dialog.open) return;
       try { const state = await api('/cube/' + link.id);
         if (state.state === 'approved') { dialog.close(); cancelAnimationFrame(cube.frame); toast('Cube Connect ile giriş yapıldı.'); await enter(); return; }
-        if (state.state === 'expired') { openCube(); return; } } catch {}
+        if (state.state === 'claimed') { dialog.close(); cancelAnimationFrame(cube.frame); toast('Telefonda giriş yapıldı.'); return; }
+        if (state.state === 'expired') { openCube(mode); return; } } catch {}
       cube.timer = setTimeout(poll, 2000);
     })();
   } catch (error) { toast(error.message); dialog.close(); }
 }
-$('#cubeConnect').onclick = openCube;
+$('#cubeConnect').onclick = () => isApp || isPhone ? openScanner('claim') : openCube('login');
 $('#closeCube').onclick = () => { $('#cubeDialog').close(); clearTimeout(cube.timer); cancelAnimationFrame(cube.frame); };
 let stopScan = null;
-async function openScanner() {
-  $('#scanDialog').showModal(); $('#scanStatus').textContent = 'Bilgisayardaki yıldız kodunu çerçeveye al.';
+async function openScanner(mode) {
+  $('#scanDialog').showModal();
+  $('#scanStatus').textContent = mode === 'claim' ? 'Bilgisayarda Kübik’e gir, Profil → “Cube Connect · telefona giriş” kodunu aç ve çerçeveye al.' : 'Bilgisayardaki yıldız kodunu çerçeveye al.';
   try {
     stopScan = await kubikCube.scan($('#scanVideo'), async code => {
       $('#scanDialog').close(); stopScan = null;
+      if (mode === 'claim') {
+        try { await api('/cube/claim', {method: 'POST', body: {code}}); toast('Cube Connect ile giriş yapıldı.'); await enter(); }
+        catch (error) { toast(error.message); }
+        return;
+      }
       if (!confirm('Bilgisayarda Kübik hesabınla giriş yapılsın mı? Kodu sen açmadıysan Hayır de.')) return;
       try { const r = await api('/cube/approve', {method: 'POST', body: {code}}); toast(`${r.agent} bilgisayarında giriş yapıldı.`); }
       catch (error) { toast(error.message); }
