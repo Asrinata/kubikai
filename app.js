@@ -353,9 +353,15 @@ async function sendTurn(message, extras = {}) {
     if(mode==='code') $('#terminalOutput').textContent='Kübik Code görevi inceliyor…';
     $('#stopReply').hidden=false;$('#send').hidden=true;
     await refreshConversations();
+    let live=null;   // cevap yazıldıkça gösterilen geçici balon; iş bitince renderHistory yerine gerçeğini koyar
     for (;;) {
       const progress=await api('/jobs/'+job),waited=Math.round((Date.now()-started.at)/1000);
       $('#jobStatus').textContent=progress.status+(waited>=5?` · ${waited>=60?Math.floor(waited/60)+' dk ':''}${waited%60} sn`:'');
+      if(progress.partial&&progress.state==='running'){
+        if(!live){live=node('article','message assistant streaming');const label=node('div','message-label');label.append(node('span','cube'),node('span','',modelName(selectedModel)));live.append(label,node('div','message-text'));$('#messages').append(live);}
+        const box=$('#messages'),atBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;
+        live.lastChild.textContent=progress.partial;if(atBottom)box.scrollTop=box.scrollHeight;
+      }
       if(progress.state==='done') {
         const history=await api('/conversations/'+current);renderHistory(history,progress.result);
         pc.pending = pc.mode && pc.mode !== 'kapali' ? pcTasks(progress.result?.text || '') : [];
@@ -363,7 +369,7 @@ async function sendTurn(message, extras = {}) {
         break;
       }
       if(['error','canceled'].includes(progress.state)){toast(progress.status);if(current){const history=await api('/conversations/'+current);renderHistory(history);}break;}
-      await delay(1200);
+      await delay(live?700:1200);
     }
   } catch(error){toast(error.message);}
   finally{job=null;$('#stopReply').hidden=true;$('#send').hidden=false;$('#jobStatus').textContent='';await refreshSite();if(account)refreshAccount().catch(()=>{});if(mode==='code')refreshFiles();}

@@ -97,3 +97,8 @@ body.code-theme .peek-say{background:#141a33;color:#e8ecff}
 @keyframes dans{0%,100%{transform:rotate(0)}20%{transform:rotate(-14deg) translateY(-6px)}40%{transform:rotate(14deg)}60%{transform:rotate(-14deg) translateY(-6px)}80%{transform:rotate(10deg)}}
 @keyframes sasir{30%,70%{transform:scale(1.5)}}
 @media (prefers-reduced-motion:reduce){.peek,.peek-say{animation:none}}
+
+/* cevap yazılırken */
+.message.streaming .message-text::after{content:'▍';margin-left:2px;color:var(--accent);animation:imlec 1s steps(2) infinite}
+@keyframes imlec{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.message.streaming .message-text::after{animation:none}}
