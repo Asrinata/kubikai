@@ -346,7 +346,7 @@ async function sendTurn(message, extras = {}) {
   try {
     $('#hibernation').hidden = true; $('#commandHint').hidden = true;
     const started = await api('/chat', {method:'POST',body:{message, conversation_id:current, mode, model_id:selectedModel, effort:$('#effort').value, search_effort:$('#searchEffort').value, quality:$('#quality').value, multitask:$('#multitask').value, language:lang, attachment_ids:editing?[]:pendingAttachments.map(a=>a.id), pc_mode:pc.mode&&pc.mode!=='kapali'?pc.mode:'', ...extras}});
-    current=started.conversation_id; job=started.job_id; $('#modelPicker').disabled=true;
+    current=started.conversation_id; job=started.job_id; started.at=Date.now(); $('#modelPicker').disabled=true;
     if(editing) $('#messages').replaceChildren();
     addMessage('user',message,[],{attachments:editing?[]:pendingAttachments});
     if(!editing){pendingAttachments=[];renderAttachmentDrafts();$('#prompt').value='';}
@@ -354,7 +354,8 @@ async function sendTurn(message, extras = {}) {
     $('#stopReply').hidden=false;$('#send').hidden=true;
     await refreshConversations();
     for (;;) {
-      const progress=await api('/jobs/'+job);$('#jobStatus').textContent=progress.status;
+      const progress=await api('/jobs/'+job),waited=Math.round((Date.now()-started.at)/1000);
+      $('#jobStatus').textContent=progress.status+(waited>=5?` · ${waited>=60?Math.floor(waited/60)+' dk ':''}${waited%60} sn`:'');
       if(progress.state==='done') {
         const history=await api('/conversations/'+current);renderHistory(history,progress.result);
         pc.pending = pc.mode && pc.mode !== 'kapali' ? pcTasks(progress.result?.text || '') : [];
