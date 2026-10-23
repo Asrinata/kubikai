@@ -7,6 +7,8 @@ bu depoda **yoktur**; Pi'de durur.
 - Sohbet: https://asrinata.github.io/kubikai/
 - Yönetim paneli: https://asrinata.github.io/kubikai/panel.html
 - Kübik Work (herkese açık mesaj sayfası): `https://asrinata.github.io/kubikai/work.html?w=<kod>`
+- Belgeler (özellikler, kurallar, API, SSS): https://asrinata.github.io/kubikai/docs.html
+- Model ömürleri (çıkış / kapanış tarihleri): https://asrinata.github.io/kubikai/modeller.html
 - Gizlilik, çerezler ve kullanım koşulları: sitede **Gizlilik ve koşullar** bağlantısı
   (Veri sorumlusu: Asrın Ata Yılmazok · kubik.iletisim@gmail.com)
 
@@ -44,6 +46,26 @@ Güvenlik:
 
 Derleme: `py -3.13 -m PyInstaller --onefile --windowed --name KubikMasaustu masaustu/kubik_masaustu.py`
 (gerekenler: `pywebview`, `pillow`).
+
+## Kübik Android
+
+İndir: [Kubik.apk](https://github.com/Asrinata/kubikai/releases/latest/download/Kubik.apk) ·
+Kaynak: [`android/MainActivity.java`](android/MainActivity.java)
+
+Siteyi açan ince bir WebView kabuğudur; normal giriş sitedeki gibidir. Kamera izni yalnız **Cube Connect** için
+istenir: bilgisayardaki giriş ekranında "Cube Connect"e basınca birbirine bağlı yıldızlardan bir kod çıkar,
+telefonda Profil → Cube Connect ile okutunca bilgisayar parolasız giriş yapar (kod 2 dakika geçerli, tek kullanımlık).
+Görüntü telefonda işlenir, sunucuya yalnız okunan sayı gider.
+
+## API
+
+Max+ ve üstü planlarda Profil → API platformu'ndan anahtar alınır. Tek dosyalık Python kütüphanesi:
+[`kubik.py`](kubik.py) · Ayrıntılar: [docs.html#api](https://asrinata.github.io/kubikai/docs.html#api)
+
+```python
+from kubik import Kubik
+print(Kubik("kbk_ANAHTARIN").sor("Merhaba!"))
+```
 
 ## Lisans notu
 

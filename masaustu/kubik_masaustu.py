@@ -13,6 +13,7 @@ import base64
 import ctypes
 import io
 import json
+import math
 import os
 import subprocess
 import sys
@@ -22,7 +23,7 @@ from pathlib import Path
 
 import webview
 
-VERSION = '1.0.1'
+VERSION = '1.0.2'
 SITE = 'https://asrinata.github.io/kubikai/'
 CONFIG = Path(os.environ.get('APPDATA', Path.home())) / 'KubikMasaustu' / 'ayar.json'
 LEVEL = {'kapali': 0, 'klasor': 1, 'onay': 2, 'bypass': 3, 'tam': 4}
@@ -74,6 +75,10 @@ class Border:
         root = self.root = tk.Tk()
         left, top = user32.GetSystemMetrics(76), user32.GetSystemMetrics(77)      # sanal ekran (tüm monitörler)
         width, height = user32.GetSystemMetrics(78), user32.GetSystemMetrics(79)
+        if user32.GetSystemMetrics(80) == 1:                                     # tek ekran: görev çubuğunun altında kalmasın
+            area = wintypes.RECT()
+            user32.SystemParametersInfoW(0x30, 0, ctypes.byref(area), 0)          # SPI_GETWORKAREA
+            left, top, width, height = area.left, area.top, area.right - area.left, area.bottom - area.top
         root.overrideredirect(True)
         root.attributes('-topmost', True)
         root.geometry(f'{width}x{height}+{left}+{top}')
@@ -81,11 +86,33 @@ class Border:
         root.attributes('-transparentcolor', 'magenta')                         # boş alanlar tıklamayı geçirir
         canvas = tk.Canvas(root, bg='magenta', highlightthickness=0)
         canvas.pack(fill='both', expand=True)
-        canvas.create_rectangle(3, 3, width - 3, height - 3, outline='#e01b24', width=6)
-        stop = tk.Label(root, text='  Kübik bilgisayarını kontrol ediyor · DURDUR  ', bg='#e01b24', fg='white',
-                        font=('Segoe UI', 10, 'bold'), cursor='hand2')
-        stop.place(relx=.5, y=0, anchor='n')
+        # parlayan çerçeve: dıştan içe açık kırmızıdan koyuya katmanlar, nefes alır gibi yanıp söner
+        layers = [canvas.create_rectangle(i * 2 + 1, i * 2 + 1, width - i * 2 - 1, height - i * 2 - 1, width=2, outline='#e01b24')
+                  for i in range(7)]
+        corner = 46
+        for x, y, dx, dy in ((0, 0, 1, 1), (width, 0, -1, 1), (0, height, 1, -1), (width, height, -1, -1)):   # köşe parantezleri
+            canvas.create_line(x + dx * 16, y + dy * (16 + corner), x + dx * 16, y + dy * 16, x + dx * (16 + corner), y + dy * 16,
+                               fill='#ffffff', width=4, capstyle='round', joinstyle='round')
+        bar = tk.Frame(root, bg='#1b0b0e', highlightbackground='#e01b24', highlightthickness=2)
+        bar.place(relx=.5, y=10, anchor='n')
+        dot = tk.Label(bar, text='●', bg='#1b0b0e', fg='#ff3b47', font=('Segoe UI', 11))
+        dot.pack(side='left', padx=(12, 4), pady=6)
+        tk.Label(bar, text='Kübik bilgisayarını kullanıyor', bg='#1b0b0e', fg='white', font=('Segoe UI', 10, 'bold')).pack(side='left', pady=6)
+        stop = tk.Label(bar, text='  DURDUR  ', bg='#e01b24', fg='white', font=('Segoe UI', 10, 'bold'), cursor='hand2')
+        stop.pack(side='left', padx=(12, 6), pady=6)
         stop.bind('<Button-1>', lambda e: self.on_stop())
+        stop.bind('<Enter>', lambda e: stop.configure(bg='#ff3b47'))
+        stop.bind('<Leave>', lambda e: stop.configure(bg='#e01b24'))
+
+        def pulse(step=0):
+            glow = (math.sin(step / 9) + 1) / 2                                 # 0..1
+            for index, layer in enumerate(layers):
+                fade = index / len(layers)
+                red = int(150 + 105 * glow * (1 - fade))
+                canvas.itemconfigure(layer, outline=f'#{red:02x}{int(30 * (1 - fade) * glow):02x}{int(40 * (1 - fade) * glow):02x}')
+            dot.configure(fg='#ff3b47' if step // 12 % 2 else '#7a1218')
+            root.after(60, pulse, step + 1)
+        pulse()
         root.mainloop()
         self.root = None
 

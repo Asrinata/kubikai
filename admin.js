@@ -25,7 +25,7 @@ async function load(fill=true) {
   if(fill){$('#accessMode').value=s.access_mode;$('#registrationOpen').checked=s.registration_open;$('#maintenanceOn').checked=s.maintenance;$('#maintenanceMessage').value=s.maintenance_message;
     document.querySelectorAll('[data-setting]').forEach(input=>input.value=s[input.dataset.setting]);
     $('#systemPrompt').value=s.system_prompt;
-    await Promise.all([loadKeys(),loadUsers(),loadCorrections()]);}
+    await Promise.all([loadKeys(),loadUsers(),loadCorrections(),loadModeration(),loadLifespan()]);}
 }
 async function loadKeys(){const keys=await api('/admin/keys');$('#keysList').replaceChildren();for(const key of keys){const row=node('div','model-row'), info=node('div');info.append(node('strong','',key.label),node('p','',`${key.uses}/${key.max_uses} kullanım · ${new Date(key.expires*1000).toLocaleDateString('tr')} · ${key.revoked?'İptal edildi':'Etkin'}`));row.append(info);if(!key.revoked){const b=node('button','danger','İptal et');action(b,async()=>{await api('/admin/keys/'+key.id,{method:'DELETE'});await loadKeys();});row.append(b);}$('#keysList').append(row);}}
 async function loadUsers(){const users=await api('/admin/users');$('#usersList').replaceChildren();const table=node('table','data-table'),head=node('tr');['Kullanıcı','Durum','Bugünkü mesaj','Özel limitler','Erişim'].forEach(t=>head.append(node('th','',t)));table.append(head);for(const user of users){const row=node('tr');row.append(node('td','',user.name),node('td','',user.disabled?'Kapalı':user.role==='admin'?'Yönetici':user.beta?'Beta':'Public'),node('td','',String(user.usage.messages)));const limits=node('td'),actions=node('td');if(user.role!=='admin'){const inputs={}, wrap=node('div','user-limits');for(const [key,title]of[['daily_messages','Mesaj'],['daily_tokens','Token'],['daily_searches','Arama'],['daily_vm_minutes','Code dakika']]){const input=node('input');input.type='number';input.min='0';input.placeholder=title;input.title=title;input.setAttribute('aria-label',user.name+' '+title);input.value=user.limits[key]??'';inputs[key]=input;wrap.append(input);}const save=node('button','secondary','Kaydet');action(save,async()=>{const custom={};for(const[key,input]of Object.entries(inputs))if(input.value!=='')custom[key]=Number(input.value);await api('/admin/users/'+user.id,{method:'PATCH',body:{limits:custom}});toast('Kullanıcı limitleri kaydedildi.');});wrap.append(save);limits.append(wrap);const ban=node('button','secondary',user.disabled?'Hesabı aç':'Hesabı kapat');action(ban,async()=>{await api('/admin/users/'+user.id,{method:'PATCH',body:{disabled:!user.disabled}});await loadUsers();});const beta=node('button','secondary',user.beta?'Beta erişimini kaldır':'Beta erişimi ver');action(beta,async()=>{await api('/admin/users/'+user.id,{method:'PATCH',body:{beta:!user.beta}});await loadUsers();});actions.append(ban,beta);}row.append(limits,actions);table.append(row);}$('#usersList').append(table);}
@@ -116,3 +116,51 @@ submit($('#plansForm'), async () => {
   toast('Planlar kaydedildi.'); await loadPlans();
 });
 document.querySelector('[data-tab=plans]').addEventListener('click', () => loadPlans().catch(error => toast(error.message)));
+
+// ---------------------------------------------------------------- denetim ve ban
+let adminUsers = [];
+async function banUser(userId, name) {
+  const reason = $('#banReason').value, days = Number($('#banDays').value);
+  if (!confirm(`${name} ${days ? days + ' gün' : 'süresiz'} yasaklansın mı? Sebep: ${reason}`)) return;
+  await api(`/admin/users/${userId}/ban`, {method: 'POST', body: {reason, days}}); toast(name + ' yasaklandı.'); await loadModeration();
+}
+async function loadModeration() {
+  const [data, users] = await Promise.all([api('/admin/flags'), api('/admin/users')]); adminUsers = users;
+  if (!$('#banReason').options.length) $('#banReason').replaceChildren(...data.reasons.map(r => { const o = node('option', '', r); o.value = r; return o; }));
+  $('#flagList').replaceChildren(...(data.flags.length ? data.flags.map(f => {
+    const row = node('div', 'model-row'), info = node('div');
+    info.append(node('strong', '', `${f.name} · ${f.reason}`), node('p', '', `“${f.excerpt}” · ${new Date(f.created * 1000).toLocaleString('tr')}`));
+    const dismiss = node('button', 'secondary', 'Yoksay'); action(dismiss, async () => { await api('/admin/flags/' + f.id, {method: 'POST'}); await loadModeration(); });
+    const ban = node('button', 'danger', 'Yasakla'); action(ban, async () => { const guess = data.reasons.find(r => f.reason.toLowerCase().includes(r.split(' ')[0].toLowerCase())); if (guess) $('#banReason').value = guess; await banUser(f.user_id, f.name); });
+    row.append(info, dismiss, ban); return row;
+  }) : [node('p', '', 'İşaretlenen mesaj yok.')]));
+  $('#bannedList').replaceChildren(...(data.banned.length ? data.banned.map(u => {
+    const row = node('div', 'model-row'), until = u.ban_until > 1e11 ? 'süresiz' : new Date(u.ban_until * 1000).toLocaleString('tr') + ' tarihine kadar';
+    const free = node('button', 'secondary', 'Yasağı kaldır'); action(free, async () => { await api(`/admin/users/${u.id}/ban`, {method: 'DELETE'}); await loadModeration(); });
+    row.append(node('span', '', `${u.name} · ${until} · ${u.ban_reason}`), free); return row;
+  }) : [node('p', '', 'Yasaklı hesap yok.')]));
+}
+submit($('#banForm'), async () => {
+  const name = $('#banUser').value.trim().toLowerCase(), user = adminUsers.find(u => u.name === name);
+  if (!user) throw new Error('Kullanıcı bulunamadı.');
+  await banUser(user.id, name);
+});
+// ---------------------------------------------------------------- model ömrü
+function lifespanRow(model = {id: '', name: '', released: '', shutdown: ''}) {
+  const row = node('tr');
+  for (const [key, type, hint] of [['id', 'text', 'kubik-4.0'], ['name', 'text', 'Kübik 4.0'], ['released', 'date'], ['shutdown', 'date']]) {
+    const cell = node('td'), input = node('input'); input.type = type; input.value = model[key] || ''; input.dataset.key = key; if (hint) input.placeholder = hint; cell.append(input); row.append(cell);
+  }
+  const remove = node('button', 'secondary', 'Sil'); remove.type = 'button'; remove.onclick = () => row.remove();
+  const cell = node('td'); cell.append(remove); row.append(cell); return row;
+}
+async function loadLifespan() {
+  const {models} = await api('/models/lifespan'), head = node('tr');
+  ['Kimlik', 'Ad', 'Çıkış', 'Kapanış', ''].forEach(t => head.append(node('th', '', t)));
+  $('#lifespanTable').replaceChildren(head, ...models.map(lifespanRow));
+}
+$('#addLifespan').onclick = () => $('#lifespanTable').append(lifespanRow());
+submit($('#lifespanForm'), async () => {
+  const models = [...$('#lifespanTable').querySelectorAll('tr')].slice(1).map(row => Object.fromEntries([...row.querySelectorAll('input')].map(i => [i.dataset.key, i.value.trim()])));
+  await api('/admin/lifespan', {method: 'PUT', body: {models}}); toast('Model ömürleri kaydedildi.'); await loadLifespan();
+});

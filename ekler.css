@@ -1,0 +1,103 @@
+/* Kübik ekleri: maskot, profil, API, Oyun Salonu, Cube Connect, destek, rehber turu */
+.maskot{display:inline-block;width:40px;height:52px;flex-shrink:0;line-height:0}
+.maskot svg{width:100%;height:100%;overflow:visible}
+.maskot .m-eyes{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
+.maskot.big{width:96px;height:124px}
+.maskot.big .m-head,.support-button .m-head{animation:bob 2.8s ease-in-out infinite;transform-box:fill-box;transform-origin:bottom center}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@keyframes bob{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg) translateY(-1px)}}
+@media (prefers-reduced-motion:reduce){.maskot *{animation:none!important}}
+
+/* kenar çubuğu */
+.profile-button{display:grid!important;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:10px;align-items:center;text-align:left}
+.profile-button .maskot{grid-row:span 2;width:26px;height:34px}
+.side-links{font-size:12px;color:var(--muted);margin:2px 0 6px}
+.notice.shutdown{background:#fff4dc;color:#7a5600;border-color:#f0d9a0}
+
+/* profil */
+.profile-dialog{max-width:720px}
+.profile-head{display:flex;gap:20px;align-items:center;margin-bottom:12px}
+.profile-head h3{font-size:24px;margin:0 0 4px}
+.skin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:8px;margin-bottom:10px}
+.skin{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px;border:2px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink)}
+.skin small{font-size:11px}
+.skin.rare{border-color:#4fd1ff66}.skin.epic{border-color:#c86bff66}.skin.legendary{border-color:#ffcf3d99}
+.skin.worn{outline:3px solid var(--accent);outline-offset:1px}
+.skin.locked{opacity:.45;cursor:not-allowed}
+.skin.locked:disabled{cursor:not-allowed}
+.badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-bottom:14px}
+.achievement{padding:10px 12px;border-radius:10px;background:#efeee8;opacity:.55}
+.achievement.done{opacity:1;background:#fbf3d9;box-shadow:inset 0 0 0 1px #ecd58f}
+.achievement strong{display:block;font-size:13px}
+.inline-form{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.inline-form input{flex:1;min-width:150px;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:var(--card)}
+.profile-dialog .button-row a.secondary{display:inline-flex;align-items:center;text-decoration:none}
+
+/* API */
+.api-chart{display:flex;align-items:flex-end;gap:4px;height:120px;padding:8px;border-radius:10px;background:#f1f0ea;margin-bottom:10px}
+.api-bar{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px}
+.api-bar span{width:100%;border-radius:4px 4px 0 0;background:var(--accent);min-height:2px}
+.api-bar small{font-size:9px}
+.request-row.revoked{opacity:.5}
+.secret-display{white-space:pre-wrap;word-break:break-all;background:#202330;color:#e8ecff;padding:12px;border-radius:9px}
+
+/* Cube Connect */
+.cube-connect{width:100%;margin-top:8px;background:#0d1020;color:#cfd8ff}
+.cube-dialog{border:0;border-radius:22px;padding:20px;background:#07080e;color:#e8ecff;max-width:420px;width:calc(100% - 24px);text-align:center}
+.cube-dialog::backdrop{background:rgba(5,6,14,.8)}
+.cube-dialog header{display:flex;justify-content:space-between;align-items:center;text-align:left}
+.cube-dialog h2{color:#fff;margin:0}.cube-dialog .muted,.cube-dialog .eyebrow{color:#9aa4c8}.cube-dialog .icon-button{color:#fff}
+#cubeCanvas{width:100%;max-width:360px;aspect-ratio:1;border-radius:16px;margin:12px 0;box-shadow:0 0 50px #5d74d655}
+#scanVideo{width:100%;border-radius:16px;margin:12px 0;background:#000}
+
+/* destek asistanı */
+.support-button{position:fixed;right:18px;bottom:18px;z-index:40;width:62px;height:62px;border-radius:50%;border:0;background:var(--card);box-shadow:0 6px 24px #0003;display:grid;place-items:center}
+.support-button .maskot{width:34px;height:44px}
+#auth:not([hidden]) ~ .support-button{display:none}
+.support-panel{position:fixed;right:18px;bottom:92px;z-index:41;width:min(360px,calc(100% - 36px));height:min(480px,calc(100% - 120px));display:flex;flex-direction:column;background:var(--card);border-radius:18px;box-shadow:0 12px 40px #0004;overflow:hidden}
+.support-panel header{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)}
+.support-panel .work-messages{flex:1;overflow:auto;padding:12px}
+.support-panel .bubble .text-button{padding:4px 0;font-size:12px}
+
+/* rehber turu */
+.tour{position:fixed;inset:0;z-index:60}
+.tour-spot{position:fixed;border-radius:12px;box-shadow:0 0 0 9999px rgba(10,12,20,.62);transition:all .35s ease;pointer-events:none}
+.tour-bubble{position:fixed;display:flex;gap:12px;align-items:flex-start;max-width:340px;padding:14px;border-radius:16px;background:var(--card);box-shadow:0 12px 40px #0005;transition:all .35s ease}
+.tour-bubble p{margin:0 0 10px;line-height:1.5}
+.tour-bubble .button-row{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.tour-bubble small{margin-right:auto}
+
+/* yanıt geri bildirimi */
+.message-actions .feedback{min-width:34px}
+.message-actions .feedback.picked{background:#fbf3d9}
+
+/* mağaza */
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.shop-item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 8px;border-radius:14px;background:var(--card);border:2px solid var(--line);text-align:center}
+.shop-item.rare{border-color:#4fd1ff88}.shop-item.epic{border-color:#c86bff88;background:linear-gradient(180deg,#faf3ff,var(--card))}
+.shop-item.legendary{border-color:#ffcf3d;background:linear-gradient(180deg,#fff8de,var(--card));box-shadow:0 0 18px #ffcf3d44}
+.shop-item.worn{outline:3px solid var(--accent);outline-offset:1px}
+.shop-item button{margin-top:6px;width:100%}
+.extra-card.shop{background:linear-gradient(140deg,#fff8de,#fbeef0)}
+
+/* yazı çubuğunun üstündeki maskot */
+.composer-area{position:relative}
+.peek{position:absolute;right:28px;top:-74px;z-index:3;display:flex;align-items:flex-end;gap:8px;pointer-events:none}
+.peek.visit{animation:peekIn .5s ease-out}
+.peek-button{pointer-events:auto;border:0;background:none;padding:0;cursor:pointer}
+.peek-button .maskot{width:54px;height:70px;transform-origin:bottom center}
+.peek-say{pointer-events:auto;max-width:220px;padding:8px 12px;border-radius:12px 12px 2px 12px;background:var(--card);box-shadow:0 4px 16px #0002;font-size:13px;line-height:1.4;animation:pop .25s ease-out}
+body.code-theme .peek-say{background:#141a33;color:#e8ecff}
+@keyframes peekIn{from{transform:translateY(40px);opacity:0}}
+@keyframes pop{from{transform:scale(.8);opacity:0}}
+.maskot.zipla{animation:zipla .9s cubic-bezier(.3,1.6,.5,1)}
+.maskot.don{animation:don 1s ease-in-out}
+.maskot.salla .m-arms path:last-child{transform-box:fill-box;transform-origin:left bottom;animation:salla .3s ease-in-out 4 alternate}
+.maskot.dans{animation:dans 1.2s ease-in-out}
+.maskot.sasir .m-eyes{animation:sasir 1s ease-out}
+@keyframes zipla{0%,100%{transform:translateY(0)}40%{transform:translateY(-34px) scaleY(1.05)}70%{transform:translateY(0) scaleY(.9)}}
+@keyframes don{to{transform:rotateY(360deg)}}
+@keyframes salla{from{transform:rotate(0)}to{transform:rotate(-35deg)}}
+@keyframes dans{0%,100%{transform:rotate(0)}20%{transform:rotate(-14deg) translateY(-6px)}40%{transform:rotate(14deg)}60%{transform:rotate(-14deg) translateY(-6px)}80%{transform:rotate(10deg)}}
+@keyframes sasir{30%,70%{transform:scale(1.5)}}
+@media (prefers-reduced-motion:reduce){.peek,.peek-say{animation:none}}

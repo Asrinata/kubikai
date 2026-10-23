@@ -3,20 +3,22 @@
   const pages = window.KUBIK_PAGES === true;
   const configured = typeof window.KUBIK_API_BASE === 'string' ? window.KUBIK_API_BASE.replace(/\/$/, '') : '';
   const base = pages ? (configured || localStorage.getItem('kubik.pi') || '') : '';
+  // Android uygulamasında oturum, çıkış yapana kadar kalsın (uygulama kapanınca sessionStorage silinir)
+  const tokens = /KubikApp/.test(navigator.userAgent) ? localStorage : sessionStorage;
   window.kubikTransport = {
     url(path) { return base + path; },
     async fetch(path, options = {}) {
       if (pages && !base) throw new Error('Önce Pi bağlantısını kaydet.');
       const headers = new Headers(options.headers || {});
-      const token = pages ? sessionStorage.getItem('kubik.token') : '';
+      const token = pages ? tokens.getItem('kubik.token') : '';
       if (token) headers.set('Authorization', 'Bearer ' + token);
       return fetch(base + path, {...options, headers});
     },
-    setToken(token) { if (pages) sessionStorage.setItem('kubik.token', token); },
-    clearToken() { sessionStorage.removeItem('kubik.token'); }
+    setToken(token) { if (pages) tokens.setItem('kubik.token', token); },
+    clearToken() { tokens.removeItem('kubik.token'); }
   };
   const setup = document.querySelector('#connectionSetup');
-  if (pages && !base) setup.hidden = false;
+  if (pages && !base && setup) setup.hidden = false;
   if (pages && !configured) {
     for (const target of document.querySelectorAll('#authForm, #adminLogin, .sidebar-bottom, .admin-nav')) {
       const button = document.createElement('button');
