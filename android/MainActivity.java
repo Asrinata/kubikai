@@ -89,6 +89,10 @@ public class MainActivity extends Activity {
     /** Sitedeki Profil > "Kübit anahtarlığını eşle" butonu buradan çağırır. */
     private class Kopru {
         @JavascriptInterface public void kubitEsle() { runOnUiThread(MainActivity.this::kubitEsle); }
+        @JavascriptInterface public void kubitAnahtar(String anahtar) {   // yönetici paneli > Kübit anahtarı
+            if (anahtar != null && anahtar.startsWith("kbt_"))
+                getSharedPreferences(KubitServis.AYARLAR, MODE_PRIVATE).edit().putString(KubitServis.ANAHTAR, anahtar).apply();
+        }
         @JavascriptInterface public boolean kubitEsli() { return getSharedPreferences(KubitServis.AYARLAR, MODE_PRIVATE).getString(KubitServis.ADRES, null) != null; }
     }
 

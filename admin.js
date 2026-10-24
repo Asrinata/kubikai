@@ -164,3 +164,18 @@ submit($('#lifespanForm'), async () => {
   const models = [...$('#lifespanTable').querySelectorAll('tr')].slice(1).map(row => Object.fromEntries([...row.querySelectorAll('input')].map(i => [i.dataset.key, i.value.trim()])));
   await api('/admin/lifespan', {method: 'PUT', body: {models}}); toast('Model ömürleri kaydedildi.'); await loadLifespan();
 });
+
+// ---------------------------------------------------------------- Kübit anahtarlığı (Güvenlik sekmesi)
+async function loadKubitKey() { try { const {active} = await api('/admin/kubit-anahtari'); $('#kubitKeyState').textContent = active ? 'Bir anahtar etkin.' : 'Anahtar yok: kumanda kapalı.'; } catch {} }
+$('#kubitKeyNew').onclick = async () => {
+  if (!confirm('Yeni anahtar oluşturulsun mu? Eski anahtar çalışmaz olur.')) return;
+  try {
+    const {key} = await api('/admin/kubit-anahtari', {method: 'POST'});
+    if (window.KubikApp?.kubitAnahtar) { KubikApp.kubitAnahtar(key); $('#kubitKeyShow').hidden = true; toast('Anahtar bu telefona kaydedildi.'); }
+    else { $('#kubitKeyShow').textContent = key + '
+Bu anahtarı Kübik uygulamasında panel açarak kaydet; bir daha gösterilmez.'; $('#kubitKeyShow').hidden = false; }
+    loadKubitKey();
+  } catch (error) { toast(error.message); }
+};
+$('#kubitKeyRevoke').onclick = async () => { if (!confirm('Kübit anahtarı iptal edilsin mi?')) return; try { await api('/admin/kubit-anahtari', {method: 'DELETE'}); loadKubitKey(); } catch (error) { toast(error.message); } };
+loadKubitKey();
