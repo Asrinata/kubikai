@@ -97,6 +97,10 @@ async function openProfile() {
     if (window.KubikApp?.kubitEsle) {   // Android uygulaması: Kübit anahtarlığını Bluetooth ile eşle
       const kubit = node('button', 'secondary', KubikApp.kubitEsli() ? '🧊 Kübit anahtarlığı · eşli ✓' : '🧊 Kübit anahtarlığını eşle'); kubit.type = 'button';
       kubit.onclick = () => { dialog.close(); KubikApp.kubitEsle(); }; links.prepend(kubit);
+      if (KubikApp.kubitEsli() && KubikApp.kubitBildirimIzni) {   // bildirimleri ve müziği Kübit'e göstermek için
+        const izin = node('button', 'secondary', '🔔 Kübit: bildirim ve müzik izni'); izin.type = 'button';
+        izin.onclick = () => KubikApp.kubitBildirimIzni(); kubit.after(izin);
+      }
     }
     if (!isApp && !isPhone) { const share = node('button', 'primary', '✦ Cube Connect · telefona giriş'); share.type = 'button'; share.onclick = () => { dialog.close(); openCube('share'); }; links.prepend(share); }
     for (const [href, text] of [['docs.html', 'Kübik Docs'], ['modeller.html', 'Model ömürleri']]) { const a = node('a', 'secondary', text); a.href = asset(href); a.target = '_blank'; a.rel = 'noopener'; links.append(a); }

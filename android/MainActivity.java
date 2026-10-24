@@ -7,6 +7,9 @@ import android.companion.AssociationRequest;
 import android.companion.BluetoothLeDeviceFilter;
 import android.companion.CompanionDeviceManager;
 import android.content.IntentSender;
+import android.location.Location;
+import android.location.LocationManager;
+import android.provider.Settings;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -86,12 +89,36 @@ public class MainActivity extends Activity {
         if (eksikIzinler().isEmpty()) KubitServis.baslat(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        konumKaydet();
+    }
+
+    /** Kübit'in hava durumu için son bilinen yaklaşık konum (arka planda konum izni istemeden). */
+    private void konumKaydet() {
+        if (getSharedPreferences(KubitServis.AYARLAR, MODE_PRIVATE).getString(KubitServis.ADRES, null) == null) return;
+        if (checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) return;
+        LocationManager lm = getSystemService(LocationManager.class);
+        Location en = null;
+        for (String saglayici : lm.getProviders(true)) {
+            try { Location l = lm.getLastKnownLocation(saglayici); if (l != null && (en == null || l.getTime() > en.getTime())) en = l; }
+            catch (SecurityException ignored) { }
+        }
+        if (en != null) getSharedPreferences(KubitServis.AYARLAR, MODE_PRIVATE).edit()
+                .putString(KubitServis.ENLEM, String.format(java.util.Locale.ROOT, "%.2f", en.getLatitude()))     // ~1 km: hava için yeter
+                .putString(KubitServis.BOYLAM, String.format(java.util.Locale.ROOT, "%.2f", en.getLongitude())).apply();
+    }
+
     /** Sitedeki Profil > "Kübit anahtarlığını eşle" butonu buradan çağırır. */
     private class Kopru {
         @JavascriptInterface public void kubitEsle() { runOnUiThread(MainActivity.this::kubitEsle); }
         @JavascriptInterface public void kubitAnahtar(String anahtar) {   // yönetici paneli > Kübit anahtarı
             if (anahtar != null && anahtar.startsWith("kbt_"))
                 getSharedPreferences(KubitServis.AYARLAR, MODE_PRIVATE).edit().putString(KubitServis.ANAHTAR, anahtar).apply();
+        }
+        @JavascriptInterface public void kubitBildirimIzni() {   // bildirimler ve müzik kumandası için sistem ayarı
+            runOnUiThread(() -> startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)));
         }
         @JavascriptInterface public boolean kubitEsli() { return getSharedPreferences(KubitServis.AYARLAR, MODE_PRIVATE).getString(KubitServis.ADRES, null) != null; }
     }
@@ -119,6 +146,8 @@ public class MainActivity extends Activity {
             eksik.add(android.Manifest.permission.BLUETOOTH_CONNECT);
         if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
             eksik.add(android.Manifest.permission.POST_NOTIFICATIONS);
+        if (checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            eksik.add(android.Manifest.permission.ACCESS_COARSE_LOCATION);
         return eksik;
     }
 
@@ -132,6 +161,7 @@ public class MainActivity extends Activity {
     public void onRequestPermissionsResult(int kod, String[] izinler, int[] sonuc) {
         if (kod == IZIN_KUBIT) {
             if (Build.VERSION.SDK_INT < 31 || checkSelfPermission(android.Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
+                konumKaydet();
                 KubitServis.baslat(this);
                 Toast.makeText(this, "Kübit eşlendi!", Toast.LENGTH_SHORT).show();
             } else Toast.makeText(this, "Bluetooth izni olmadan Kübit bağlanamaz", Toast.LENGTH_LONG).show();
