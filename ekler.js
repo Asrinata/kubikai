@@ -94,7 +94,11 @@ async function openProfile() {
     const tour = node('button', 'secondary', 'Rehberi tekrar göster'); tour.type = 'button'; tour.onclick = () => { dialog.close(); startTour(true); };
     links.append(apiButton, tour);
     if (isApp) { const scan = node('button', 'primary', '✦ Cube Connect · bilgisayarda giriş'); scan.type = 'button'; scan.onclick = () => { dialog.close(); openScanner('approve'); }; links.prepend(scan); }
-    else if (!isPhone) { const share = node('button', 'primary', '✦ Cube Connect · telefona giriş'); share.type = 'button'; share.onclick = () => { dialog.close(); openCube('share'); }; links.prepend(share); }
+    if (window.KubikApp?.kubitEsle) {   // Android uygulaması: Kübit anahtarlığını Bluetooth ile eşle
+      const kubit = node('button', 'secondary', KubikApp.kubitEsli() ? '🧊 Kübit anahtarlığı · eşli ✓' : '🧊 Kübit anahtarlığını eşle'); kubit.type = 'button';
+      kubit.onclick = () => { dialog.close(); KubikApp.kubitEsle(); }; links.prepend(kubit);
+    }
+    if (!isApp && !isPhone) { const share = node('button', 'primary', '✦ Cube Connect · telefona giriş'); share.type = 'button'; share.onclick = () => { dialog.close(); openCube('share'); }; links.prepend(share); }
     for (const [href, text] of [['docs.html', 'Kübik Docs'], ['modeller.html', 'Model ömürleri']]) { const a = node('a', 'secondary', text); a.href = asset(href); a.target = '_blank'; a.rel = 'noopener'; links.append(a); }
     box.replaceChildren(head, node('h3', '', 'Kostümler'), skins, shopButton,
       node('h3', '', `Arkadaş davet et · ${p.invite.used}/${p.invite.limit}`), node('p', 'fine', 'Arkadaşın bu linkle kayıt olunca ikiniz de Max+ (30 gün) ve 500 Küp alırsınız.'), inviteRow,
