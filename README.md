@@ -50,7 +50,7 @@ Derleme: `py -3.13 -m PyInstaller --onefile --windowed --name KubikMasaustu masa
 ## Kübik Android
 
 İndir: [Kubik.apk](https://github.com/Asrinata/kubikai/releases/latest/download/Kubik.apk) ·
-Kaynak: [`android/MainActivity.java`](android/MainActivity.java)
+Kaynak: [`android/app/src/main/java/com/asrin/kubik/MainActivity.java`](android/MainActivity.java)
 
 Siteyi açan ince bir WebView kabuğudur; normal giriş sitedeki gibidir. Kamera izni yalnız **Cube Connect** için
 istenir: bilgisayardaki giriş ekranında "Cube Connect"e basınca birbirine bağlı yıldızlardan bir kod çıkar,
@@ -71,3 +71,8 @@ print(Kubik("kbk_ANAHTARIN").sor("Merhaba!"))
 
 Kübik'in kullandığı açık modeller (Qwen, Kumru, Phi, EuroLLM vb.) kendi lisanslarıyla (Apache 2.0 / MIT) gelir;
 hangilerinin çalıştığı sohbet ekranının altında yazar.
+
+## Kübit anahtarlık
+
+ESP32 anahtarlık yazılımı **s25** ve Android **1.6.5** güncellemesi: [kaynaklar, kurulum ve kullanım sınırları](kubit/README.md).
+Anahtarlık **Ayarlar → Güncelleme ara**, uygulama **Güncellemeleri denetle** üzerinden yeni sürümü alır.

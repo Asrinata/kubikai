@@ -1,0 +1,18 @@
+# Yerel derlemeler, hesap oturumlari ve kisisel ayarlar
+**/node_modules/
+**/_deps/
+**/__pycache__/
+**/.pytest_cache/
+**/.gradle/
+**/build/
+**/build-*/
+**/wifi_ayar.h
+**/ayar.json
+**/ajan.log
+**/wa-oturum/
+**/.wwebjs_auth/
+**/.wwebjs_cache/
+**/*.keystore
+**/local.properties
+**/hs_err_pid*.log
+**/replay_pid*.log

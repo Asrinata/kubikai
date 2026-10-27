@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
  */
 public class MainActivity extends Activity {
     private static final String SITE = "https://asrinata.github.io/kubikai/";
-    private static final int IZIN_KAMERA = 1001, DOSYA = 1002, ESLE = 1003, IZIN_KUBIT = 1004;
+    private static final int IZIN_KAMERA = 1001, DOSYA = 1002, ESLE = 1003, IZIN_KUBIT = 1004, IZIN_EK = 1005;
     private WebView web;
     private ValueCallback<Uri[]> dosyaCb;
     private PermissionRequest kameraIstegi;
@@ -47,6 +47,7 @@ public class MainActivity extends Activity {
         super.onCreate(durum);
         web = new WebView(this);
         setContentView(web);
+        Guncelleyici.sessizKontrol(this);
         WebSettings a = web.getSettings();
         a.setJavaScriptEnabled(true);
         a.setDomStorageEnabled(true);
@@ -87,6 +88,7 @@ public class MainActivity extends Activity {
         Uri gelen = getIntent().getData();
         web.loadUrl(gelen != null ? gelen.toString() : SITE);
         if (eksikIzinler().isEmpty()) KubitServis.baslat(this);
+        ekIzinler();
     }
 
     @Override
@@ -140,6 +142,17 @@ public class MainActivity extends Activity {
         }, null);
     }
 
+    /** Kübit'in takvim ve adım sayfaları için (bir kez sorulur; reddedilirse o sayfalar boş kalır). */
+    private void ekIzinler() {
+        android.content.SharedPreferences a = getSharedPreferences(KubitServis.AYARLAR, MODE_PRIVATE);
+        if (a.getString(KubitServis.ADRES, null) == null || a.getBoolean("ek_izin_soruldu", false)) return;
+        List<String> iste = new ArrayList<>();
+        if (checkSelfPermission(android.Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) iste.add(android.Manifest.permission.READ_CALENDAR);
+        if (Build.VERSION.SDK_INT >= 29 && checkSelfPermission(android.Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) iste.add(android.Manifest.permission.ACTIVITY_RECOGNITION);
+        a.edit().putBoolean("ek_izin_soruldu", true).apply();
+        if (!iste.isEmpty()) requestPermissions(iste.toArray(new String[0]), IZIN_EK);
+    }
+
     private List<String> eksikIzinler() {
         List<String> eksik = new ArrayList<>();
         if (Build.VERSION.SDK_INT >= 31 && checkSelfPermission(android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED)
@@ -167,6 +180,7 @@ public class MainActivity extends Activity {
             } else Toast.makeText(this, "Bluetooth izni olmadan Kübit bağlanamaz", Toast.LENGTH_LONG).show();
             return;
         }
+        if (kod == IZIN_EK) { stopService(new Intent(this, KubitServis.class)); KubitServis.baslat(this); return; }   // adım sayacı yeni izinle başlasın
         if (kod == IZIN_KAMERA && kameraIstegi != null) {
             if (sonuc.length > 0 && sonuc[0] == PackageManager.PERMISSION_GRANTED) kameraIstegi.grant(kameraIstegi.getResources());
             else kameraIstegi.deny();

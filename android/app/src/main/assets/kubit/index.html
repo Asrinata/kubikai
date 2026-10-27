@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Kübit</title>
+<style>
+:root{--z:#0b0c10;--k:#15171d;--k2:#1d2028;--c:#2a2e39;--y:#eef0f6;--s:#8d93a5;--v:#7c9bff;--v2:#a58bff;--ok:#4ee08a;--h:#ff6b6b;--oled:#cfe0ff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--z);color:var(--y);font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+body{padding-bottom:84px}
+.ust{padding:18px 18px 6px;display:flex;align-items:center;gap:10px}
+.ust h1{margin:0;font-size:22px;letter-spacing:-.02em}
+.ust .rozet{margin-left:auto;font-size:12px;color:var(--s);background:var(--k);border:1px solid var(--c);padding:5px 10px;border-radius:99px}
+main{padding:6px 16px 20px}
+section{display:none;animation:gel .25s ease}section.sec{display:block}
+@keyframes gel{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.kart{background:var(--k);border:1px solid var(--c);border-radius:20px;padding:16px;margin:0 0 14px}
+.kart h2{margin:0 0 4px;font-size:16px}
+.kart p{margin:0;color:var(--s);font-size:13px}
+.not{color:var(--s);font-size:13px;margin-top:8px;min-height:1em}
+.satir{display:flex;align-items:center;gap:12px}
+.ikon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;flex:none;background:var(--k2)}
+.ikon svg{width:22px;height:22px;stroke:var(--v);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn{appearance:none;border:0;border-radius:14px;padding:12px 16px;font:600 14px system-ui;color:#fff;background:linear-gradient(135deg,var(--v),var(--v2));display:inline-flex;align-items:center;gap:8px}
+.btn:active{transform:scale(.97)}
+.btn.g{background:var(--k2);color:var(--y);border:1px solid var(--c)}
+.btn.tam{width:100%;justify-content:center;margin-top:12px}
+.btnlar{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+input[type=text],input[type=password]{width:100%;padding:12px 14px;background:var(--z);border:1px solid var(--c);border-radius:12px;color:var(--y);font-size:15px;margin-top:6px}
+input:focus{outline:none;border-color:var(--v)}
+label{display:block;margin-top:12px;color:var(--s);font-size:12px}
+details summary{color:var(--s);font-size:13px;margin-top:10px}
+.anahtar{position:relative;width:50px;height:30px;flex:none}
+.anahtar input{opacity:0;width:0;height:0}
+.anahtar span{position:absolute;inset:0;background:var(--c);border-radius:99px;transition:.2s}
+.anahtar span:before{content:"";position:absolute;width:24px;height:24px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.anahtar input:checked+span{background:var(--ok)}.anahtar input:checked+span:before{transform:translateX(20px)}
+/* durum kartı */
+.hero{background:radial-gradient(120% 140% at 0% 0%,#26305a 0%,var(--k) 60%);display:flex;gap:16px;align-items:center}
+.hero canvas{width:96px;height:72px;image-rendering:pixelated;flex:none}
+.nokta{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--h);margin-right:6px;vertical-align:1px}
+.nokta.ok{background:var(--ok);box-shadow:0 0 10px var(--ok)}
+.cipler{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.cip{font-size:12px;padding:4px 10px;border-radius:99px;background:rgba(255,255,255,.06);color:var(--s)}
+.cip.ok{color:var(--ok)}
+.izgara2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.kisa{background:var(--k);border:1px solid var(--c);border-radius:18px;padding:14px;text-align:left;color:var(--y);font:inherit}
+.kisa b{display:block;margin-top:10px;font-size:14px}.kisa small{color:var(--s);font-size:12px}
+/* editör */
+.segment{display:flex;background:var(--k);border:1px solid var(--c);border-radius:14px;padding:4px;margin-bottom:12px}
+.segment button{flex:1;border:0;background:none;color:var(--s);padding:10px;border-radius:10px;font:600 14px system-ui}
+.segment button.sec{background:var(--k2);color:var(--y)}
+.paleti{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}
+.paleti button{flex:none;border:2px solid transparent;background:var(--k);border-radius:14px;padding:8px 10px 6px;color:var(--s);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.paleti button.sec{border-color:var(--v);color:var(--y)}
+.paleti canvas{width:28px;height:28px;image-rendering:pixelated}
+.harita{width:100%;height:34px;display:block;image-rendering:pixelated;border-radius:8px;background:#000;touch-action:none;margin-bottom:8px}
+.alan{position:relative;border-radius:14px;overflow:hidden;background:#05060a;border:1px solid var(--c)}
+.alan canvas{display:block;touch-action:none;image-rendering:pixelated}
+.arac{display:flex;gap:8px;margin-top:10px}
+.arac button{flex:1}
+/* oynatıcı */
+.cihaz{margin:6px auto 0;max-width:360px;background:linear-gradient(160deg,#2a2d38,#17191f);border-radius:38px;padding:22px 22px 28px;box-shadow:0 20px 50px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08)}
+.ekranCerceve{background:#000;border-radius:14px;padding:10px;box-shadow:inset 0 0 0 2px #0d0e12}
+#ekran{width:100%;display:block;image-rendering:pixelated;aspect-ratio:2/1;filter:drop-shadow(0 0 6px rgba(150,190,255,.35))}
+.tuslar{display:flex;justify-content:space-between;align-items:center;margin-top:24px;padding:0 6px}
+.tus{width:86px;height:86px;border-radius:50%;border:0;background:radial-gradient(circle at 35% 30%,#3a3f4d,#1b1d24);box-shadow:0 6px 0 #0c0d10,0 10px 18px rgba(0,0,0,.5);color:var(--s);font:700 13px system-ui;user-select:none;-webkit-user-select:none;touch-action:none}
+.tus.bas{transform:translateY(5px);box-shadow:0 1px 0 #0c0d10;color:var(--y)}
+.tus.kucuk{width:60px;height:60px;font-size:11px}
+.oyunSec{display:flex;gap:8px;margin-top:16px}.oyunSec button{flex:1;justify-content:center}
+/* sekme çubuğu */
+nav{position:fixed;left:12px;right:12px;bottom:12px;display:flex;background:rgba(21,23,29,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--c);border-radius:22px;padding:6px;z-index:5}
+nav button{flex:1;border:0;background:none;color:var(--s);display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0;border-radius:16px;font:600 11px system-ui}
+nav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+nav button.sec{color:var(--y);background:var(--k2)}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:var(--y);color:var(--z);padding:10px 16px;border-radius:12px;font-weight:600;font-size:13px;opacity:0;transition:.25s;pointer-events:none;z-index:9;max-width:90%;text-align:center}
+.toast.goster{opacity:1;transform:translateX(-50%)}
+</style></head><body>
+<div class="ust"><h1 id="baslik">Kübit</h1><span class="rozet" id="surum">…</span></div>
+<main>
+<!-- ANA -->
+<section id="ana" class="sec">
+  <div class="kart hero">
+    <canvas id="yuz" width="32" height="24"></canvas>
+    <div>
+      <h2><span class="nokta" id="bagNokta"></span><span id="bagYazi">…</span></h2>
+      <p id="bagAlt"></p>
+      <div class="cipler"><span class="cip" id="cipPc">PC</span><span class="cip" id="cipYazici">Yazıcı</span><span class="cip" id="cipUnutma">Unutma uyarısı</span></div>
+    </div>
+  </div>
+  <div class="izgara2">
+    <button class="kisa" data-git="editor" data-tur="m"><div class="ikon"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V9h4v11M14 20v-7h4v7M9 5l3-2 3 2"/></svg></div><b>Süper Kübit</b><small>Bölüm yap</small></button>
+    <button class="kisa" data-git="editor" data-tur="g"><div class="ikon"><svg viewBox="0 0 24 24"><path d="M3 19l5-8 4 6 3-4 6 6zM3 19h18"/></svg></div><b>Geometry</b><small>Bölüm yap</small></button>
+    <button class="kisa" data-git="oyna"><div class="ikon"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="4"/><path d="M8 10v4M6 12h4M15 11h.01M18 13h.01"/></svg></div><b>Oyna</b><small>Telefonda Kübit</small></button>
+    <button class="kisa" data-git="ayar"><div class="ikon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6a7 7 0 0 0 0 2.4l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2z"/></svg></div><b>Ayarlar</b><small>PC · yazıcı · güncelleme</small></button>
+  </div>
+</section>
+
+<!-- EDİTÖR -->
+<section id="editor">
+  <div class="segment"><button data-tur="m" class="sec">Süper Kübit</button><button data-tur="g">Geometry</button></div>
+  <div class="paleti" id="palet"></div>
+  <canvas class="harita" id="harita"></canvas>
+  <div class="alan" id="alan"><canvas id="tuval"></canvas></div>
+  <div class="not" id="edNot">Parmağınla boya · üstteki şeritten kaydır</div>
+  <div class="arac">
+    <button class="btn" id="gonder"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg>Kübit'e gönder</button>
+    <button class="btn g" id="dene">▶ Dene</button>
+  </div>
+  <div class="arac"><button class="btn g" id="geriAl">↶ Geri al</button><button class="btn g" id="temizle">Temizle</button></div>
+</section>
+
+<!-- OYNA -->
+<section id="oyna">
+  <div class="cihaz">
+    <div class="ekranCerceve"><canvas id="ekran" width="128" height="64"></canvas></div>
+    <div class="tuslar"><button class="tus" id="tSol">SOL</button><button class="tus kucuk" id="tIki">İKİSİ</button><button class="tus" id="tSag">SAĞ</button></div>
+  </div>
+  <div class="oyunSec"><button class="btn g" id="oMario">Süper Kübit özel</button><button class="btn g" id="oGd">Geometry özel</button></div>
+  <div class="not" style="text-align:center">Kübit'in gerçek yazılımı telefonda çalışır. Sağ: zıpla/ilerle · Sol: diğer tuş</div>
+</section>
+
+<!-- AYARLAR -->
+<section id="ayar">
+  <div class="kart">
+    <div class="satir"><div class="ikon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></div>
+      <div><h2>Bilgisayar</h2><p id="pcDurum"></p></div></div>
+    <button class="btn tam" id="pcEsle">Bilgisayarı eşle</button>
+    <div class="not" id="pcSonuc">PC'de bir pencere çıkar, "Evet" de. Aynı Wi-Fi'da olmalısınız.</div>
+  </div>
+  <div class="kart">
+    <div class="satir"><div class="ikon"><svg viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7"/></svg></div>
+      <div><h2>Bambu 3B yazıcı</h2><p id="yaziciDurum"></p></div></div>
+    <button class="btn tam g" id="yaziciBul">Yazıcıyı bul</button>
+    <div class="not" id="yaziciSonuc"></div>
+    <label>Erişim kodu · yazıcı ekranı › Ayarlar › Ağ</label><input type="password" id="bambu_kod" autocomplete="off" placeholder="8 haneli kod">
+    <details><summary>Elle gir</summary>
+      <label>IP adresi</label><input type="text" id="bambu_ip" placeholder="192.168.1.50">
+      <label>Seri numarası</label><input type="text" id="bambu_seri">
+    </details>
+  </div>
+  <div class="kart">
+    <div class="satir"><div class="ikon"><svg viewBox="0 0 24 24"><path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M2 9a15 15 0 0 1 20 0"/><circle cx="12" cy="19.5" r="1"/></svg></div>
+      <div><h2>Kübit'in Wi-Fi'ı</h2><p>Güncelleme ve tarayıcı için. 2,4 GHz ağ olmalı.</p></div></div>
+    <label>Ağ adı</label><input type="text" id="wifiAd" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <label>Şifre</label><input type="password" id="wifiSifre" autocomplete="off">
+    <button class="btn tam" id="wifiGonder">Kübit'e gönder</button>
+    <div class="not" id="wifiSonuc">Şifre Bluetooth ile bir kez gider, telefonda saklanmaz.</div>
+  </div>
+  <div class="kart">
+    <div class="satir"><div class="ikon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+      <div style="flex:1"><h2>"Kübit'i unuttun mu?"</h2><p>Bağlantı beklenmedik koparsa 25 sn sonra uyarır</p></div>
+      <label class="anahtar"><input type="checkbox" id="unutma"><span></span></label></div>
+  </div>
+  <div class="kart">
+    <div class="satir"><div class="ikon"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5"/></svg></div>
+      <div><h2>Uygulama güncellemesi</h2><p id="surumYazi"></p></div></div>
+    <button class="btn tam g" id="guncelle">Güncellemeleri denetle</button>
+    <div class="not" id="guncelSonuc"></div>
+  </div>
+</section>
+</main>
+
+<nav>
+  <button data-s="ana" class="sec"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Ana</button>
+  <button data-s="editor"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Editör</button>
+  <button data-s="oyna"><svg viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4"/></svg>Oyna</button>
+  <button data-s="ayar"><svg viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>Ayarlar</button>
+</nav>
+<div class="toast" id="toast"></div>
+
+<script src="motor.js"></script>
+<script src="wasm.js"></script>
+<script>
+const $ = id => document.getElementById(id), K = window.Kubit;
+const toast = m => { const t = $('toast'); t.textContent = m; t.classList.add('goster'); clearTimeout(toast.z); toast.z = setTimeout(() => t.classList.remove('goster'), 2600); };
+const BASLIK = { ana: 'Kübit', editor: 'Bölüm editörü', oyna: 'Oyna', ayar: 'Ayarlar' };
+function sekme(s) {
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('sec', b.dataset.s === s));
+  document.querySelectorAll('section').forEach(x => x.classList.toggle('sec', x.id === s));
+  $('baslik').textContent = BASLIK[s]; scrollTo(0, 0);
+  if (s === 'editor') cizHepsi();
+}
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => sekme(b.dataset.s));
+document.querySelectorAll('[data-git]').forEach(b => b.onclick = () => { if (b.dataset.tur) turSec(b.dataset.tur); sekme(b.dataset.git); });
+
+// ---------------------------------------------------------------- ayarlar ve durum
+let A = JSON.parse(K.ayarlar());
+$('surum').textContent = 'v' + K.surum(); $('surumYazi').textContent = 'Yüklü sürüm ' + K.surum();
+['bambu_ip', 'bambu_seri', 'bambu_kod'].forEach(k => $(k).value = A[k] || '');
+$('unutma').checked = A.unutma !== false;
+function kaydet() { const y = { unutma: $('unutma').checked }; ['bambu_ip', 'bambu_seri', 'bambu_kod'].forEach(k => y[k] = $(k).value.trim()); K.ayarKaydet(JSON.stringify(y)); A = JSON.parse(K.ayarlar()); ozet(); }
+['bambu_ip', 'bambu_seri', 'bambu_kod'].forEach(k => $(k).addEventListener('change', () => { kaydet(); toast('Kaydedildi'); }));
+$('unutma').onchange = () => { kaydet(); toast($('unutma').checked ? 'Unutma uyarısı açık' : 'Unutma uyarısı kapalı'); };
+function ozet() {
+  const d = JSON.parse(K.durum());
+  $('bagNokta').className = 'nokta' + (d.bagli ? ' ok' : '');
+  $('bagYazi').textContent = !d.eslendi ? 'Eşlenmemiş' : d.bagli ? 'Kübit bağlı' : 'Bağlı değil';
+  $('bagAlt').textContent = !d.eslendi ? 'Önce Kübik uygulamasından eşle' : !d.servis ? 'Kübit servisi kapalı' : d.bagli ? 'Bluetooth ile bağlı' : 'Kübit uykuda ya da uzakta';
+  const cip = (id, ok, yazi) => { $(id).className = 'cip' + (ok ? ' ok' : ''); $(id).textContent = (ok ? '✓ ' : '') + yazi; };
+  cip('cipPc', A.pc_pin, A.pc_pin ? (A.pc_ad || 'PC') : 'PC eşli değil');
+  cip('cipYazici', A.bambu_seri && A.bambu_kod, A.bambu_seri ? (A.bambu_ad || 'Yazıcı') : 'Yazıcı yok');
+  cip('cipUnutma', A.unutma !== false, 'Unutma uyarısı');
+  $('pcDurum').textContent = A.pc_pin ? 'Eşli: ' + (A.pc_ad || 'bilgisayar') : 'Henüz eşlenmedi';
+  $('yaziciDurum').textContent = A.bambu_seri ? (A.bambu_ad || A.bambu_seri) + ' · ' + A.bambu_ip + (A.bambu_kod ? '' : ' · kod eksik') : 'Henüz yazıcı yok';
+  yuzCiz(d.bagli);
+}
+setInterval(ozet, 3000);
+$('pcEsle').onclick = () => { $('pcSonuc').textContent = 'Bilgisayar aranıyor… PC\'de çıkan pencereye "Evet" de'; K.pcEsle(); };
+window.pcSonuc = s => { $('pcSonuc').textContent = s; A = JSON.parse(K.ayarlar()); ozet(); };
+$('yaziciBul').onclick = () => { $('yaziciSonuc').textContent = 'Ağ dinleniyor (12 sn kadar)… yazıcı açık olsun'; K.yaziciBul(); };
+window.yaziciSonuc = s => {
+  if (!s) { $('yaziciSonuc').textContent = 'Bulunamadı. Yazıcı açık mı, aynı Wi-Fi mı? "Elle gir"i de deneyebilirsin.'; return; }
+  const y = JSON.parse(s); $('bambu_ip').value = y.ip; $('bambu_seri').value = y.seri; kaydet();
+  $('yaziciSonuc').textContent = 'Bulundu ✓ ' + (y.ad || y.seri) + '. Şimdi erişim kodunu yaz.'; $('bambu_kod').focus();
+};
+$('wifiAd').value = K.telefonWifi ? K.telefonWifi() : '';
+$('wifiGonder').onclick = () => { $('wifiSonuc').textContent = K.wifiGonder($('wifiAd').value, $('wifiSifre').value); $('wifiSifre').value = ''; };
+$('guncelle').onclick = () => { $('guncelSonuc').textContent = 'Denetleniyor…'; K.guncelle(); };
+window.guncelSonuc = s => $('guncelSonuc').textContent = s;
+
+// küçük Kübit yüzü (bağlıyken gülümser, değilken uyur)
+const yuz = $('yuz').getContext('2d');
+function yuzCiz(mutlu) {
+  yuz.clearRect(0, 0, 32, 24); yuz.fillStyle = '#cfe0ff';
+  const r = (x, y, w, h) => yuz.fillRect(x, y, w, h);
+  r(4, 2, 24, 1); r(4, 21, 24, 1); r(3, 3, 1, 18); r(28, 3, 1, 18);           // kafa
+  const kirp = mutlu && Date.now() % 4000 < 200;
+  if (mutlu && !kirp) { r(10, 8, 3, 4); r(19, 8, 3, 4); } else { r(9, 10, 5, 1); r(18, 10, 5, 1); }
+  if (mutlu) { r(12, 15, 1, 1); r(13, 16, 6, 1); r(19, 15, 1, 1); } else { r(14, 16, 4, 1); r(29, 0, 3, 1); r(30, 1, 1, 1); r(29, 2, 3, 1); }   // uyurken "z"
+}
+setInterval(() => yuzCiz(JSON.parse(K.durum()).bagli), 400);
+ozet();
+
+// ---------------------------------------------------------------- editör (karolar Kübit'teki seviye.h ile aynı)
+const KARO = {
+  m: { k: '.#b?McgPF', ad: ['Silgi', 'Zemin', 'Tuğla', 'Soru', 'Mantar', 'Para', 'Düşman', 'Boru', 'Bayrak'], sat: 8, sut: 96 },
+  g: { k: '.^#HpoOxE', ad: ['Silgi', 'Diken', 'Blok', 'Çift blok', 'Zıpla pedi', 'Alçak küre', 'Yüksek küre', 'Diken+küre', 'Bitiş'], sat: 1, sut: 160 },
+};
+// 8x8 piksel çizimler (1: açık renk, 2: koyu renk)
+const DESEN = {
+  '#': ['22222222', '21111112', '21211212', '21111112', '21121112', '21111212', '21111112', '22222222'],
+  'b': ['11111111', '21112111', '21112111', '22222222', '11211121', '11211121', '11211121', '22222222'],
+  '?': ['22222222', '21111112', '21122112', '21111212', '21112112', '21111112', '21112112', '22222222'],
+  'M': ['00111100', '01211210', '11111111', '12111121', '11111111', '00222200', '00211200', '00222200'],
+  'c': ['00011000', '00122100', '01211210', '01211210', '01211210', '01211210', '00122100', '00011000'],
+  'g': ['00111100', '01111110', '11211211', '11111111', '01222210', '00111100', '01100110', '11000011'],
+  'P': ['11111111', '12222221', '11111111', '01222210', '01222210', '01222210', '01222210', '01222210'],
+  'F': ['01111000', '01111110', '01111100', '01100000', '01000000', '01000000', '01000000', '22200000'],
+  '^': ['00000000', '00011000', '00011000', '00111100', '00111100', '01122110', '01122110', '11111111'],
+  'H': ['11111111', '12222221', '12111121', '11111111', '11111111', '12222221', '12111121', '11111111'],
+  'p': ['00000000', '00000000', '00000000', '00000000', '00000000', '00000000', '01111110', '12222221'],
+  'o': ['00000000', '00000000', '00000000', '00111100', '01122110', '01122110', '00111100', '00000000'],
+  'O': ['00111100', '01122110', '01122110', '00111100', '00000000', '00000000', '00000000', '00000000'],
+  'x': ['00111100', '01122110', '00111100', '00000000', '00011000', '00111100', '01122110', '11111111'],
+  'E': ['12121212', '21212121', '12121212', '21212121', '12121212', '21212121', '12121212', '21212121'],
+};
+const RENK = { '#': ['#c58b52', '#6b4423'], 'b': ['#e07a4f', '#7a2f17'], '?': ['#ffd24a', '#a8661b'], 'M': ['#ff5d6c', '#fff'], 'c': ['#ffd84a', '#b8860b'], 'g': ['#9a6bff', '#2b1460'],
+  'P': ['#4fd67a', '#1d7a3c'], 'F': ['#ffffff', '#8d93a5'], '^': ['#ff6b6b', '#8a1f1f'], 'H': ['#7c9bff', '#2c3f9a'], 'p': ['#ffd84a', '#a8661b'], 'o': ['#3ad6c0', '#0f6b5f'],
+  'O': ['#3ad6c0', '#0f6b5f'], 'x': ['#ff9a3a', '#7a3a00'], 'E': ['#ffffff', '#222'] };
+function karoCiz(c, ch, x, y, s) {                     // s: karo boyu (8'in katı)
+  const d = DESEN[ch]; if (!d) return; const p = s / 8, r = RENK[ch];
+  for (let j = 0; j < 8; j++) for (let i = 0; i < 8; i++) { const v = d[j][i]; if (v === '0') continue; c.fillStyle = r[v === '1' ? 0 : 1]; c.fillRect(x + i * p, y + j * p, p, p); }
+}
+const veri = {}, secili = { m: 1, g: 1 }, gecmis = { m: [], g: [] };
+let tur = 'm', kay = 0;                                 // kay: görünen ilk sütun
+function varsayilan(t) {
+  if (t === 'm') { let s = ''; for (let r = 0; r < 8; r++) for (let c = 0; c < 96; c++) s += r >= 6 ? '#' : (r === 5 && c === 92 ? 'F' : '.'); return s; }
+  return '.'.repeat(159) + 'E';
+}
+['m', 'g'].forEach(t => { const d = KARO[t], n = d.sat * d.sut; let v = K.seviye(t); if (!v || (t === 'm' && v.length < n)) v = varsayilan(t); veri[t] = v.padEnd(n, '.').slice(0, n).split(''); });
+const tuval = $('tuval'), tc = tuval.getContext('2d'), harita = $('harita'), hc = harita.getContext('2d');
+const HUCRE = () => KARO[tur].sat === 1 ? 44 : Math.floor(($('alan').clientWidth || 340) / 12);
+const gorunen = () => Math.floor(($('alan').clientWidth || 340) / HUCRE());
+function turSec(t) {
+  tur = t; kay = 0;
+  document.querySelectorAll('.segment button').forEach(b => b.classList.toggle('sec', b.dataset.tur === t));
+  const p = $('palet'); p.innerHTML = '';
+  KARO[t].k.split('').forEach((ch, i) => {
+    const b = document.createElement('button'), c = document.createElement('canvas'); c.width = c.height = 16;
+    const x = c.getContext('2d'); if (ch === '.') { x.strokeStyle = '#8d93a5'; x.lineWidth = 2; x.strokeRect(3, 3, 10, 10); x.beginPath(); x.moveTo(3, 13); x.lineTo(13, 3); x.stroke(); } else karoCiz(x, ch, 0, 0, 16);
+    b.append(c, KARO[t].ad[i]); b.onclick = () => { secili[t] = i; [...p.children].forEach((y, j) => y.classList.toggle('sec', j === i)); };
+    if (i === secili[t]) b.classList.add('sec'); p.appendChild(b);
+  });
+  cizHepsi();
+}
+document.querySelectorAll('.segment button').forEach(b => b.onclick = () => turSec(b.dataset.tur));
+function cizHepsi() {
+  const d = KARO[tur], h = HUCRE(), w = $('alan').clientWidth || 340, dpr = devicePixelRatio || 1;
+  tuval.width = w * dpr; tuval.height = d.sat * h * dpr; tuval.style.width = w + 'px'; tuval.style.height = d.sat * h + 'px';
+  tc.setTransform(dpr, 0, 0, dpr, 0, 0); tc.imageSmoothingEnabled = false;
+  tc.fillStyle = tur === 'm' ? '#101a33' : '#0d0f18'; tc.fillRect(0, 0, w, d.sat * h);
+  const g = gorunen() + 1;
+  for (let r = 0; r < d.sat; r++) for (let c = 0; c < g; c++) {
+    const sc = kay + c; if (sc >= d.sut) break;
+    const x = c * h, y = r * h, ch = veri[tur][r * d.sut + sc];
+    tc.strokeStyle = 'rgba(255,255,255,.05)'; tc.strokeRect(x + .5, y + .5, h - 1, h - 1);
+    if (ch !== '.') karoCiz(tc, ch, x, y, h);
+  }
+  if (tur === 'g') { tc.fillStyle = 'rgba(255,255,255,.25)'; tc.font = '10px system-ui'; for (let c = 0; c < g; c++) if ((kay + c) % 10 === 0) tc.fillText(kay + c, c * h + 3, 11); }
+  // mini harita: bütün bölüm, görünen kısım çerçeveli
+  const hw = harita.clientWidth || 340; harita.width = hw * dpr; harita.height = 34 * dpr; hc.setTransform(dpr, 0, 0, dpr, 0, 0);
+  hc.fillStyle = '#05060a'; hc.fillRect(0, 0, hw, 34);
+  const pw = hw / d.sut, ph = 34 / d.sat;
+  for (let r = 0; r < d.sat; r++) for (let c = 0; c < d.sut; c++) { const ch = veri[tur][r * d.sut + c]; if (ch !== '.') { hc.fillStyle = RENK[ch][0]; hc.fillRect(c * pw, r * ph, Math.ceil(pw), Math.ceil(ph)); } }
+  hc.strokeStyle = '#7c9bff'; hc.lineWidth = 2; hc.strokeRect(kay * pw + 1, 1, gorunen() * pw - 2, 32);
+}
+function haritaKaydir(e) { const r = harita.getBoundingClientRect(), d = KARO[tur]; kay = Math.max(0, Math.min(d.sut - gorunen(), Math.round((e.clientX - r.left) / r.width * d.sut - gorunen() / 2))); cizHepsi(); }
+harita.onpointerdown = e => { harita.setPointerCapture(e.pointerId); haritaKaydir(e); };
+harita.onpointermove = e => { if (e.buttons) haritaKaydir(e); };
+let boyuyor = false;
+function boya(e) {
+  const r = tuval.getBoundingClientRect(), h = HUCRE(), d = KARO[tur];
+  const c = kay + Math.floor((e.clientX - r.left) / h), s = Math.floor((e.clientY - r.top) / h);
+  if (c < 0 || c >= d.sut || s < 0 || s >= d.sat) return;
+  const i = s * d.sut + c, yeni = d.k[secili[tur]];
+  if (veri[tur][i] === yeni) return;
+  veri[tur][i] = yeni; cizHepsi();
+}
+tuval.onpointerdown = e => { tuval.setPointerCapture(e.pointerId); gecmis[tur].push(veri[tur].join('')); if (gecmis[tur].length > 40) gecmis[tur].shift(); boyuyor = true; boya(e); };
+tuval.onpointermove = e => { if (boyuyor) boya(e); };
+tuval.onpointerup = tuval.onpointercancel = () => { if (boyuyor) K.seviyeSakla(tur, veri[tur].join('')); boyuyor = false; };
+$('geriAl').onclick = () => { const g = gecmis[tur].pop(); if (!g) return toast('Geri alınacak bir şey yok'); veri[tur] = g.split(''); K.seviyeSakla(tur, g); cizHepsi(); };
+$('temizle').onclick = () => { if (!confirm('Bölüm temizlensin mi?')) return; gecmis[tur].push(veri[tur].join('')); veri[tur] = varsayilan(tur).split(''); K.seviyeSakla(tur, veri[tur].join('')); cizHepsi(); };
+$('gonder').onclick = () => toast(K.seviyeGonder(tur, veri[tur].join('')));
+$('dene').onclick = () => { K.seviyeSakla(tur, veri[tur].join('')); sekme('oyna'); oyna(tur); };
+addEventListener('resize', () => cizHepsi());
+turSec('m');
+
+// ---------------------------------------------------------------- telefondaki oynatıcı: Kübit'in wasm'ı (motor.js), kayıtlar bellekte
+const ekran = $('ekran').getContext('2d'), resim = ekran.createImageData(128, 64);
+let m = null, kare = null, bas0 = 0, calisiyor = false;
+const depo = new Map(), enc = new TextEncoder();
+function goruntu(px) { for (let i = 0; i < 8192; i++) { const o = i * 4; if (px[i]) { resim.data[o] = 207; resim.data[o + 1] = 224; resim.data[o + 2] = 255; } else resim.data[o] = resim.data[o + 1] = resim.data[o + 2] = 0; resim.data[o + 3] = 255; } ekran.putImageData(resim, 0, 0); }
+async function oyna(t) {
+  calisiyor = false;
+  ['m', 'g'].forEach(x => depo.set('kubit.sv_' + x, enc.encode(veri[x].join(''))));
+  if (!m) { const b = atob(KUBIT_WASM), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i);
+    m = await kubitMotor(u, { kare: px => kare = px, parlak() {}, bildir() {}, log() {}, depo: { get: k => depo.get(k), set: (k, v) => depo.set(k, v), del: k => depo.delete(k) } }); }
+  try { await m.ac(false); if (t) m.ozel(t); } catch (e) { toast('Oynatıcı hatası: ' + e.message); return; }
+  bas0 = performance.now() - m.vt(); calisiyor = true;
+}
+function dongu(simdi) {
+  if (calisiyor) {
+    const hedef = simdi - bas0; let n = 0;
+    try { while (m.vt() < hedef && n++ < 12) { const o = m.loop(); if (o) { calisiyor = false; if (o === 2) setTimeout(() => oyna(), 300); break; } } } catch (e) { calisiyor = false; }
+    if (m.vt() < hedef - 400) bas0 = simdi - m.vt();
+    if (kare) { goruntu(kare); kare = null; }
+  }
+  requestAnimationFrame(dongu);
+}
+requestAnimationFrame(dongu);
+const tusBagla = (el, pinler) => {
+  const b = v => e => { e.preventDefault(); el.classList.toggle('bas', v); if (v && navigator.vibrate) navigator.vibrate(8); if (m) pinler.forEach(p => m.tus(p, v)); };
+  el.addEventListener('pointerdown', b(true)); ['pointerup', 'pointercancel', 'pointerleave'].forEach(t => el.addEventListener(t, b(false)));
+};
+tusBagla($('tSol'), [26]); tusBagla($('tSag'), [25]); tusBagla($('tIki'), [25, 26]);
+$('oMario').onclick = () => oyna('m'); $('oGd').onclick = () => oyna('g');
+document.querySelector('nav button[data-s="oyna"]').addEventListener('click', () => { if (!m) oyna(); });
+</script>
+</body></html>
