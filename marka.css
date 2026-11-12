@@ -86,6 +86,68 @@ html[data-brand=klik][data-plan=max] .brand{background:var(--klik-parlak);-webki
 html[data-brand=klik][data-plan=max] .streaming .message-text::after{color:#8b7bff}
 html[data-brand=klik][data-plan=max] ::selection{background:#6b5cff;color:#fff}
 
+/* --- maskot yok (Klik). Eski Kübik arayüzünde Kübit yerinde kalır. --- */
+html[data-brand=klik] :is(.maskot,.peek){display:none!important}
+html[data-brand=klik] .support-button{background:#0e0e11 url(logo/klik.svg) center/62% no-repeat!important;border:1px solid var(--line)!important;
+  box-shadow:0 10px 30px rgba(0,0,0,.6);transition:transform .18s,border-color .18s}
+html[data-brand=klik] .support-button:hover{transform:translateY(-2px);border-color:#3a3a42!important}
+html[data-brand=klik] .tour-bubble{grid-template-columns:1fr!important}
+
+/* --- premium dokunuşlar --- */
+html[data-brand=klik] .chat-panel{background:radial-gradient(70% 45% at 50% -5%,rgba(255,255,255,.06),transparent 70%),#000}
+html[data-brand=klik] .welcome h1{font:600 clamp(36px,4.2vw,58px)/1.05 'Space Grotesk',Inter,sans-serif;letter-spacing:-.045em;text-shadow:none;
+  background:linear-gradient(180deg,#fff 25%,#86868f);-webkit-background-clip:text;background-clip:text;color:transparent}
+html[data-brand=klik] .welcome p{color:#8f8f98}
+html[data-brand=klik] .suggestions button{background:linear-gradient(180deg,#111114,#0b0b0d)!important;border:1px solid #1f1f25!important;
+  border-radius:16px;transition:transform .18s,border-color .18s,background .18s}
+html[data-brand=klik] .suggestions button:hover{transform:translateY(-2px);border-color:#3b3b43!important;background:#141418!important}
+html[data-brand=klik] .suggestions span{color:#ececf0!important;font-size:13px;font-weight:600}
+html[data-brand=klik] .suggestions small{color:#7e7e88!important;font-size:11.5px}
+html[data-brand=klik] .suggestions button:after{color:#5a5a63}
+html[data-brand=klik] .composer textarea{background:transparent!important;border:0!important;box-shadow:none!important;font-size:15px}
+html[data-brand=klik] .composer{border-radius:22px}
+html[data-brand=klik] .send-button{background:#f1f1f3!important;color:#000!important;border:0!important;border-radius:14px;
+  transition:transform .15s,box-shadow .15s}
+html[data-brand=klik] .send-button:hover{transform:scale(1.06);box-shadow:0 0 0 5px rgba(255,255,255,.08)}
+html[data-brand=klik][data-plan=max] .send-button{background:var(--klik-parlak)!important;color:#fff!important}
+html[data-brand=klik] .sidebar{color:#d4d4da}
+html[data-brand=klik] .sidebar :is(small,.fine){color:#73737c!important}
+html[data-brand=klik] .sidebar :is(.memory-button,.profile-button) span{color:#e8e8ec!important}
+html[data-brand=klik] :is(#modeTitle,.topbar){color:var(--ink)}
+html[data-brand=klik] .message-text{line-height:1.75}
+html[data-brand=klik] :is(button,a,.suggestions button){-webkit-tap-highlight-color:transparent}
+
+html[data-brand=klik] .composer-controls>label.composer-tool{background:none!important;border:0!important;padding:0!important}
+
+/* --- telefon --- */
+@media (max-width:760px){
+  html[data-brand=klik] .topbar{gap:8px;padding:0 12px}
+  html[data-brand=klik] :is(#modelStatus,.usage-wrap){display:none!important}
+  html[data-brand=klik] #modeTitle{font-size:15px;white-space:nowrap}
+  html[data-brand=klik] .model-picker select{font-size:13px;padding:7px 28px 7px 10px}
+  html[data-brand=klik] .welcome h1{font-size:38px}
+  html[data-brand=klik] .suggestions{gap:8px}
+  html[data-brand=klik] .suggestions button{min-height:76px;padding:13px!important;border-radius:14px}
+  html[data-brand=klik] .suggestions span{font-size:12.5px;max-width:none}
+  html[data-brand=klik] .suggestions small{font-size:11px}
+  html[data-brand=klik] .composer{border-radius:20px;padding:10px 12px!important}
+  /* tek satır: Düşünme · Web · ⚙ · gönder (eskiden 3 satıra taşıyor, gönder düğmesi eziliyordu) */
+  html[data-brand=klik] .composer-controls{display:flex!important;flex-wrap:nowrap!important;align-items:center;gap:6px;overflow:visible!important;
+    height:auto!important;margin-top:6px}
+  html[data-brand=klik] .composer-controls>label{flex:1 1 0;min-width:0;width:auto!important;margin:0!important}
+  html[data-brand=klik] .composer-controls>label>span{display:none}
+  html[data-brand=klik] .composer-controls select{font-size:12.5px!important;padding:9px 24px 9px 10px!important;width:100%!important;
+    min-height:38px;border-radius:12px!important}
+  html[data-brand=klik] .composer-controls .settings-button{flex:0 0 38px;width:38px!important;height:38px;padding:0!important;font-size:0!important;
+    border-radius:12px!important;display:grid;place-items:center}
+  html[data-brand=klik] .composer-controls .settings-button::before{font-size:16px;margin:0!important}
+  html[data-brand=klik] .send-button{flex:0 0 40px;width:40px!important;height:40px!important;margin-left:2px}
+  html[data-brand=klik] .support-button{position:fixed!important;top:13px!important;right:12px!important;bottom:auto!important;
+    width:38px!important;height:38px!important;border-radius:12px!important;z-index:30}
+  html[data-brand=klik] .auth-story{padding:22px 22px 0!important;background:#000!important}
+  html[data-brand=klik] .auth-form-area{padding:28px 22px 40px!important}
+}
+
 /* --- giriş ekranı sanatı: ufka kayan ızgara + ışık halkası + süzülen imleç + tık dalgaları --- */
 html[data-brand=klik] .auth-art{height:230px;margin:34px -15px 0;perspective:620px;overflow:visible;position:relative}
 html[data-brand=klik] .art-grid{inset:auto 0 0 0;height:170px;background:none;transform:rotateX(58deg);transform-origin:50% 100%;

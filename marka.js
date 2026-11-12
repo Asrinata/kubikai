@@ -30,9 +30,15 @@
     klikUygulandi = true;
     document.title = cevir(document.title);
     agacDegistir(document.body);
-    new MutationObserver(kayitlar => kayitlar.forEach(k => k.addedNodes.forEach(n => {
-      if (n.nodeType === 3) metinDegistir(n); else if (n.nodeType === 1) agacDegistir(n);
-    }))).observe(document.body, {childList: true, subtree: true});
+    new MutationObserver(kayitlar => kayitlar.forEach(k => {
+      if (k.type === 'attributes') {          // app.js dil değişince placeholder/title'ı sonradan yazıyor
+        const v = k.target.getAttribute(k.attributeName);
+        if (v && /Kübik|KÜBİK/.test(v)) k.target.setAttribute(k.attributeName, cevir(v));
+        return;
+      }
+      k.addedNodes.forEach(n => { if (n.nodeType === 3) metinDegistir(n); else if (n.nodeType === 1) agacDegistir(n); });
+    })).observe(document.body, {childList: true, subtree: true, attributes: true,
+                                attributeFilter: ['placeholder', 'title', 'aria-label']});
     const ikon = document.querySelector('link[rel="icon"]') || Object.assign(document.createElement('link'), {rel: 'icon'});
     ikon.href = new URL('logo/klik.svg', betik).href;
     document.head.append(ikon);
