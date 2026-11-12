@@ -1,15 +1,121 @@
-/* Marka: Geliştirici sekmesinden kubik (eski) <-> klik (yeni). Klik: siyah-gri imleç logosu; Max ve üstü planlarda parlayan renkli.
-   Yuvarlak logolar (klik-yuvarlak, klik-neon) nadir: yalnız giriş ekranı sanatı (Max) ve geliştirici önizlemesi. */
+/* ===================== Klik teması (varsayılan). Geliştirici sekmesinden "Kübik (eski)" seçilince hiçbiri uygulanmaz. =====================
+   Siyah tema + Space Grotesk. Logo: siyah-gri imleç. Max ve üstü planlarda her şey parlayan mor→mavi.
+   Yuvarlak / dönüşen logolar yalnız animasyonda (düşünüyor göstergesi, giriş ekranı Max). */
+@font-face{font-family:'Space Grotesk';src:url(font/SpaceGrotesk.ttf) format('truetype');font-weight:300 700;font-display:swap}
+
+html[data-brand=klik]{--paper:#000;--side:#08080a;--card:#111114;--ink:#f1f1f3;--muted:#8b8b94;--line:#232328;
+  --accent:#f1f1f3;--accent-dark:#fff;--green:#7fd1a0;--klik-cam:rgba(255,255,255,.04);--klik-parlak:linear-gradient(120deg,#c46bff,#6b5cff 50%,#18d2ff);
+  color-scheme:dark;background:#000}
+html[data-brand=klik] body{background:#000;color:var(--ink)}
+html[data-brand=klik] :is(body,button,input,select,textarea,h1,h2,h3,.brand){font-family:'Space Grotesk',Inter,'Segoe UI',Arial,sans-serif}
+html[data-brand=klik] :is(h1,h2,h3){letter-spacing:-.03em}
+html[data-brand=klik] ::selection{background:#f1f1f3;color:#000}
+html[data-brand=klik] ::-webkit-scrollbar{width:10px;height:10px}
+html[data-brand=klik] ::-webkit-scrollbar-thumb{background:#26262b;border-radius:10px;border:2px solid #000}
+html[data-brand=klik] ::-webkit-scrollbar-track{background:transparent}
+
+/* --- logo --- */
 html[data-brand=klik] .cube{background:url(logo/klik.svg) center/contain no-repeat!important;clip-path:none!important;
   width:26px;height:26px;border-radius:24%}
 html[data-brand=klik] .cube.large{width:46px;height:46px;background-image:url(logo/klik-parlak.svg)!important}
-html[data-brand=klik] .kup-balance .cube{width:16px;height:16px}
+html[data-brand=klik] .kup-balance .cube,html[data-brand=klik] .message-label .cube{width:16px;height:16px}
 html[data-brand=klik] .art-cube{background:url(logo/klik-parlak.svg) center/contain no-repeat;clip-path:none;width:92px;height:92px;
   left:calc(50% - 46px)}
 html[data-brand=klik] .art-cube i{display:none}
+html[data-brand=klik] .brand{color:var(--ink);font-weight:700;letter-spacing:-.04em}
+
+/* --- yüzeyler --- */
+html[data-brand=klik] :is(.sidebar,.admin-nav){background:#060607;border-color:var(--line)}
+html[data-brand=klik] :is(.workspace,.admin-main,.admin-layout,.chat,.messages,main){background:#000}
+html[data-brand=klik] :is(.topbar){background:rgba(0,0,0,.72);backdrop-filter:blur(14px);border-color:var(--line)}
+html[data-brand=klik] :is(.card,.admin-login,.connection-screen .auth-card,dialog,.usage-pop,.support-panel,.tour-bubble,
+  .profile-dialog,.memory-dialog,.cube-dialog,.code-panel,.notice,.secret-display,.extra-card,.shop-item,.achievement){
+  background:var(--card)!important;color:var(--ink);border:1px solid var(--line)!important;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+html[data-brand=klik] dialog::backdrop{background:rgba(0,0,0,.7);backdrop-filter:blur(6px)}
+html[data-brand=klik] .auth-story{background:radial-gradient(120% 80% at 20% 0%,#16161b 0,#050506 55%,#000 100%)!important;color:var(--ink)}
+html[data-brand=klik] .auth-story h1{background:linear-gradient(180deg,#fff 30%,#77777f);-webkit-background-clip:text;background-clip:text;color:transparent}
+html[data-brand=klik] .auth-form-area{background:#000}
+
+/* --- kontroller --- */
+html[data-brand=klik] .primary{background:#f1f1f3!important;color:#000!important;border:0}
+html[data-brand=klik] .primary:hover{background:#fff!important;box-shadow:0 0 0 4px rgba(255,255,255,.08)}
+html[data-brand=klik] :is(.secondary,.new-chat,.mode-select,.code-actions button,.composer-controls select,.plan-button,.settings-button,
+  .composer-tool,.icon-button,.segmented,.mode-switch,.work-tabs button){
+  background:#141418!important;color:var(--ink)!important;border:1px solid var(--line)!important}
+html[data-brand=klik] :is(.secondary,.new-chat,.code-actions button,.composer-tool,.icon-button,.plan-button):hover{background:#1c1c21!important;border-color:#34343b!important}
+html[data-brand=klik] .mode-switch button.selected{background:#f1f1f3!important;color:#000!important}
+html[data-brand=klik] .danger{background:#1e0f11!important;color:#ff8c8c!important;border:1px solid #3a1a1d!important}
+html[data-brand=klik] .badge{background:#111114!important;border:1px solid var(--line)!important;color:var(--muted)!important}
+html[data-brand=klik] :is(input,select,textarea){background:#0c0c0f!important;color:var(--ink)!important;border:1px solid var(--line)!important}
+html[data-brand=klik] :is(input,select,textarea):focus{border-color:#4a4a52!important;outline:none;box-shadow:0 0 0 3px rgba(255,255,255,.06)}
+html[data-brand=klik] ::placeholder{color:#5b5b64!important}
+html[data-brand=klik] :is(.text-button,.link-button,a){color:#d6d6db}
+html[data-brand=klik] :is(.muted,.fine,.eyebrow,.section-caption,.message-label){color:var(--muted)!important}
+html[data-brand=klik] progress{background:#1a1a1e}
+
+/* --- sohbet --- */
+html[data-brand=klik] :is(.message.user,.bubble.me){background:#17171b!important;color:var(--ink)!important;border:1px solid var(--line)}
+html[data-brand=klik] :is(.bubble.ai,.choice.picked){background:#111114!important;color:var(--ink)!important}
+html[data-brand=klik] .composer{background:#0c0c0f!important;border:1px solid var(--line)!important;box-shadow:0 0 0 1px rgba(255,255,255,.02),0 24px 60px rgba(0,0,0,.7)}
+html[data-brand=klik] .composer:focus-within{border-color:#3d3d44!important}
+html[data-brand=klik] :is(.conversation-search input,.conversation-entry:hover,.conversation-list button:hover){background:#121216!important}
+html[data-brand=klik] .conversation-list .conversation-entry b{background:#1c1c21!important;color:var(--ink)!important}
+html[data-brand=klik] :is(.message-actions .feedback.picked,.achievement.done){background:#1a1a1f!important}
+html[data-brand=klik] :is(pre,code){background:#0b0b0e!important;color:#e6e6ea;border-color:var(--line)}
+html[data-brand=klik] .avatar{background:#1a1a1f!important;color:var(--ink)}
+html[data-brand=klik] .toast{background:#f1f1f3;color:#000}
+html[data-brand=klik] .admin-nav button.active{background:#16161a!important;color:var(--ink)!important}
+html[data-brand=klik] table :is(th,td){border-color:var(--line)}
+
+/* --- düşünüyor: imleç daireye dönüşüp geri gelir (yuvarlak logo yalnız animasyonda) --- */
+html[data-brand=klik] .streaming .message-label .cube{background-image:url(logo/klik-dusun.svg)!important;border-radius:0;width:20px;height:20px}
+html[data-brand=klik] .job-status:not(:empty)::before{content:'';display:inline-block;width:18px;height:18px;margin-right:8px;vertical-align:-4px;
+  background:url(logo/klik-dusun.svg) center/contain no-repeat}
+html[data-brand=klik] .streaming .message-text::after{color:#f1f1f3}
+
+/* --- Max ve üstü: her şey parlayan renkli --- */
 html[data-brand=klik][data-plan=max] .cube,html[data-brand=klik][data-plan=max] .cube.large{background-image:url(logo/klik-max.svg)!important;
-  filter:drop-shadow(0 0 6px rgba(124,92,255,.45))}
+  filter:drop-shadow(0 0 6px rgba(124,92,255,.5))}
 html[data-brand=klik][data-plan=max] .art-cube{background-image:url(logo/klik-neon.svg)}
+html[data-brand=klik][data-plan=max] .streaming .message-label .cube{background-image:url(logo/klik-dusun-max.svg)!important;filter:none}
+html[data-brand=klik][data-plan=max] .job-status:not(:empty)::before{background-image:url(logo/klik-dusun-max.svg)}
+html[data-brand=klik][data-plan=max] .primary{background:var(--klik-parlak)!important;color:#fff!important;box-shadow:0 0 24px rgba(107,92,255,.35)}
+html[data-brand=klik][data-plan=max] .composer:focus-within{border-color:transparent!important;
+  box-shadow:0 0 0 1px #6b5cff,0 0 30px rgba(107,92,255,.25)!important}
+html[data-brand=klik][data-plan=max] .brand{background:var(--klik-parlak);-webkit-background-clip:text;background-clip:text;color:transparent}
+html[data-brand=klik][data-plan=max] .streaming .message-text::after{color:#8b7bff}
+html[data-brand=klik][data-plan=max] ::selection{background:#6b5cff;color:#fff}
+
+/* --- giriş ekranı sanatı: ufka kayan ızgara + ışık halkası + süzülen imleç + tık dalgaları --- */
+html[data-brand=klik] .auth-art{height:230px;margin:34px -15px 0;perspective:620px;overflow:visible;position:relative}
+html[data-brand=klik] .art-grid{inset:auto 0 0 0;height:170px;background:none;transform:rotateX(58deg);transform-origin:50% 100%;
+  mask-image:radial-gradient(85% 100% at 50% 100%,#000 35%,transparent 78%)}
+html[data-brand=klik] .art-grid::before{content:'';position:absolute;inset:-60% -30% 0;
+  background-image:linear-gradient(rgba(255,255,255,.14) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.14) 1px,transparent 1px);
+  background-size:42px 42px;animation:klik-izgara 7s linear infinite}
+html[data-brand=klik] .art-grid svg{display:none}
+@keyframes klik-izgara{to{transform:translateY(42px)}}
+html[data-brand=klik] .auth-art::before{content:'';position:absolute;left:calc(50% - 150px);bottom:-30px;width:300px;height:140px;
+  background:radial-gradient(50% 65% at 50% 100%,rgba(255,255,255,.17),transparent 70%);pointer-events:none}
+html[data-brand=klik] .art-cube{top:8px;width:96px;height:96px;filter:drop-shadow(0 18px 30px rgba(0,0,0,.85)) drop-shadow(0 0 18px rgba(255,255,255,.12));
+  animation:klik-suzul 5s ease-in-out infinite}
+@keyframes klik-suzul{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-12px) rotate(3deg)}}
+html[data-brand=klik] .art-cube::before,html[data-brand=klik] .art-cube::after{content:'';position:absolute;left:50%;top:50%;
+  width:120px;height:120px;margin:-60px 0 0 -60px;border:1.5px solid rgba(255,255,255,.35);border-radius:50%;
+  animation:klik-dalga 2.8s cubic-bezier(.2,.6,.3,1) infinite;pointer-events:none}
+html[data-brand=klik] .art-cube::after{animation-delay:1.4s}
+@keyframes klik-dalga{0%{transform:scale(.55);opacity:0}12%{opacity:.8}100%{transform:scale(1.5);opacity:0}}
+html[data-brand=klik] .art-cube:hover{animation-duration:2.2s}
+html[data-brand=klik] .auth-art>span{color:#6e6e77;letter-spacing:2px;z-index:1}
+html[data-brand=klik] .story-line{display:block;width:44px;height:2px;margin:26px 0;border:0;
+  background:linear-gradient(90deg,#fff,rgba(255,255,255,.1))}
+html[data-brand=klik][data-plan=max] .auth-art::before{background:radial-gradient(50% 65% at 50% 100%,rgba(107,92,255,.3),transparent 70%)}
+html[data-brand=klik][data-plan=max] .art-cube::before,html[data-brand=klik][data-plan=max] .art-cube::after{border-color:rgba(124,92,255,.6)}
+html[data-brand=klik][data-plan=max] .art-grid::before{background-image:linear-gradient(rgba(124,92,255,.22) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(24,210,255,.18) 1px,transparent 1px)}
+html[data-brand=klik][data-plan=max] .story-line{background:var(--klik-parlak)}
+
+/* --- hesaplar kapalı + geliştirici önizlemesi --- */
 .hesap-kapali-not{max-width:420px;margin:auto;padding:28px;border:1px solid var(--line,#dedfd5);border-radius:18px;background:var(--card,#fff);text-align:center}
 .hesap-kapali-not h2{margin:0 0 8px}.hesap-kapali-not p{color:var(--muted,#777);margin:0 0 16px;line-height:1.6}
 .logo-onizleme{display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding:16px;background:#050505;border-radius:14px;margin:10px 0}

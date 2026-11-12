@@ -7,6 +7,10 @@
   const kok = document.documentElement;
   const betik = document.currentScript?.src || location.href;     // async içinde currentScript null olur
   let klikUygulandi = false;
+  // <head>'de, defer olmadan yüklenir: son bilinen marka sayfa çizilmeden uygulanır (titreme olmasın). Varsayılan Klik.
+  const sakli = (() => { try { return localStorage.getItem('kubik.marka'); } catch { return null; } })();
+  kok.dataset.brand = sakli === 'kubik' ? 'kubik' : 'klik';
+  try { const p = localStorage.getItem('kubik.plan'); if (p) kok.dataset.plan = p; } catch { /* gizli sekme */ }
 
   const cevir = t => t.replace(/Kübik/g, 'Klik').replace(/KÜBİK/g, 'KLİK');
   function metinDegistir(n) {
@@ -51,16 +55,21 @@
   async function uygula() {
     let s;
     try { s = await iste('/status'); } catch { return; }
-    kok.dataset.brand = s.brand === 'klik' ? 'klik' : 'kubik';
+    const marka = s.brand === 'kubik' ? 'kubik' : 'klik';
+    kok.dataset.brand = marka;
+    try { localStorage.setItem('kubik.marka', marka); } catch { /* gizli sekme */ }
     kok.dataset.hesap = s.accounts_enabled === false ? 'kapali' : 'acik';
-    if (s.brand === 'klik') klikYap();
+    if (marka === 'klik') klikYap();
     if (s.accounts_enabled === false) hesaplarKapali();
-    try { const me = await iste('/me'); kok.dataset.plan = MAX_PLANLAR.includes(me.tier) ? 'max' : 'normal'; } catch { /* girişsiz */ }
+    await planGuncelle();
+  }
+  async function planGuncelle() {
+    let plan = 'normal';
+    try { const me = await iste('/me'); if (MAX_PLANLAR.includes(me.tier)) plan = 'max'; } catch { /* girişsiz */ }
+    kok.dataset.plan = plan;
+    try { localStorage.setItem('kubik.plan', plan); } catch { /* gizli sekme */ }
   }
   window.kubikMarka = {uygula};
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', uygula); else uygula();
-  setInterval(async () => {      // giriş/çıkış ya da plan değişince logo rengi güncellensin
-    try { const me = await iste('/me'); kok.dataset.plan = MAX_PLANLAR.includes(me.tier) ? 'max' : 'normal'; }
-    catch { kok.dataset.plan = 'normal'; }
-  }, 60000);
+  setInterval(planGuncelle, 60000);      // giriş/çıkış ya da plan değişince logo rengi güncellensin
 })();
