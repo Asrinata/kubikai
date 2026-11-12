@@ -177,6 +177,12 @@ html[data-brand=klik][data-plan=max] .art-grid::before{background-image:linear-g
   linear-gradient(90deg,rgba(24,210,255,.18) 1px,transparent 1px)}
 html[data-brand=klik][data-plan=max] .story-line{background:var(--klik-parlak)}
 
+/* --- Google ile devam et (her iki markada) --- */
+.google-giris{margin:14px 0 4px}
+.google-ayrac{display:flex;align-items:center;gap:12px;color:var(--muted,#777);font-size:12px;margin-bottom:12px}
+.google-ayrac::before,.google-ayrac::after{content:'';flex:1;height:1px;background:var(--line,#e2e2e2)}
+#googleButon{display:flex;justify-content:center;min-height:44px}
+
 /* --- hesaplar kapalı + geliştirici önizlemesi --- */
 .hesap-kapali-not{max-width:420px;margin:auto;padding:28px;border:1px solid var(--line,#dedfd5);border-radius:18px;background:var(--card,#fff);text-align:center}
 .hesap-kapali-not h2{margin:0 0 8px}.hesap-kapali-not p{color:var(--muted,#777);margin:0 0 16px;line-height:1.6}

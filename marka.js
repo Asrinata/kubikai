@@ -76,6 +76,10 @@
     try { localStorage.setItem('kubik.plan', plan); } catch { /* gizli sekme */ }
   }
   window.kubikMarka = {uygula};
+  // .../#gizlilik linki (Google izin ekranındaki gizlilik politikası) KVKK metnini doğrudan açar
+  addEventListener('DOMContentLoaded', () => {
+    if (location.hash === '#gizlilik') setTimeout(() => document.querySelector('.privacy-link')?.click(), 400);
+  });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', uygula); else uygula();
   setInterval(planGuncelle, 60000);      // giriş/çıkış ya da plan değişince logo rengi güncellensin
 })();

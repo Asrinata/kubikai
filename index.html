@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f8f7f3"><title>Kübik — Birlikte düşünelim</title><link rel="stylesheet" href="style.css?v=18"><link rel="stylesheet" href="polish.css?v=18"><link rel="stylesheet" href="kubik2.css?v=18"><link rel="stylesheet" href="ekler.css?v=18"><link rel="stylesheet" href="marka.css?v=18"></head>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f8f7f3"><title>Kübik — Birlikte düşünelim</title><link rel="stylesheet" href="style.css?v=20"><link rel="stylesheet" href="polish.css?v=20"><link rel="stylesheet" href="kubik2.css?v=20"><link rel="stylesheet" href="ekler.css?v=20"><link rel="stylesheet" href="marka.css?v=20"></head>
 <body><div id="connectionSetup" class="connection-screen" hidden><form id="connectionForm" class="auth-card"><span class="eyebrow">SUNUCU BAĞLANTISI</span><h2>Kübik’e bağlan.</h2><p class="muted">Pi’nin HTTPS bağlantısını bir kez bu tarayıcıya kaydet.</p><label>Pi adresi<input id="apiAddress" type="url" placeholder="https://…trycloudflare.com" required></label><p id="connectionError" class="error"></p><button class="primary">Bağlan</button></form></div>
 <div id="auth" class="auth-screen"><button id="guestContinue" type="button" class="guest-continue">Oturum açmadan devam et <span aria-hidden="true">↗</span></button>
   <section class="auth-story"><a class="brand" href="./"><span class="cube"></span>Kübik</a><div><span class="eyebrow">KENDİ ALANIN. KENDİ ASİSTANIN.</span><h1>Düşüncene<br>yer aç.</h1><p>Sor, araştır, kodla.<br>Kübik ile düşündüğünü bir adım ileri taşı.</p><div class="auth-art" aria-hidden="true"><div class="art-grid"></div><div class="art-cube"><i></i><i></i><i></i></div><span>Birlikte düşün. Birlikte üret.</span></div><div class="story-line"></div></div><span class="fine">Düşünmek için biraz alan.</span></section>
@@ -35,6 +35,7 @@
 <h3>Ne için kullanıyoruz?</h3>
 <p>Yalnızca sana cevap vermek, sohbet geçmişini göstermek, plan sınırlarını uygulamak ve kötüye kullanımı önlemek için. Reklam yok, veri satışı yok, profil çıkarma yok.</p>
 <h3>Kimlere gidiyor?</h3><ul>
+<li><b>Google ile devam et</b>’i seçersen Google senin onayınla bize adını, e-posta adresini ve Google hesap kimliğini gönderir. Bunlardan e-posta adresin ve hesap kimliğin, hesabını tanımak için saklanır; Google’a bizden bir şey gönderilmez. Bu giriş yolunu kullanmak zorunda değilsin.</li>
 <li>Cevaplar bu sunucudaki açık modellerle üretilir. Mesajların bir yapay zekâ şirketine gönderilmez.</li>
 <li><b>Web araması</b> açıksa arama sorgun DuckDuckGo ve Bing’e gönderilir (e-posta adresleri ve uzun numaralar sorgudan çıkarılır), sonuç sayfaları sunucu tarafından açılır.</li>
 <li>Bağlantı <b>Cloudflare</b> üzerinden geçer, site <b>GitHub Pages</b>’ten yüklenir. Bu hizmetler (yurt dışında) IP adresi gibi teknik kayıtlar tutabilir.</li></ul>
@@ -72,6 +73,7 @@
 <h3>Why</h3>
 <p>Only to answer you, show your chat history, apply plan limits and prevent abuse. No ads, no selling data, no profiling.</p>
 <h3>Who receives data</h3><ul>
+<li>If you choose <b>Continue with Google</b>, Google sends us your name, e-mail address and Google account ID with your consent. We keep your e-mail address and account ID to recognise your account; we send nothing to Google. Using this sign-in is optional.</li>
 <li>Replies come from open models on this server. Your messages are not sent to an AI company.</li>
 <li>With <b>web search</b> on, your search query goes to DuckDuckGo and Bing (e-mail addresses and long numbers are removed), and result pages are opened by the server.</li>
 <li>Traffic passes through <b>Cloudflare</b> and the site loads from <b>GitHub Pages</b>. These services (outside Turkey) may keep technical logs such as IP addresses.</li></ul>
@@ -103,4 +105,4 @@
 <button id="supportButton" type="button" class="support-button" title="Kübit · yardım" aria-label="Kübit ile yardım"><span class="maskot mine" data-maskot="klasik"></span></button>
 <section id="supportPanel" class="support-panel" hidden><header><b>Kübit · Kübik Destek</b><button id="closeSupport" type="button" class="icon-button" aria-label="Kapat">×</button></header><div id="supportMessages" class="work-messages"></div><form id="supportForm" class="work-compose"><input id="supportInput" maxlength="1000" autocomplete="off" placeholder="Bir şey sor…"><button class="send-button" aria-label="Gönder">↑</button></form></section>
 <div id="tour" class="tour" hidden><div id="tourSpot" class="tour-spot"></div><div id="tourBubble" class="tour-bubble"><span class="maskot mine" data-maskot="klasik"></span><div><p id="tourText"></p><div class="button-row"><small id="tourCount"></small><button id="tourSkip" type="button" class="text-button">Geç</button><button id="tourNext" type="button" class="primary">İleri</button></div></div></div></div>
-<div id="toast" class="toast" role="status"></div><script src="config.js?v=18"></script><script src="connection.js?v=18"></script><script src="marka.js?v=18"></script><script src="app.js?v=18" defer></script><script src="cube.js?v=18" defer></script><script src="ekler.js?v=18" defer></script></body></html>
+<div id="toast" class="toast" role="status"></div><script src="config.js?v=20"></script><script src="connection.js?v=20"></script><script src="marka.js?v=20"></script><script src="app.js?v=20" defer></script><script src="cube.js?v=20" defer></script><script src="ekler.js?v=20" defer></script><script src="google.js?v=20" defer></script></body></html>
