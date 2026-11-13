@@ -1,0 +1,36 @@
+/* Klik sürprizleri (surpriz.js). Siyah-sade; renk yalnız Max'ta ve Cimbom'da. */
+.surpriz-katman{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:9000}
+.surpriz-haber{position:fixed;left:50%;bottom:28px;z-index:9200;transform:translate(-50%,20px);opacity:0;pointer-events:none;
+  max-width:min(560px,calc(100vw - 32px));padding:10px 16px;border-radius:14px;background:#111114;border:1px solid #232328;color:#f1f1f3;
+  font:500 13px/1.4 'Space Grotesk',Inter,sans-serif;box-shadow:0 20px 60px rgba(0,0,0,.6);text-align:center}
+.surpriz-haber.gor{animation:surpriz-haber 3.4s ease forwards}
+@keyframes surpriz-haber{8%,85%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,10px)}}
+html[data-plan=max] .surpriz-haber{border-color:#3a2f7a;box-shadow:0 0 30px rgba(124,92,255,.35),0 20px 60px rgba(0,0,0,.6)}
+
+.surpriz-oyun{position:fixed;inset:0;z-index:9100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px;
+  background:rgba(0,0,0,.86);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:surpriz-gel .2s ease-out;touch-action:none}
+@keyframes surpriz-gel{from{opacity:0}}
+.surpriz-oyun canvas{border-radius:16px;border:1px solid #232328;box-shadow:0 20px 60px rgba(0,0,0,.6);max-width:100%}
+html[data-plan=max] .surpriz-oyun canvas{border-color:#3a2f7a;box-shadow:0 0 50px rgba(124,92,255,.3)}
+.so-ust{display:flex;align-items:center;gap:14px;width:min(720px,100%);font:500 14px 'Space Grotesk',Inter,sans-serif;color:#8b8b94}
+.so-ust b{font-size:20px;letter-spacing:-.03em;color:#f1f1f3}
+.so-skor{margin-left:auto;font-variant-numeric:tabular-nums}
+.so-kapat{width:36px;height:36px;border-radius:12px;border:1px solid #232328;background:#141418;color:#f1f1f3;font-size:20px;line-height:1;cursor:pointer}
+.so-kapat:hover{background:#1c1c21;border-color:#34343b}
+.so-ipucu{margin:0;font:12px 'Space Grotesk',Inter,sans-serif;color:#5a5a63;text-align:center}
+
+.surpriz-yagmur{position:fixed;inset:0;width:100vw;height:100vh;z-index:9050;cursor:pointer;transition:opacity .7s}
+.surpriz-yagmur.git{opacity:0}
+
+body.surpriz-takla{animation:surpriz-takla 1.2s cubic-bezier(.6,0,.3,1)}
+@keyframes surpriz-takla{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){body.surpriz-takla{animation:surpriz-titre .5s}@keyframes surpriz-titre{50%{transform:scale(.98)}}}
+
+.surpriz-cimbom{position:fixed;left:50%;top:42%;z-index:9050;transform:translate(-50%,-50%);pointer-events:none;
+  font:700 clamp(54px,12vw,150px)/1 'Space Grotesk',sans-serif;letter-spacing:-.05em;
+  background:linear-gradient(90deg,#fdb912 50%,#e30613 50%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:surpriz-cimbom 2.6s cubic-bezier(.2,1.4,.4,1) forwards}
+@keyframes surpriz-cimbom{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}15%,75%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-60%) scale(1)}}
+
+.surpriz-koruyucu{position:fixed;inset:0;z-index:9150;background:rgba(0,0,0,.92);animation:surpriz-gel 1s}
+.surpriz-koruyucu img{position:absolute;left:0;top:0;width:90px;height:90px;will-change:transform}
