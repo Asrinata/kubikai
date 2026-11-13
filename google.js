@@ -20,16 +20,17 @@
     ayrac.textContent = 'veya';
     const yer = document.createElement('div');
     yer.id = 'googleButon';
-    kutu.append(ayrac, yer);
-    (document.querySelector('#authToggle') || form.lastElementChild).before(kutu);
+    kutu.append(yer, ayrac);                          // en üstte Google, altında "veya" + kullanıcı adı formu
+    const alt = document.querySelector('#authSubtitle');
+    if (alt) alt.after(kutu); else form.prepend(kutu);
     const betik = document.createElement('script');
     betik.src = 'https://accounts.google.com/gsi/client';
     betik.async = true;
     betik.onload = () => {
       google.accounts.id.initialize({client_id: s.google_client_id, callback: girisYap, ux_mode: 'popup', itp_support: true});
       const koyu = document.documentElement.dataset.brand !== 'kubik';
-      google.accounts.id.renderButton(yer, {theme: koyu ? 'filled_black' : 'outline', size: 'large', shape: 'pill',
-        text: 'continue_with', locale: 'tr', logo_alignment: 'center', width: Math.min(Math.max(yer.clientWidth, 240), 400)});
+      google.accounts.id.renderButton(yer, {theme: koyu ? 'filled_black' : 'outline', size: 'large', shape: 'rectangular',
+        text: 'continue_with', locale: 'tr', logo_alignment: 'center', width: Math.min(Math.max(form.clientWidth, 240), 400)});
     };
     betik.onerror = () => kutu.remove();       // reklam engelleyici vb. Google'ı engellerse düğmesiz devam
     document.head.append(betik);

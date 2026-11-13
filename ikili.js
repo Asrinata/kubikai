@@ -110,6 +110,8 @@
     addEventListener('pointermove', e => {
       imlec(e.clientX, e.clientY);
       const kart = e.target.closest?.('.suggestions button');   // öneri kartında imleç ışığı (marka.css --mx/--my)
+      const hik = e.target.closest?.('.auth-story');            // giriş ekranı: imlecin altında nokta ızgarası belirir
+      if (hik) { const r = hik.getBoundingClientRect(); hik.style.setProperty('--mx', `${e.clientX - r.left}px`); hik.style.setProperty('--my', `${e.clientY - r.top}px`); }
       if (kart) { const r = kart.getBoundingClientRect(); kart.style.setProperty('--mx', `${e.clientX - r.left}px`); kart.style.setProperty('--my', `${e.clientY - r.top}px`); }
     }, {passive: true});
     addEventListener('pointerdown', e => imlec(e.clientX, e.clientY), {passive: true});

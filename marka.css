@@ -220,3 +220,42 @@ html[data-brand=klik] body.code-theme .welcome::before{content:"";position:absol
 .hesap-kapali-not h2{margin:0 0 8px}.hesap-kapali-not p{color:var(--muted,#777);margin:0 0 16px;line-height:1.6}
 .logo-onizleme{display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding:16px;background:#050505;border-radius:14px;margin:10px 0}
 .logo-onizleme figure{margin:0;text-align:center;color:#9a9a9a;font-size:11px}.logo-onizleme img{width:64px;height:64px;display:block;margin-bottom:6px}
+
+/* --- giriş ekranı v2: Google en üstte, sakin ikincil düğmeler, imleçle beliren nokta ızgarası --- */
+html[data-brand=klik] .guest-continue{left:auto!important;right:28px;top:24px;padding:8px 14px!important;border:1px solid var(--line)!important;
+  border-radius:999px;background:rgba(12,12,15,.7)!important;color:#a1a1aa!important;font-size:12px!important;gap:8px!important;
+  backdrop-filter:blur(8px);transition:color .15s,border-color .15s,background .15s}
+html[data-brand=klik] .guest-continue:hover{color:var(--ink)!important;border-color:#3b3b43!important;background:#141418!important}
+html[data-brand=klik] .auth-card{display:flex;flex-direction:column}
+html[data-brand=klik] .auth-card .badge{align-self:flex-start}
+html[data-brand=klik] .auth-card h2{font-size:34px;letter-spacing:-.04em;margin-bottom:8px}
+html[data-brand=klik] .auth-card label{margin:10px 0}
+html[data-brand=klik] .auth-card .primary{margin:14px 0 6px;border-radius:12px}
+html[data-brand=klik] #authToggle{font-size:13px!important;color:#8b8b94!important;padding:8px 0;transition:color .15s}
+html[data-brand=klik] #authToggle:hover{color:var(--ink)!important}
+html[data-brand=klik] .auth-card :is(.cube-connect,.auth-download){height:40px;min-height:0;display:flex;align-items:center;justify-content:center;
+  margin-top:8px;border-radius:12px;font-size:13px!important;font-weight:500!important;background:transparent!important;color:#a1a1aa!important;
+  border:1px solid var(--line)!important;transition:color .15s,border-color .15s}
+html[data-brand=klik] .auth-card :is(.cube-connect,.auth-download):hover{color:var(--ink)!important;border-color:#3b3b43!important}
+html[data-brand=klik] .auth-card .cube-connect{margin-top:18px}
+html[data-brand=klik] .auth-card .sha{display:none!important}
+html[data-brand=klik] .auth-card>.fine:last-child{margin-top:22px;font-size:11.5px;line-height:1.6;color:#6b6b74}
+html[data-brand=klik] .google-giris{margin:22px 0 6px}
+html[data-brand=klik] .google-ayrac{margin:18px 0 4px;color:#5a5a63;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+html[data-brand=klik] .google-ayrac::before,html[data-brand=klik] .google-ayrac::after{background:var(--line)}
+html[data-brand=klik] .auth-story{position:relative}
+html[data-brand=klik] .auth-story>*{position:relative;z-index:1}
+html[data-brand=klik] .auth-story::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(rgba(255,255,255,.55) 1px,transparent 1.3px);background-size:20px 20px;
+  -webkit-mask:radial-gradient(240px circle at var(--mx,30%) var(--my,45%),#000,transparent 72%);
+  mask:radial-gradient(240px circle at var(--mx,30%) var(--my,45%),#000,transparent 72%);opacity:.5;transition:opacity .3s}
+html[data-brand=klik] .auth-story:hover::before{opacity:1}
+html[data-brand=klik][data-plan=max] .auth-story::before{background-image:radial-gradient(rgba(140,120,255,.8) 1px,transparent 1.3px)}
+html[data-brand=klik] :is(.auth-art>span,.story-line){display:none!important}
+html[data-brand=klik] .art-cube::before,html[data-brand=klik] .art-cube::after{border-width:1px;border-color:rgba(255,255,255,.22)}
+html[data-brand=klik] .auth-art::before{opacity:.6}
+@media (max-width:760px){
+  html[data-brand=klik] .guest-continue{right:16px;top:20px;font-size:11px!important;padding:7px 12px!important}
+  html[data-brand=klik] .auth-story::before{display:none}
+  html[data-brand=klik] .auth-card h2{font-size:30px}
+}
