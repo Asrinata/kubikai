@@ -33,7 +33,8 @@
       kay.value = sec.selectedIndex;
       deger.textContent = sec.selectedOptions[0]?.textContent || '';
       kay.setAttribute('aria-valuetext', deger.textContent);
-      kay.style.setProperty('--dolu', `${(sec.selectedIndex / Math.max(1, s.length - 1)) * 100}%`);
+      const oran = sec.selectedIndex / Math.max(1, s.length - 1);   // dolgu yuvarlağın ortasına kadar; yuvarlağın halkası ucu yuvarlatır
+      kay.style.setProperty('--dolu', `calc(12px + (100% - 24px) * ${oran})`);
       cizgi.replaceChildren(...s.map((o, i) => {
         const n = document.createElement('i');
         n.className = (o.disabled ? 'kapali ' : '') + (i <= sec.selectedIndex ? 'dolu' : '');
@@ -71,6 +72,10 @@
     tum.addEventListener('click', () => { kapat(); gecir = true; dugme.click(); gecir = false; });
     pano.append(dusun.kutu, web.kutu, tum);
     dugme.closest('.composer').append(pano);
+    if (klik()) {                                     // Klik: dosya ekleme de gönder düğmesinin yanına
+      const ek = document.getElementById('attachFile');
+      if (ek) { ek.title = ek.textContent.trim(); ek.setAttribute('aria-label', ek.title); dugme.before(ek); }
+    }
 
     const ac = () => { dusun.yenile(); web.yenile(); pano.hidden = false; dugme.setAttribute('aria-expanded', 'true'); pano.querySelector('input').focus({preventScroll: true}); };
     function kapat() { pano.hidden = true; dugme.setAttribute('aria-expanded', 'false'); }
