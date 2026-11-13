@@ -1,5 +1,5 @@
 'use strict';
-// Klik: ayarlar yazı kutusunun altında çip olarak durur (Düşünme · Web · Verimlilik · Multitask · Dil).
+// Klik: ayarlar yazı kutusunun altında çip olarak durur (Düşünme · Web · Verimlilik · Multitask; dil çipi yok).
 // Bir çipe tıklayınca yazı kutusunun altında o ayarın kaydırıcısı açılır; aynı çipe yeniden tıklamak kapatır.
 // Asıl değerler hâlâ select'lerde (#effort, #searchEffort, #quality, #multitask, #language); app.js onları okur,
 // kaydırıcı yalnız onları sürer ve 'change' yollar. Kapalı seçeneğe (option.disabled) gitmez, aşağıdaki ilk açık olana iner.
@@ -11,8 +11,7 @@
     {id: 'effort', ad: () => document.querySelector('#effort')?.closest('label')?.querySelector('span')?.textContent || 'Düşünme'},
     {id: 'searchEffort', ad: () => 'Web', kisalt: t => t.replace(/^Web\s*[·:-]?\s*/i, '').replace(/^./, c => c.toLocaleUpperCase('tr'))},
     {id: 'quality', ad: () => document.querySelector('[data-i18n=quality]')?.textContent || 'Verimlilik'},
-    {id: 'multitask', ad: () => 'Multitask'},
-    {id: 'language', ad: () => document.querySelector('[data-i18n=language]')?.textContent || 'Dil'},
+    {id: 'multitask', ad: () => 'Multitask', kisalt: t => t.replace(/^.*\((\d+)\s*(?:YZ|AI)\).*$/i, '$1 agent')},   // 'Az (2 YZ)' -> '2 agent'
   ];
   const kisa = t => t.replace(/\s*[·—-]?\s*🔒.*$/u, '').replace(/\s*\(.*?\)\s*/g, '').trim();   // 'Derin · 🔒 Max+ Pack' -> 'Derin'
   let acik = null;

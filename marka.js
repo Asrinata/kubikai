@@ -12,9 +12,9 @@
   kok.dataset.brand = sakli === 'kubik' ? 'kubik' : 'klik';
   try { const p = localStorage.getItem('kubik.plan'); if (p) kok.dataset.plan = p; } catch { /* gizli sekme */ }
 
-  const cevir = t => t.replace(/Kübik/g, 'Klik').replace(/KÜBİK/g, 'KLİK');
+  const cevir = t => t.replace(/Kübik/g, 'Klik').replace(/KÜBİK/g, 'KLİK').replace(/Küp/g, 'Pixel');   // Klik'te para birimi Pixel
   function metinDegistir(n) {
-    if (/Kübik|KÜBİK/.test(n.nodeValue) && !n.parentElement?.closest(HARIC)) n.nodeValue = cevir(n.nodeValue);
+    if (/Kübik|KÜBİK|Küp/.test(n.nodeValue) && !n.parentElement?.closest(HARIC)) n.nodeValue = cevir(n.nodeValue);
   }
   function agacDegistir(el) {
     const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
@@ -22,7 +22,7 @@
     while (w.nextNode()) liste.push(w.currentNode);
     liste.forEach(metinDegistir);
     const nitelikler = ['placeholder', 'title', 'aria-label'];
-    el.querySelectorAll?.('[placeholder*="Kübik"],[title*="Kübik"],[aria-label*="Kübik"]').forEach(x =>
+    el.querySelectorAll?.('[placeholder*="Kübik"],[title*="Kübik"],[aria-label*="Kübik"],[placeholder*="Küp"],[title*="Küp"]').forEach(x =>
       nitelikler.forEach(a => { const v = x.getAttribute(a); if (v) x.setAttribute(a, cevir(v)); }));
   }
   function klikYap() {
@@ -33,7 +33,7 @@
     new MutationObserver(kayitlar => kayitlar.forEach(k => {
       if (k.type === 'attributes') {          // app.js dil değişince placeholder/title'ı sonradan yazıyor
         const v = k.target.getAttribute(k.attributeName);
-        if (v && /Kübik|KÜBİK/.test(v)) k.target.setAttribute(k.attributeName, cevir(v));
+        if (v && /Kübik|KÜBİK|Küp/.test(v)) k.target.setAttribute(k.attributeName, cevir(v));
         return;
       }
       k.addedNodes.forEach(n => { if (n.nodeType === 3) metinDegistir(n); else if (n.nodeType === 1) agacDegistir(n); });

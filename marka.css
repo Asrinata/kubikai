@@ -302,7 +302,13 @@ html[data-brand=klik][data-plan=max] .ayar-serit input[type=range]::-webkit-slid
 html[data-brand=klik][data-plan=max] .ayar-serit input[type=range]::-moz-range-thumb{background:#fff;border-color:#18d2ff}
 html[data-brand=klik][data-plan=max] .ayar-cip[aria-expanded=true]{background:var(--klik-parlak);border-color:transparent;color:rgba(255,255,255,.75)}
 html[data-brand=klik][data-plan=max] .ayar-cip[aria-expanded=true] b{color:#fff}
-html[data-brand=klik][data-plan=max] .ayar-cip:hover{border-color:#5b4bd6}
+html[data-brand=klik][data-plan=max] .ayar-cip{border-color:#3a2f7a;color:#a99cf0;background:rgba(107,92,255,.08);box-shadow:0 0 14px rgba(124,92,255,.28),inset 0 0 10px rgba(107,92,255,.12)}
+html[data-brand=klik][data-plan=max] .ayar-cip b{color:#e6dcff;text-shadow:0 0 10px rgba(196,107,255,.7)}
+html[data-brand=klik][data-plan=max] .ayar-cip:hover{border-color:#6b5cff;box-shadow:0 0 20px rgba(124,92,255,.45),inset 0 0 12px rgba(107,92,255,.18)}
+html[data-brand=klik][data-plan=max] .ayar-cip[aria-expanded=true]{box-shadow:0 0 24px rgba(124,92,255,.55)}
+html[data-brand=klik][data-plan=max] .ayar-cip[aria-expanded=true] b{text-shadow:none}
+html[data-brand=klik] .kup-balance .cube{width:12px;height:12px;background:#f1f1f3!important;border-radius:2px;box-shadow:4px 4px 0 -1px #5a5a63}
+html[data-brand=klik][data-plan=max] .kup-balance .cube{background:var(--klik-parlak)!important}
 html[data-brand=klik][data-plan=max] .ayar-uclar i.secili{color:#a597ff}
 html[data-brand=klik][data-plan=max] .ayar-serit{border-color:#2a2440}
 html[data-brand=klik] .composer-controls .attach-file{flex:0 0 auto;width:36px;height:36px;padding:0!important;font-size:0!important;border:1px solid var(--line)!important;
