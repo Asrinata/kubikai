@@ -230,7 +230,7 @@ async function refreshSite() {
     const option = node('option', '', (sleeping ? '❄ ' : '') + modelName('kubik-2.0') + (sleeping ? ' · ' + t('hibernating') : ''));
     option.value = 'kubik-2.0'; if (sleeping) option.style.color = '#b58700';
     const eski = old.length ? [Object.assign(document.createElement('optgroup'), {label: 'Eski modeller'})] : [];
-    eski.forEach(g => g.append(...old.map(m => Object.assign(node('option', '', modelName(m.id) + ' (eski)'), {value: m.id}))));
+    eski.forEach(g => g.append(...old.map(m => Object.assign(node('option', '', (m.id.startsWith('x-kubik3') ? 'Kübik 3.0' : modelName(m.id)) + ' (eski)'), {value: m.id}))));
     picker.replaceChildren(option, ...solo.map(m => Object.assign(node('option', '', m.name), {value: m.id})), ...eski);
     picker.value = selectedModel;
     picker.disabled = !!job;
