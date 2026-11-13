@@ -374,3 +374,17 @@ html[data-brand=klik][data-plan=max] .status-dot{background:#18d2ff!important;bo
 html[data-brand=klik][data-plan=max] a:not(.secondary):not(.brand){color:#a597ff}
 html[data-brand=klik][data-plan=max] .badge{border-color:var(--max-kenar)!important;color:#c9b8ff!important}
 html[data-brand=klik][data-plan=max] *{scrollbar-color:#4a3d8f transparent}
+
+/* --- hesap satırı: çıkışın yanında Ayarlar (dişli); telefonda yan menü kayar --- */
+html[data-brand=klik]{--ok-disli:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cpath d='M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z'/%3E%3C/svg%3E")}
+html[data-brand=klik] .account-row{gap:8px}
+html[data-brand=klik] .account-row #logout{margin-left:0}
+html[data-brand=klik] .account-settings{font-size:0!important;display:grid;place-items:center;flex:0 0 auto}
+html[data-brand=klik] .account-settings::before{content:'';width:17px;height:17px;background:currentColor;-webkit-mask:var(--ok-disli) center/contain no-repeat;mask:var(--ok-disli) center/contain no-repeat;transition:transform .3s}
+html[data-brand=klik] .account-settings:hover::before{transform:rotate(60deg)}
+html[data-brand=klik][data-plan=max] .account-settings:hover{color:#a597ff}
+@media (max-width:760px){
+  html[data-brand=klik] .sidebar{overflow-y:auto!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:max(16px,env(safe-area-inset-bottom))}
+  html[data-brand=klik] .sidebar .conversation-list{flex:0 0 auto;max-height:none;min-height:60px}
+  html[data-brand=klik] .account-row .icon-button{width:40px;height:40px}
+}

@@ -76,7 +76,8 @@ async function api(path, options = {}) {
   const headers = {'X-Kubik-Request': '1', ...(options.headers || {})};
   if (options.body && typeof options.body !== 'string') { headers['Content-Type'] = 'application/json'; options.body = JSON.stringify(options.body); }
   const response = await kubikTransport.fetch('/api' + path, {...options, headers});
-  const value = await response.json();
+  // Pi yeniden başlarken / kapalıyken Cloudflare JSON yerine HTML hata sayfası döner
+  const value = await response.json().catch(() => { throw new Error(response.status >= 500 || response.status === 0 ? 'Sunucu şu an yeniden başlıyor ya da kapalı. Biraz sonra tekrar dene.' : `Sunucudan beklenmeyen cevap geldi (${response.status}).`); });
   if (!response.ok) { const text = typeof value.detail === 'string' ? value.detail : 'Bilgileri kontrol ederek tekrar dene.'; throw new Error(text); }
   if (value.token) kubikTransport.setToken(value.token);
   return value;
@@ -219,12 +220,18 @@ async function refreshSite() {
     $('#keyLabel').hidden = siteStatus.access_mode !== 'beta';
     $('#maintenance').hidden = !siteStatus.maintenance;
     $('#maintenance').textContent = siteStatus.maintenance_message;
-    // Tek model görünür: Kübik 2.0. Tek tek modeller yalnız /komut/ ile kullanılır.
-    selectedModel = 'kubik-2.0';
+    // Seçicide Kübik 2.0 + kendi eğittiğimiz solo modeller (Wisp). Diğer tek modeller yalnız /komut/ ile kullanılır.
+    const solo = (siteStatus.models || []).filter(m => m.solo && m.installed);
+    // Ayarlar > Get old models: eski modeller de seçicide tek tek görünür
+    const old = store.get('kubik-eski-modeller', '0') === '1' ? (siteStatus.models || []).filter(m => !m.solo && m.installed) : [];
+    const saved = store.get('kubik-model-v3', 'kubik-2.0');
+    selectedModel = [...solo, ...old].some(m => m.id === saved) ? saved : 'kubik-2.0';
     const picker = $('#modelPicker'), sleeping = !!siteStatus.hibernating;
     const option = node('option', '', (sleeping ? '❄ ' : '') + modelName('kubik-2.0') + (sleeping ? ' · ' + t('hibernating') : ''));
-    option.value = selectedModel; if (sleeping) option.style.color = '#b58700';
-    picker.replaceChildren(option);
+    option.value = 'kubik-2.0'; if (sleeping) option.style.color = '#b58700';
+    const eski = old.length ? [Object.assign(document.createElement('optgroup'), {label: 'Eski modeller'})] : [];
+    eski.forEach(g => g.append(...old.map(m => Object.assign(node('option', '', modelName(m.id) + ' (eski)'), {value: m.id}))));
+    picker.replaceChildren(option, ...solo.map(m => Object.assign(node('option', '', m.name), {value: m.id})), ...eski);
     picker.value = selectedModel;
     picker.disabled = !!job;
     const routedId = selectedModel === 'kubik-2.0' ? siteStatus.model_routing?.[mode] : selectedModel;
@@ -239,7 +246,7 @@ async function refreshSite() {
     const maxRank = siteStatus.search_max_effort === 'deep' ? ranks.length - 1 : ranks.indexOf(siteStatus.search_max_effort);
     [...$('#searchEffort').options].forEach(option => { option.dataset.serverOff = option.value !== 'off' && (!siteStatus.search_enabled || ranks.indexOf(option.value) > maxRank) ? '1' : ''; });
     // Lisans gereği: hangi açık modellerin çalıştığı ve Llama için "Built with Llama" görünür olmalı
-    const used = (siteStatus.models || []).filter(m => m.installed && m.extra).map(m => m.id.startsWith('x-kubik3') ? 'Kübik 3.0 (Qwen3-30B-A3B YOYO-V4 tabanlı)' : m.name);
+    const used = (siteStatus.models || []).filter(m => m.installed && m.extra && !m.solo).map(m => m.id.startsWith('x-kubik3') ? 'Kübik 3.0 (Qwen3-30B-A3B YOYO-V4 tabanlı)' : m.name);
     $('#modelCredits').textContent = used.length ? '· ' + t('built_on') + ' ' + used.join(', ') + (used.some(n => /llama/i.test(n)) ? ' · Built with Llama' : '') : '';
     lockUltrapack();
     if ($('#searchEffort').selectedOptions[0].disabled) $('#searchEffort').value = 'off';
@@ -419,7 +426,7 @@ $('#fileInput').onchange=async()=>{
     if(pendingAttachments.length>=3){toast('Bir mesajda en fazla 3 dosya ekleyebilirsin.');break;}
     if(file.size>5*1024*1024)throw new Error('Dosya en fazla 5 MB olabilir.');
     const response=await kubikTransport.fetch('/api/attachments?name='+encodeURIComponent(file.name),{method:'POST',headers:{'X-Kubik-Request':'1','Content-Type':'application/octet-stream'},body:file});
-    const value=await response.json();if(!response.ok)throw new Error(value.detail||'Dosya yüklenemedi.');pendingAttachments.push(value);renderAttachmentDrafts();
+    const value=await response.json().catch(()=>({}));if(!response.ok||!value.id)throw new Error(value.detail||'Dosya yüklenemedi.');pendingAttachments.push(value);renderAttachmentDrafts();
   }}catch(error){toast(error.message);}finally{uploadBusy=false;$('#attachFile').disabled=false;$('#attachmentStatus').textContent='';$('#fileInput').value='';}
 };
 function decorateMessage(row,role,text,extra){
@@ -465,6 +472,9 @@ $('#quality').onchange = () => store.set('kubik-quality', $('#quality').value);
 $('#multitask').onchange = () => store.set('kubik-multitask', $('#multitask').value);
 $('#language').onchange = () => { lang = $('#language').value; store.set('kubik-lang', lang); applyLanguage(); if (!current) welcome(); refreshSite(); if (account) refreshAccount().catch(() => {}); };
 function commandList() { return ['kubik2', ...(siteStatus.models || []).filter(m => m.installed).map(m => m.command || m.id)]; }
+$('#accountSettings').onclick = () => $('#openSettings').click();
+$('#oldModels').checked = store.get('kubik-eski-modeller', '0') === '1';
+$('#oldModels').onchange = () => { store.set('kubik-eski-modeller', $('#oldModels').checked ? '1' : '0'); refreshSite(); };
 $('#openSettings').onclick = () => { $('#commandsHelp').textContent = t('commands_help') + ' ' + commandList().map(c => '/' + c + '/').join('  '); $('#settingsDialog').showModal(); };
 $('#closeSettings').onclick = () => $('#settingsDialog').close();
 $('#prompt').addEventListener('input', () => {
