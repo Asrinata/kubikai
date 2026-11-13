@@ -1,6 +1,6 @@
 'use strict';
 // Klik Code arka planı: 1 ve 0 ızgarası. Fare/parmak gezdikçe etrafı aydınlanır, yakındaki bitler daha sık döner.
-// Yalnız Klik markasında ve Code modunda (body.code-theme) çalışır; sekme gizliyken ve modlar dışında hiç çizmez.
+// Yalnız Klik markasında, Code modunda (body.code-theme) ya da giriş ekranı açıkken çalışır; sekme gizliyken hiç çizmez.
 // Free: beyaz/gri. Max ve üstü (data-plan=max): ışık mor→mavi. prefers-reduced-motion: bitler dönmez, yalnız ışık.
 (() => {
   const kok = document.documentElement;
@@ -10,7 +10,8 @@
   let tuval, ctx, w = 0, h = 0, dpr = 1, sut = 0, sat = 0, bit, parlak, glif = {};
   let fare = {x: -9999, y: -9999, gx: -9999, gy: -9999, son: 0}, dongu = 0, sonKare = 0, max = false;
 
-  const aktif = () => kok.dataset.brand === 'klik' && document.body.classList.contains('code-theme') && !document.hidden;
+  const giris = () => { const a = document.getElementById('auth'); return !!a && !a.hidden; };
+  const aktif = () => kok.dataset.brand === 'klik' && !document.hidden && (document.body.classList.contains('code-theme') || giris());
 
   function renk(t) {          // 0..1 -> mor→mavi
     const k = t * (MAX_RENK.length - 1), i = Math.min(Math.floor(k), MAX_RENK.length - 2), f = k - i;
@@ -110,8 +111,6 @@
     addEventListener('pointermove', e => {
       imlec(e.clientX, e.clientY);
       const kart = e.target.closest?.('.suggestions button');   // öneri kartında imleç ışığı (marka.css --mx/--my)
-      const hik = e.target.closest?.('.auth-story');            // giriş ekranı: imlecin altında nokta ızgarası belirir
-      if (hik) { const r = hik.getBoundingClientRect(); hik.style.setProperty('--mx', `${e.clientX - r.left}px`); hik.style.setProperty('--my', `${e.clientY - r.top}px`); }
       if (kart) { const r = kart.getBoundingClientRect(); kart.style.setProperty('--mx', `${e.clientX - r.left}px`); kart.style.setProperty('--my', `${e.clientY - r.top}px`); }
     }, {passive: true});
     addEventListener('pointerdown', e => imlec(e.clientX, e.clientY), {passive: true});
@@ -122,6 +121,8 @@
     const izle = new MutationObserver(baslat);           // Code moduna girince / marka-plan değişince
     izle.observe(document.body, {attributes: true, attributeFilter: ['class']});
     izle.observe(kok, {attributes: true, attributeFilter: ['data-brand', 'data-plan']});
+    const auth = document.getElementById('auth');
+    if (auth) izle.observe(auth, {attributes: true, attributeFilter: ['hidden']});
     document.fonts?.ready.then(() => { glifler(); baslat(); });
     baslat();
   }

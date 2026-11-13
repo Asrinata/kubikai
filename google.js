@@ -20,9 +20,8 @@
     ayrac.textContent = 'veya';
     const yer = document.createElement('div');
     yer.id = 'googleButon';
-    kutu.append(yer, ayrac);                          // en üstte Google, altında "veya" + kullanıcı adı formu
-    const alt = document.querySelector('#authSubtitle');
-    if (alt) alt.after(kutu); else form.prepend(kutu);
+    kutu.append(ayrac, yer);                          // "Giriş yap"ın altında: veya + Google
+    (document.querySelector('#authToggle') || form.lastElementChild).before(kutu);
     const betik = document.createElement('script');
     betik.src = 'https://accounts.google.com/gsi/client';
     betik.async = true;

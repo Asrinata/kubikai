@@ -244,19 +244,21 @@ html[data-brand=klik] .auth-card>.fine:last-child{margin-top:22px;font-size:11.5
 html[data-brand=klik] .google-giris{margin:22px 0 6px}
 html[data-brand=klik] .google-ayrac{margin:18px 0 4px;color:#5a5a63;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
 html[data-brand=klik] .google-ayrac::before,html[data-brand=klik] .google-ayrac::after{background:var(--line)}
-html[data-brand=klik] .auth-story{position:relative}
+/* sol taraf: Code'daki etkileşimli 1/0 alanı (ikili.js giriş ekranında da çalışır) */
+html[data-brand=klik] body:has(#auth:not([hidden])) #ikili{opacity:1}
+html[data-brand=klik] .auth-screen{position:relative;z-index:1}
+html[data-brand=klik] .auth-story{background:transparent!important;position:relative}
 html[data-brand=klik] .auth-story>*{position:relative;z-index:1}
-html[data-brand=klik] .auth-story::before{content:'';position:absolute;inset:0;pointer-events:none;
-  background-image:radial-gradient(rgba(255,255,255,.55) 1px,transparent 1.3px);background-size:20px 20px;
-  -webkit-mask:radial-gradient(240px circle at var(--mx,30%) var(--my,45%),#000,transparent 72%);
-  mask:radial-gradient(240px circle at var(--mx,30%) var(--my,45%),#000,transparent 72%);opacity:.5;transition:opacity .3s}
-html[data-brand=klik] .auth-story:hover::before{opacity:1}
-html[data-brand=klik][data-plan=max] .auth-story::before{background-image:radial-gradient(rgba(140,120,255,.8) 1px,transparent 1.3px)}
-html[data-brand=klik] :is(.auth-art>span,.story-line){display:none!important}
-html[data-brand=klik] .art-cube::before,html[data-brand=klik] .art-cube::after{border-width:1px;border-color:rgba(255,255,255,.22)}
-html[data-brand=klik] .auth-art::before{opacity:.6}
+html[data-brand=klik] .auth-story>div{isolation:isolate}
+html[data-brand=klik] .auth-story>div::before{content:'';position:absolute;inset:-60px -80px;z-index:-1;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(0,0,0,.9),rgba(0,0,0,.55) 65%,transparent)}
+html[data-brand=klik] .auth-form-area{position:relative;background:#000!important;border-left:1px solid #141418;
+  box-shadow:-40px 0 80px rgba(0,0,0,.9)}
+html[data-brand=klik] :is(.auth-art,.story-line){display:none!important}
+html[data-brand=klik] .google-giris{margin:6px 0 2px}
+html[data-brand=klik] .google-ayrac{margin:10px 0 14px}
 @media (max-width:760px){
+  html[data-brand=klik] .auth-form-area{border-left:0;box-shadow:none}
   html[data-brand=klik] .guest-continue{right:16px;top:20px;font-size:11px!important;padding:7px 12px!important}
-  html[data-brand=klik] .auth-story::before{display:none}
   html[data-brand=klik] .auth-card h2{font-size:30px}
 }
