@@ -318,9 +318,43 @@ html[data-brand=klik] .composer-controls .attach-file::before{content:'';width:1
 html[data-brand=klik] .composer-controls .attach-file:hover{color:var(--ink);border-color:#3b3b43!important}
 html[data-brand=klik]{--ok-arti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E")}
 html[data-brand=klik] .composer-topline:not(:has(*:not(:empty))){display:none}
+/* ayar en üst seviyede (ayarlar.js .tavan): her planda mor parlar; dördü birden en üstteyse yazı kutusu da (.hepsi-tavan) */
+html[data-brand=klik] .ayar-cip.tavan{border-color:transparent!important;color:rgba(255,255,255,.72)!important;
+  background:linear-gradient(#0c0a18,#0c0a18) padding-box,var(--klik-parlak) border-box!important;border:1px solid transparent!important;
+  box-shadow:0 0 18px rgba(124,92,255,.45),inset 0 0 12px rgba(107,92,255,.2)!important;animation:tavan-nabiz 2.4s ease-in-out infinite}
+html[data-brand=klik] .ayar-cip.tavan b{background:linear-gradient(90deg,#e2c6ff,#9fe8ff);-webkit-background-clip:text;background-clip:text;color:transparent!important;text-shadow:none!important}
+html[data-brand=klik] .ayar-cip.tavan[aria-expanded=true]{background:var(--klik-parlak)!important;color:rgba(255,255,255,.8)!important}
+html[data-brand=klik] .ayar-cip.tavan[aria-expanded=true] b{background:none;color:#fff!important}
+@keyframes tavan-nabiz{50%{box-shadow:0 0 26px rgba(124,92,255,.65),inset 0 0 14px rgba(107,92,255,.28)}}
+html[data-brand=klik] .ayar-serit.tavan{border-color:#3a2f7a}
+html[data-brand=klik] .ayar-serit.tavan input[type=range]{background:linear-gradient(90deg,#c46bff,#6b5cff 50%,#18d2ff)!important;box-shadow:0 0 16px rgba(124,92,255,.5)!important}
+html[data-brand=klik] .ayar-serit.tavan input[type=range]::-webkit-slider-thumb{background:#fff;border-color:#18d2ff}
+html[data-brand=klik] .ayar-serit.tavan input[type=range]::-moz-range-thumb{background:#fff;border-color:#18d2ff}
+html[data-brand=klik] .ayar-serit.tavan .ayar-ust b,html[data-brand=klik] .ayar-serit.tavan .ayar-uclar i.secili{color:#c9b8ff}
+html[data-brand=klik] .composer.hepsi-tavan{border-color:transparent!important;
+  background:linear-gradient(#0b0b0e,#0b0b0e) padding-box,var(--klik-parlak) border-box!important;border:1px solid transparent!important;
+  box-shadow:0 0 40px rgba(124,92,255,.35),0 20px 60px rgba(0,0,0,.6)!important}
+@media (prefers-reduced-motion:reduce){html[data-brand=klik] .ayar-cip.tavan{animation:none}}
+html[data-brand=klik] .ayar-uclar i{cursor:pointer;padding:4px 0}
+html[data-brand=klik] .ayar-uclar i.kapali{cursor:not-allowed}
+
+/* telefon: çipler 2x2 ızgara (hepsi görünür), + ve gönder sağda alt alta; dokunma hedefleri büyük */
 @media (max-width:760px){
-  html[data-brand=klik] .ayar-cip{height:34px}
-  html[data-brand=klik] .composer-controls .attach-file{width:38px;height:38px}
+  html[data-brand=klik] .composer-controls{display:grid!important;grid-template-columns:minmax(0,1fr) 44px;grid-auto-rows:auto;gap:8px;align-items:stretch}
+  html[data-brand=klik] .ayar-cipler{grid-column:1;grid-row:1/span 2;display:grid;grid-template-columns:1fr 1fr;gap:8px;overflow:visible;padding:0;margin:0;-webkit-mask:none;mask:none}
+  html[data-brand=klik] .ayar-cip{height:46px;padding:0 12px;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;min-width:0;border-radius:14px}
+  html[data-brand=klik] .ayar-cip span{font-size:10.5px;line-height:1.2;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+  html[data-brand=klik] .ayar-cip b{font-size:13px;line-height:1.25;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+  html[data-brand=klik] .ayar-cip[data-pc]{grid-column:1/-1}
+  html[data-brand=klik] .composer-controls .attach-file{grid-column:2;grid-row:1;width:44px;height:46px}
+  html[data-brand=klik] .composer-controls .send-button,html[data-brand=klik] .composer-controls #stop{grid-column:2;grid-row:2;width:44px!important;height:46px!important;border-radius:14px!important}
+  html[data-brand=klik] .ayar-serit{padding:14px 14px 6px;margin:2px 0 10px}
+  html[data-brand=klik] .ayar-serit input[type=range]{height:30px!important;--yuvarlak:30px}
+  html[data-brand=klik] .ayar-serit input[type=range]::-webkit-slider-thumb{width:30px;height:30px}
+  html[data-brand=klik] .ayar-serit input[type=range]::-moz-range-thumb{width:26px;height:26px}
+  html[data-brand=klik] .ayar-uclar i{font-size:11.5px;padding:10px 0}
+  html[data-brand=klik] .composer{padding-bottom:max(12px,env(safe-area-inset-bottom))}
+  html[data-brand=klik] .composer textarea{font-size:16px}
 }
 
 /* --- Max: her yerde mor→mavi --- */

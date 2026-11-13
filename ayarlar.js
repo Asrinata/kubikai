@@ -59,6 +59,7 @@
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'ayar-cip';
+      b.dataset.pc = '1';
       b.textContent = 'PC erişimi';
       b.hidden = pc.hidden;
       b.addEventListener('click', () => dugme.click());
@@ -79,17 +80,21 @@
         if (!sec || !b) continue;
         b.replaceChildren(Object.assign(document.createElement('span'), {textContent: a.ad()}),
                           Object.assign(document.createElement('b'), {textContent: kisa(metin(a, sec))}));
+        b.classList.toggle('tavan', sec.selectedIndex === sec.options.length - 1);   // en üst seviye: mor parlar
       }
+      const tavan = AYARLAR.filter(a => cip[a.id]);
+      kontroller.closest('.composer')?.classList.toggle('hepsi-tavan', tavan.length > 0 && tavan.every(a => cip[a.id].classList.contains('tavan')));
+      serit.classList.toggle('tavan', !!acik && !!cip[acik.id]?.classList.contains('tavan'));
       if (!acik) return;
       const sec = document.getElementById(acik.id), s = [...sec.options];
       ad.textContent = acik.ad();
-      deger.textContent = metin(acik, sec);
+      deger.textContent = kisa(metin(acik, sec));
       kay.max = s.length - 1;
       kay.value = sec.selectedIndex;
       kay.setAttribute('aria-label', acik.ad());
       kay.setAttribute('aria-valuetext', deger.textContent);
       const oran = sec.selectedIndex / Math.max(1, s.length - 1);   // dolgu yuvarlağın ortasına kadar; yuvarlak ucu kapatır
-      kay.style.setProperty('--dolu', `calc(11px + (100% - 22px) * ${oran})`);
+      kay.style.setProperty('--dolu', `calc(var(--yuvarlak, 22px) / 2 + (100% - var(--yuvarlak, 22px)) * ${oran})`);
       uclar.replaceChildren(...s.map((o, i) => Object.assign(document.createElement('i'), {
         className: (o.disabled ? 'kapali ' : '') + (i === sec.selectedIndex ? 'secili' : ''),
         textContent: kisa(acik.kisalt ? acik.kisalt(o.textContent) : o.textContent),
@@ -104,16 +109,20 @@
       tazele();
       if (a) kay.focus({preventScroll: true});
     }
-    kay.addEventListener('input', () => {
-      const sec = document.getElementById(acik.id), s = [...sec.options];
-      let i = +kay.value;
+    function sec(i) {
+      const sel = document.getElementById(acik.id), s = [...sel.options];
       while (i > 0 && s[i].disabled) i--;           // kapalı seçenek: aşağıdaki ilk açık olana in
-      if (sec.selectedIndex !== i) {
-        sec.selectedIndex = i;
-        sec.dispatchEvent(new Event('change', {bubbles: true}));
+      if (sel.selectedIndex !== i) {
+        sel.selectedIndex = i;
+        sel.dispatchEvent(new Event('change', {bubbles: true}));
       }
       tazele();
+    }
+    uclar.addEventListener('click', e => {          // seviye adına dokun: o seviyeye geç (telefonda barı sürüklemekten kolay)
+      const i = [...uclar.children].indexOf(e.target.closest('i'));
+      if (i >= 0 && acik && !e.target.closest('i').classList.contains('kapali')) sec(i);
     });
+    kay.addEventListener('input', () => sec(+kay.value));
     addEventListener('keydown', e => { if (e.key === 'Escape' && acik) goster(null); });
     addEventListener('kubik:enter', () => setTimeout(tazele, 300));
     tazele();
