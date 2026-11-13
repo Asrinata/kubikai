@@ -262,3 +262,64 @@ html[data-brand=klik] .google-ayrac{margin:10px 0 14px}
   html[data-brand=klik] .guest-continue{right:16px;top:20px;font-size:11px!important;padding:7px 12px!important}
   html[data-brand=klik] .auth-card h2{font-size:30px}
 }
+
+/* --- composer: Düşünme/Web seçimleri "Ayarlar" panelinde kaydırıcıyla (ayarlar.js) --- */
+html[data-brand=klik] .composer{position:relative}
+html[data-brand=klik] .composer-controls>label{display:none!important}
+html[data-brand=klik] .composer-controls{display:flex!important;align-items:center;gap:8px}
+html[data-brand=klik] .composer-controls .send-button{margin-left:auto!important}
+html[data-brand=klik] .composer-controls .settings-button{width:auto!important;flex:0 0 auto!important;padding:0 14px!important;height:36px;
+  font-size:13px!important;border-radius:12px!important;display:inline-flex!important;align-items:center;gap:6px}
+html[data-brand=klik] .composer-controls .settings-button[aria-expanded=true]{border-color:#4a4a52!important;background:#1c1c21!important;color:var(--ink)!important}
+html[data-brand=klik] .ayar-pano{position:absolute;left:12px;bottom:calc(100% + 10px);z-index:40;width:min(340px,calc(100% - 24px));padding:18px 18px 12px;
+  background:rgba(17,17,20,.96);border:1px solid var(--line);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.6);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);animation:ayar-gel .16s ease-out}
+html[data-brand=klik] .ayar-pano[hidden]{display:none}
+@keyframes ayar-gel{from{opacity:0;transform:translateY(6px)}}
+html[data-brand=klik] .ayar-satir{margin-bottom:16px}
+html[data-brand=klik] .ayar-ust{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;font-size:12px;color:#8b8b94}
+html[data-brand=klik] .ayar-ust b{font-size:13px;font-weight:600;color:var(--ink)}
+html[data-brand=klik] .ayar-satir input[type=range]{-webkit-appearance:none;appearance:none;width:100%!important;height:6px!important;min-height:0!important;
+  margin:0!important;border:0!important;padding:0!important;box-shadow:none!important;border-radius:99px!important;cursor:pointer;
+  background:linear-gradient(90deg,#f1f1f3 var(--dolu,0%),#26262c var(--dolu,0%))!important}
+html[data-brand=klik] .ayar-satir input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+  background:#fff;border:0;box-shadow:0 0 0 4px rgba(255,255,255,.12),0 2px 8px rgba(0,0,0,.6);transition:transform .12s}
+html[data-brand=klik] .ayar-satir input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#fff;border:0;
+  box-shadow:0 0 0 4px rgba(255,255,255,.12)}
+html[data-brand=klik] .ayar-satir input[type=range]:active::-webkit-slider-thumb{transform:scale(1.15)}
+html[data-brand=klik] .ayar-satir input[type=range]:focus-visible{outline:2px solid #4a4a52;outline-offset:6px}
+html[data-brand=klik] .ayar-cizgi{display:flex;justify-content:space-between;margin-top:8px;padding:0 6px}
+html[data-brand=klik] .ayar-cizgi i{width:4px;height:4px;border-radius:50%;background:#34343b}
+html[data-brand=klik] .ayar-cizgi i.dolu{background:#a1a1aa}
+html[data-brand=klik] .ayar-cizgi i.kapali{background:transparent;box-shadow:inset 0 0 0 1px #34343b}
+html[data-brand=klik] .ayar-tum{width:100%;margin-top:2px;padding:9px 0;border:0;border-top:1px solid var(--line);background:none;
+  color:#8b8b94;font-size:12.5px;border-radius:0;cursor:pointer;transition:color .15s}
+html[data-brand=klik] .ayar-tum:hover{color:var(--ink)}
+html[data-brand=klik][data-plan=max] .ayar-satir input[type=range]{background:linear-gradient(90deg,#c46bff,#6b5cff calc(var(--dolu,0%)/2),#18d2ff var(--dolu,0%),#26262c var(--dolu,0%))!important}
+html[data-brand=klik][data-plan=max] .ayar-satir input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(107,92,255,.3),0 0 16px rgba(24,210,255,.5)}
+html[data-brand=klik][data-plan=max] .ayar-cizgi i.dolu{background:#8b7bff}
+html[data-brand=klik][data-plan=max] .ayar-pano{border-color:#2a2440}
+@media (max-width:760px){
+  html[data-brand=klik] .composer-controls .settings-button{font-size:12.5px!important;height:38px}
+  html[data-brand=klik] .composer-controls .settings-button::before{font-size:14px}
+  html[data-brand=klik] .ayar-pano{left:8px;right:8px;width:auto}
+}
+
+/* --- Max: her yerde mor→mavi --- */
+html[data-brand=klik][data-plan=max]{--max-kenar:#3a2f66}
+html[data-brand=klik][data-plan=max] .welcome h1{background:linear-gradient(100deg,#fff 20%,#c9b8ff 55%,#7fdcff);-webkit-background-clip:text;background-clip:text}
+html[data-brand=klik][data-plan=max] .welcome .eyebrow{background:var(--klik-parlak);-webkit-background-clip:text;background-clip:text;color:transparent!important}
+html[data-brand=klik][data-plan=max] .mode-switch button.selected{background:var(--klik-parlak)!important;color:#fff!important;box-shadow:0 0 18px rgba(107,92,255,.35)}
+html[data-brand=klik][data-plan=max] .new-chat:hover{border-color:#6b5cff!important;box-shadow:0 0 0 3px rgba(107,92,255,.15)}
+html[data-brand=klik][data-plan=max] .suggestions button:hover{border-color:#5b4bd6!important}
+html[data-brand=klik][data-plan=max] .suggestions button:hover:after{background:#9d8cff}
+html[data-brand=klik][data-plan=max] :is(input,textarea,select):focus{border-color:#6b5cff!important;box-shadow:0 0 0 3px rgba(107,92,255,.18)!important}
+html[data-brand=klik][data-plan=max] .composer textarea:focus{box-shadow:none!important}
+html[data-brand=klik][data-plan=max] .plan-button small,html[data-brand=klik][data-plan=max] #planName{background:var(--klik-parlak);-webkit-background-clip:text;background-clip:text;color:transparent!important;font-weight:600}
+html[data-brand=klik][data-plan=max] .conversation-list .active,html[data-brand=klik][data-plan=max] .conversation-list [aria-current]{box-shadow:inset 2px 0 0 #8b7bff}
+html[data-brand=klik][data-plan=max] :is(.message.user,.bubble.me){border:1px solid var(--max-kenar)!important;background:linear-gradient(180deg,#1a1630,#141222)!important}
+html[data-brand=klik][data-plan=max] .composer-controls .settings-button:hover,html[data-brand=klik][data-plan=max] .composer-controls .settings-button[aria-expanded=true]{border-color:#6b5cff!important}
+html[data-brand=klik][data-plan=max] .status-dot{background:#18d2ff!important;box-shadow:0 0 8px #18d2ff}
+html[data-brand=klik][data-plan=max] a:not(.secondary):not(.brand){color:#a597ff}
+html[data-brand=klik][data-plan=max] .badge{border-color:var(--max-kenar)!important;color:#c9b8ff!important}
+html[data-brand=klik][data-plan=max] *{scrollbar-color:#4a3d8f transparent}
