@@ -3,7 +3,7 @@
 //  Yazı kutusuna komut (gönderilmez):  /snake  /pong  /matrix  /gravity  /roll  /cimbom  /sürpriz
 //  Yazı kutusu dışında klavyeden:      snake · pong · matrix · Konami (↑↑↓↓←→←→BA)
 //  Fare/dokunma: boş yere çift tık = bit dalgası · büyük logoya 5 tık = piksellere dağılır
-//                alttaki "hata yapabilir" yazısına 3 tık · telefonu salla · 90 sn boşta = ekran koruyucu
+//                alttaki "hata yapabilir" yazısına 3 tık · telefonu salla · 520 sn boşta = ekran koruyucu
 // Bulunanlar localStorage'da sayılır (kubik.surpriz). prefers-reduced-motion: dönme/yerçekimi kısa ve sakin.
 (() => {
   const kok = document.documentElement;
@@ -322,7 +322,7 @@
     haber(`Sürpriz ${l.length}/${TUM.length}: ` + (l.length ? l.map(k => AD[k]).join(', ') : 'henüz yok. Yazı kutusuna /snake yazmayı dene.'));
   }
 
-  // --- ekran koruyucu: 90 sn hareketsizlikte logo köşelere çarparak gezer ---
+  // --- ekran koruyucu: 520 sn hareketsizlikte logo köşelere çarparak gezer ---
   let bosZaman, koruyucu;
   function koruyucuAc() {
     if (koruyucu || oyun || document.hidden || document.querySelector('dialog[open]') || !klik()) return;
@@ -348,7 +348,7 @@
   function hareket() {
     if (koruyucu) { koruyucu.dur(); koruyucu.remove(); koruyucu = null; }
     clearTimeout(bosZaman);
-    bosZaman = setTimeout(koruyucuAc, 90000);
+    bosZaman = setTimeout(koruyucuAc, 520000);
   }
 
   const KOMUT = {snake: yilan, yilan, 'yılan': yilan, pong, matrix: () => matrix(), gravity: yercekimi, yercekimi, roll: takla, takla,
