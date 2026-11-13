@@ -213,7 +213,8 @@ html[data-brand=klik] body.code-theme .welcome::before{content:"";position:absol
 .google-giris{margin:14px 0 4px}
 .google-ayrac{display:flex;align-items:center;gap:12px;color:var(--muted,#777);font-size:12px;margin-bottom:12px}
 .google-ayrac::before,.google-ayrac::after{content:'';flex:1;height:1px;background:var(--line,#e2e2e2)}
-#googleButon{display:flex;justify-content:center;min-height:44px}
+#googleButon{display:flex;justify-content:center;min-height:44px;color-scheme:light}
+#googleButon iframe{background:transparent!important;color-scheme:light}
 
 /* --- hesaplar kapalı + geliştirici önizlemesi --- */
 .hesap-kapali-not{max-width:420px;margin:auto;padding:28px;border:1px solid var(--line,#dedfd5);border-radius:18px;background:var(--card,#fff);text-align:center}
