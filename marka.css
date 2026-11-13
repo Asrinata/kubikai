@@ -263,53 +263,41 @@ html[data-brand=klik] .google-ayrac{margin:10px 0 14px}
   html[data-brand=klik] .auth-card h2{font-size:30px}
 }
 
-/* --- composer: Düşünme/Web seçimleri "Ayarlar" panelinde kaydırıcıyla (ayarlar.js) --- */
-html[data-brand=klik] .composer{position:relative}
+/* --- composer: Düşünme/Web yazı kutusunun altında hep açık kaydırıcılar (ayarlar.js); Ayarlar = tüm ayarlar --- */
 html[data-brand=klik] .composer-controls>label{display:none!important}
-html[data-brand=klik] .composer-controls{display:flex!important;align-items:center;gap:8px}
+html[data-brand=klik] .composer-controls{display:flex!important;align-items:flex-end;gap:8px;flex-wrap:nowrap}
 html[data-brand=klik] .composer-controls .send-button{margin-left:0!important}
-html[data-brand=klik] .composer-controls .attach-file{margin-left:auto!important;width:36px;height:36px;padding:0!important;font-size:0!important;
-  border:1px solid var(--line)!important;border-radius:12px!important;background:#141418!important;display:grid;place-items:center;color:#a1a1aa;transition:color .15s,border-color .15s}
+html[data-brand=klik] .ayar-satirlar{display:flex;gap:16px;flex:1 1 auto;min-width:0;max-width:520px;margin-right:auto}
+html[data-brand=klik] .ayar-satir{display:flex!important;flex-direction:column;align-items:stretch!important;text-align:left!important;gap:7px;flex:1 1 0;min-width:0;margin:0!important;cursor:pointer}
+html[data-brand=klik] .ayar-ust{display:flex;width:100%;justify-content:space-between;align-items:baseline;gap:8px;font-size:11.5px;color:#8b8b94;white-space:nowrap}
+html[data-brand=klik] .ayar-ust b{font-size:12px;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis}
+html[data-brand=klik] .ayar-satir input[type=range]{-webkit-appearance:none;appearance:none;display:block;width:100%!important;height:22px!important;min-height:0!important;
+  margin:0!important;border:0!important;padding:0!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)!important;border-radius:99px!important;cursor:pointer;
+  background:linear-gradient(90deg,#f1f1f3 var(--dolu,11px),#1e1e23 var(--dolu,11px))!important}
+html[data-brand=klik] .ayar-satir input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+  border:2px solid #f1f1f3;background:#000;box-shadow:none;transition:transform .12s}
+html[data-brand=klik] .ayar-satir input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#000;border:2px solid #f1f1f3}
+html[data-brand=klik] .ayar-satir input[type=range]:active::-webkit-slider-thumb{transform:scale(.9)}
+html[data-brand=klik] .ayar-satir input[type=range]:focus-visible{outline:2px solid #4a4a52;outline-offset:3px}
+html[data-brand=klik][data-plan=max] .ayar-satir input[type=range]{background:linear-gradient(90deg,#c46bff,#6b5cff calc(var(--dolu,11px)/2),#18d2ff var(--dolu,11px),#1e1e23 var(--dolu,11px))!important}
+html[data-brand=klik][data-plan=max] .ayar-satir input[type=range]::-webkit-slider-thumb{background:#fff;border-color:#18d2ff}
+html[data-brand=klik][data-plan=max] .ayar-satir input[type=range]::-moz-range-thumb{background:#fff;border-color:#18d2ff}
+html[data-brand=klik] .composer-controls :is(.attach-file,.settings-button){flex:0 0 auto!important;height:36px!important}
+html[data-brand=klik] .composer-controls .settings-button{width:auto!important;padding:0 14px!important;font-size:13px!important;border-radius:12px!important;
+  display:inline-flex!important;align-items:center;gap:6px}
+html[data-brand=klik] .composer-controls .attach-file{width:36px;padding:0!important;font-size:0!important;border:1px solid var(--line)!important;border-radius:12px!important;
+  background:#141418!important;display:grid;place-items:center;color:#a1a1aa;transition:color .15s,border-color .15s}
 html[data-brand=klik] .composer-controls .attach-file::before{content:'';width:16px;height:16px;background:currentColor;
   -webkit-mask:var(--ok-arti) center/contain no-repeat;mask:var(--ok-arti) center/contain no-repeat}
 html[data-brand=klik] .composer-controls .attach-file:hover{color:var(--ink);border-color:#3b3b43!important}
 html[data-brand=klik]{--ok-arti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E")}
-html[data-brand=klik] .composer-controls:not(:has(.attach-file)) .settings-button{margin-left:auto!important}
-html[data-brand=klik] .composer-controls .settings-button{width:auto!important;flex:0 0 auto!important;padding:0 14px!important;height:36px;
-  font-size:13px!important;border-radius:12px!important;display:inline-flex!important;align-items:center;gap:6px}
-html[data-brand=klik] .composer-controls .settings-button[aria-expanded=true]{border-color:#4a4a52!important;background:#1c1c21!important;color:var(--ink)!important}
-html[data-brand=klik] .ayar-pano{position:absolute;right:12px;bottom:calc(100% + 10px);z-index:40;width:min(340px,calc(100% - 24px));padding:18px 18px 12px;
-  background:rgba(17,17,20,.96);border:1px solid var(--line);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.6);
-  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);animation:ayar-gel .16s ease-out}
-html[data-brand=klik] .ayar-pano[hidden]{display:none}
-@keyframes ayar-gel{from{opacity:0;transform:translateY(6px)}}
-html[data-brand=klik] .ayar-satir{margin-bottom:16px}
-html[data-brand=klik] .ayar-ust{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;font-size:12px;color:#8b8b94}
-html[data-brand=klik] .ayar-ust b{font-size:13px;font-weight:600;color:var(--ink)}
-html[data-brand=klik] .ayar-satir input[type=range]{-webkit-appearance:none;appearance:none;width:100%!important;height:24px!important;min-height:0!important;
-  margin:0!important;border:0!important;padding:0!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)!important;border-radius:99px!important;cursor:pointer;
-  background:linear-gradient(90deg,#f1f1f3 var(--dolu,12px),#232328 var(--dolu,12px))!important}
-html[data-brand=klik] .ayar-satir input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;
-  border:4px solid #f1f1f3;background:#000 content-box;box-shadow:none;transition:transform .12s}
-html[data-brand=klik] .ayar-satir input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#000;border:4px solid #f1f1f3;background-clip:content-box}
-html[data-brand=klik] .ayar-satir input[type=range]:active::-webkit-slider-thumb{transform:scale(.88)}
-html[data-brand=klik] .ayar-satir input[type=range]:focus-visible{outline:2px solid #4a4a52;outline-offset:4px}
-html[data-brand=klik] .ayar-cizgi{display:flex;justify-content:space-between;margin-top:9px;padding:0 10px}
-html[data-brand=klik] .ayar-cizgi i{width:4px;height:4px;border-radius:50%;background:#34343b}
-html[data-brand=klik] .ayar-cizgi i.dolu{background:#a1a1aa}
-html[data-brand=klik] .ayar-cizgi i.kapali{background:transparent;box-shadow:inset 0 0 0 1px #34343b}
-html[data-brand=klik] .ayar-tum{width:100%;margin-top:2px;padding:9px 0;border:0;border-top:1px solid var(--line);background:none;
-  color:#8b8b94;font-size:12.5px;border-radius:0;cursor:pointer;transition:color .15s}
-html[data-brand=klik] .ayar-tum:hover{color:var(--ink)}
-html[data-brand=klik][data-plan=max] .ayar-satir input[type=range]{background:linear-gradient(90deg,#c46bff,#6b5cff calc(var(--dolu,12px)/2),#18d2ff var(--dolu,12px),#232328 var(--dolu,12px))!important}
-html[data-brand=klik][data-plan=max] .ayar-satir input[type=range]::-webkit-slider-thumb{background:#fff content-box;border-color:#18d2ff}
-html[data-brand=klik][data-plan=max] .ayar-cizgi i.dolu{background:#8b7bff}
-html[data-brand=klik][data-plan=max] .ayar-pano{border-color:#2a2440}
+html[data-brand=klik] .composer-topline:not(:has(*:not(:empty))){display:none}
 @media (max-width:760px){
-  html[data-brand=klik] .composer-controls .settings-button{font-size:12.5px!important;height:38px}
-  html[data-brand=klik] .composer-controls .settings-button::before{font-size:14px}
-  html[data-brand=klik] .ayar-pano{left:8px;right:8px;width:auto}
-  html[data-brand=klik] .composer-controls .settings-button{padding:0!important;width:38px!important;font-size:0!important;justify-content:center}
+  html[data-brand=klik] .composer-controls{flex-wrap:wrap!important;row-gap:12px}
+  html[data-brand=klik] .ayar-satirlar{flex:1 0 100%;max-width:none;gap:12px;margin:0}
+  html[data-brand=klik] .composer-controls .attach-file{margin-left:auto}
+  html[data-brand=klik] .composer-controls .settings-button{padding:0!important;width:38px!important;font-size:0!important;justify-content:center;height:38px!important}
+  html[data-brand=klik] .composer-controls .attach-file{height:38px!important;width:38px}
 }
 
 /* --- Max: her yerde mor→mavi --- */
@@ -325,7 +313,7 @@ html[data-brand=klik][data-plan=max] .composer textarea:focus{box-shadow:none!im
 html[data-brand=klik][data-plan=max] .plan-button small,html[data-brand=klik][data-plan=max] #planName{background:var(--klik-parlak);-webkit-background-clip:text;background-clip:text;color:transparent!important;font-weight:600}
 html[data-brand=klik][data-plan=max] .conversation-list .active,html[data-brand=klik][data-plan=max] .conversation-list [aria-current]{box-shadow:inset 2px 0 0 #8b7bff}
 html[data-brand=klik][data-plan=max] :is(.message.user,.bubble.me){border:1px solid var(--max-kenar)!important;background:linear-gradient(180deg,#1a1630,#141222)!important}
-html[data-brand=klik][data-plan=max] .composer-controls .settings-button:hover,html[data-brand=klik][data-plan=max] .composer-controls .settings-button[aria-expanded=true]{border-color:#6b5cff!important}
+html[data-brand=klik][data-plan=max] .composer-controls .settings-button:hover{border-color:#6b5cff!important}
 html[data-brand=klik][data-plan=max] .status-dot{background:#18d2ff!important;box-shadow:0 0 8px #18d2ff}
 html[data-brand=klik][data-plan=max] a:not(.secondary):not(.brand){color:#a597ff}
 html[data-brand=klik][data-plan=max] .badge{border-color:var(--max-kenar)!important;color:#c9b8ff!important}
