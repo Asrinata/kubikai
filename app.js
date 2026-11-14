@@ -41,6 +41,8 @@ const T = {
     code_eyebrow:'FROM IDEA TO FIRST LINE', code_title:'What shall we build?', code_sub:'Describe an idea. Kübik plans, codes and tests it.', today:'Today'}
 };
 const t = key => T[lang]?.[key] ?? T.tr[key] ?? key;
+// Web varsayılanı Dengeli; planda/sunucuda kapalıysa Hızlı'ya, o da yoksa Kapalı'ya iner
+function webDusur() { const sel = $('#searchEffort'); sel.value = ['balanced', 'quick', 'off'].find(v => !sel.querySelector(`option[value="${v}"]`)?.disabled) || 'off'; }
 const PACK_FIELDS = {effort:'effort', searchEffort:'search_effort', quality:'quality', multitask:'multitask'};
 function applyLanguage() {
   document.documentElement.lang = lang;
@@ -64,7 +66,7 @@ function lockUltrapack() {
       option.disabled = locked || option.dataset.serverOff === '1';
       option.textContent = (option.dataset.base || option.textContent.split(' · 🔒')[0]) + (locked ? ' · 🔒 ' + opener : '');
     }
-    if (select.selectedOptions[0]?.disabled) select.value = {effort:'balanced', quality:'balanced', searchEffort:'off', multitask:'auto'}[id];
+    if (select.selectedOptions[0]?.disabled) { if (id === 'searchEffort') webDusur(); else select.value = {effort:'balanced', quality:'balanced', multitask:'auto'}[id]; }
     store.set('kubik-' + id, select.value);
   }
 }
@@ -249,7 +251,7 @@ async function refreshSite() {
     const used = (siteStatus.models || []).filter(m => m.installed && m.extra && !m.solo).map(m => m.id.startsWith('x-kubik3') ? 'Kübik 3.0 (Qwen3-30B-A3B YOYO-V4 tabanlı)' : m.name);
     $('#modelCredits').textContent = used.length ? '· ' + t('built_on') + ' ' + used.join(', ') + (used.some(n => /llama/i.test(n)) ? ' · Built with Llama' : '') : '';
     lockUltrapack();
-    if ($('#searchEffort').selectedOptions[0].disabled) $('#searchEffort').value = 'off';
+    if ($('#searchEffort').selectedOptions[0].disabled) webDusur();
     if (!account && siteStatus.maintenance) $('#authError').textContent = siteStatus.maintenance_message;
   } catch { $('#modelStatus').textContent = t('unreachable'); }
 }
