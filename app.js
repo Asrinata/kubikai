@@ -263,7 +263,7 @@ async function enter() { await refreshAccount(); $('#auth').hidden = true; $('#w
 $('#authToggle').onclick = () => { registerMode = !registerMode; $('#authTitle').textContent = registerMode ? 'Kübik’e hoş geldin.' : 'Tekrar hoş geldin.'; $('#authSubmit').textContent = registerMode ? 'Hesap oluştur' : 'Giriş yap'; $('#authToggle').textContent = registerMode ? 'Zaten hesabın var mı? Giriş yap' : 'Hesabın yok mu? Kayıt ol'; $('#password').autocomplete = registerMode ? 'new-password' : 'current-password'; $('#authError').textContent = ''; $('#termsRow').hidden = !registerMode; };
 $('#authForm').onsubmit = async event => { event.preventDefault(); $('#authError').textContent = ''; if (registerMode && !$('#termsAccept').checked) { $('#authError').textContent = 'Kayıt olmak için kullanım koşullarını ve KVKK metnini onaylaman gerekiyor.'; return; } $('#authSubmit').disabled = true; try { await api('/auth/' + (registerMode ? 'register' : 'login'), {method:'POST', body:{username:$('#username').value, password:$('#password').value, access_key:$('#accessKey').value.trim(), invite:registerMode && typeof inviteCode === 'function' ? inviteCode() : ''}}); $('#password').value = ''; await enter(); } catch(error) { $('#authError').textContent = error.message; } finally { $('#authSubmit').disabled = false; } };
 $('#logout').onclick = async () => { await api('/auth/logout', {method:'POST'}); kubikTransport.clearToken(); location.reload(); };
-$('#newChat').onclick = () => { if (job) return toast('Önce devam eden yanıtı durdur.'); current = null; updateWorkspaceLabel(); welcome(); refreshConversations(); $('#prompt').focus(); };
+$('#newChat').onclick = () => { if (job) return toast('Önce devam eden yanıtı durdur.'); current = null; updateWorkspaceLabel(); welcome(); refreshConversations(); if (!matchMedia('(max-width:760px)').matches) $('#prompt').focus(); };   // telefonda klavye kendiliğinden açılmasın
 // Code'a geçiş: hiper uzay. Yıldızlar ortadan kenarlara hızlanarak çizgi olur.
 function warp(veil, duration) {
   const canvas = node('canvas'), ctx = canvas.getContext('2d'), w = innerWidth, h = innerHeight, cx = w / 2, cy = h / 2;
@@ -343,6 +343,15 @@ $('#closeMemory').onclick=()=>$('#memoryDialog').close();
 $('#memoryForm').onsubmit=async event=>{event.preventDefault();const button=event.target.querySelector('button');button.disabled=true;try{await api('/memory',{method:'POST',body:{content:$('#memoryContent').value}});$('#memoryContent').value='';await loadMemory();await refreshAccount();}catch(error){toast(error.message);}finally{button.disabled=false;}};
 $('#clearMemory').onclick=async()=>{if(!confirm('Kaydettiğin tüm hafıza notları silinsin mi?'))return;try{await api('/memory/all',{method:'DELETE'});await loadMemory();await refreshAccount();}catch(error){toast(error.message);}};
 $('#mobileMenu').onclick = () => $('.sidebar').classList.toggle('open');
+// Telefonda yan menü: dışına dokununca (alttaki öğe tetiklenmeden), menüden bir düğme/bağlantı seçince ve Esc ile kapanır.
+// Sohbet silme (×) ve arama kutusu menüyü kapatmaz.
+document.addEventListener('click', event => {
+  const side = $('.sidebar');
+  if (!side.classList.contains('open') || event.target.closest('#mobileMenu')) return;
+  if (!event.target.closest('.sidebar')) { event.preventDefault(); event.stopPropagation(); side.classList.remove('open'); return; }
+  if (event.target.closest('button, a') && !event.target.closest('.conversation-delete')) side.classList.remove('open');
+}, true);
+addEventListener('keydown', event => { if (event.key === 'Escape') $('.sidebar').classList.remove('open'); });
 $('#prompt').addEventListener('keydown', event => { if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); if (!$('#send').disabled) $('#chatForm').requestSubmit(); } });
 async function sendTurn(message, extras = {}) {
   if (job) return toast('Önce devam eden yanıtı durdur.');

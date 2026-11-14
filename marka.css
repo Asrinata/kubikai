@@ -394,3 +394,9 @@ html[data-brand=klik][data-plan=max] .account-settings:hover{color:#a597ff}
 @media (max-width:760px) and (max-height:640px){
   html[data-brand=klik] .welcome .eyebrow,html[data-brand=klik] .welcome>.muted{display:none!important}
 }
+
+/* --- telefon: yan menü açıkken arkası kararır; menü dışına dokunmak kapatır (app.js) --- */
+@media (max-width:760px){
+  html[data-brand=klik] .sidebar{transition:transform .22s cubic-bezier(.3,.7,.2,1)!important}
+  html[data-brand=klik] .sidebar.open{box-shadow:0 0 0 100vmax rgba(0,0,0,.55),20px 0 60px rgba(0,0,0,.6)!important}
+}
