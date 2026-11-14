@@ -84,7 +84,7 @@ async function api(path, options = {}) {
 }
 function node(tag, className, text) { const element = document.createElement(tag); if (className) element.className = className; if (text != null) element.textContent = text; return element; }
 function welcome() {
-  $('#messages').replaceChildren();
+  $('#messages').replaceChildren(); $('#messages').scrollTop = 0;
   const box = node('div', 'welcome');
   box.append(node('span', 'cube large'), node('p', 'eyebrow', t(mode === 'code' ? 'code_eyebrow' : 'welcome_eyebrow')));
   box.append(node('h1', '', t(mode === 'code' ? 'code_title' : 'welcome_title')));
@@ -474,6 +474,8 @@ $('#language').onchange = () => { lang = $('#language').value; store.set('kubik-
 function commandList() { return ['kubik2', ...(siteStatus.models || []).filter(m => m.installed).map(m => m.command || m.id)]; }
 $('#accountSettings').onclick = () => $('#openSettings').click();
 $('#oldModels').checked = store.get('kubik-eski-modeller', '0') === '1';
+$('#surprizAcik').checked = store.get('kubik.surpriz-kapali', '0') !== '1';
+$('#surprizAcik').onchange = () => store.set('kubik.surpriz-kapali', $('#surprizAcik').checked ? '0' : '1');
 $('#oldModels').onchange = () => { store.set('kubik-eski-modeller', $('#oldModels').checked ? '1' : '0'); refreshSite(); };
 $('#openSettings').onclick = () => { $('#commandsHelp').textContent = t('commands_help') + ' ' + commandList().map(c => '/' + c + '/').join('  '); $('#settingsDialog').showModal(); };
 $('#closeSettings').onclick = () => $('#settingsDialog').close();

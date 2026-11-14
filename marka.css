@@ -80,8 +80,6 @@ html[data-brand=klik][data-plan=max] .art-cube{background-image:url(logo/klik-ne
 html[data-brand=klik][data-plan=max] .streaming .message-label .cube{background-image:url(logo/klik-dusun-max.svg)!important;filter:none}
 html[data-brand=klik][data-plan=max] .job-status:not(:empty)::before{background-image:url(logo/klik-dusun-max.svg)}
 html[data-brand=klik][data-plan=max] .primary{background:var(--klik-parlak)!important;color:#fff!important;box-shadow:0 0 24px rgba(107,92,255,.35)}
-html[data-brand=klik][data-plan=max] .composer:focus-within{border-color:transparent!important;
-  box-shadow:0 0 0 1px #6b5cff,0 0 30px rgba(107,92,255,.25)!important}
 html[data-brand=klik][data-plan=max] .brand{background:var(--klik-parlak);-webkit-background-clip:text;background-clip:text;color:transparent}
 html[data-brand=klik][data-plan=max] .streaming .message-text::after{color:#8b7bff}
 html[data-brand=klik][data-plan=max] ::selection{background:#6b5cff;color:#fff}
@@ -297,20 +295,8 @@ html[data-brand=klik] .ayar-uclar i:first-child{text-align:left}
 html[data-brand=klik] .ayar-uclar i:last-child{text-align:right}
 html[data-brand=klik] .ayar-uclar i.secili{color:var(--ink);font-weight:600}
 html[data-brand=klik] .ayar-uclar i.kapali{opacity:.4}
-html[data-brand=klik][data-plan=max] .ayar-serit input[type=range]{background:linear-gradient(90deg,#c46bff,#6b5cff calc(var(--dolu,11px)/2),#18d2ff var(--dolu,11px),#1e1e23 var(--dolu,11px))!important}
-html[data-brand=klik][data-plan=max] .ayar-serit input[type=range]::-webkit-slider-thumb{background:#fff;border-color:#18d2ff}
-html[data-brand=klik][data-plan=max] .ayar-serit input[type=range]::-moz-range-thumb{background:#fff;border-color:#18d2ff}
-html[data-brand=klik][data-plan=max] .ayar-cip[aria-expanded=true]{background:var(--klik-parlak);border-color:transparent;color:rgba(255,255,255,.75)}
-html[data-brand=klik][data-plan=max] .ayar-cip[aria-expanded=true] b{color:#fff}
-html[data-brand=klik][data-plan=max] .ayar-cip{border-color:#3a2f7a;color:#a99cf0;background:rgba(107,92,255,.08);box-shadow:0 0 14px rgba(124,92,255,.28),inset 0 0 10px rgba(107,92,255,.12)}
-html[data-brand=klik][data-plan=max] .ayar-cip b{color:#e6dcff;text-shadow:0 0 10px rgba(196,107,255,.7)}
-html[data-brand=klik][data-plan=max] .ayar-cip:hover{border-color:#6b5cff;box-shadow:0 0 20px rgba(124,92,255,.45),inset 0 0 12px rgba(107,92,255,.18)}
-html[data-brand=klik][data-plan=max] .ayar-cip[aria-expanded=true]{box-shadow:0 0 24px rgba(124,92,255,.55)}
-html[data-brand=klik][data-plan=max] .ayar-cip[aria-expanded=true] b{text-shadow:none}
 html[data-brand=klik] .kup-balance .cube{width:12px;height:12px;background:#f1f1f3!important;border-radius:2px;box-shadow:4px 4px 0 -1px #5a5a63}
 html[data-brand=klik][data-plan=max] .kup-balance .cube{background:var(--klik-parlak)!important}
-html[data-brand=klik][data-plan=max] .ayar-uclar i.secili{color:#a597ff}
-html[data-brand=klik][data-plan=max] .ayar-serit{border-color:#2a2440}
 html[data-brand=klik] .composer-controls .attach-file{flex:0 0 auto;width:36px;height:36px;padding:0!important;font-size:0!important;border:1px solid var(--line)!important;
   border-radius:12px!important;background:#141418!important;display:grid;place-items:center;color:#a1a1aa;transition:color .15s,border-color .15s}
 html[data-brand=klik] .composer-controls .attach-file::before{content:'';width:16px;height:16px;background:currentColor;
@@ -387,4 +373,24 @@ html[data-brand=klik][data-plan=max] .account-settings:hover{color:#a597ff}
   html[data-brand=klik] .sidebar{overflow-y:auto!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:max(16px,env(safe-area-inset-bottom))}
   html[data-brand=klik] .sidebar .conversation-list{flex:0 0 auto;max-height:none;min-height:60px}
   html[data-brand=klik] .account-row .icon-button{width:40px;height:40px}
+}
+
+/* --- telefon: açılış ekranı yazı kutusunun üstüne sığar, sayfa kaymaz --- */
+@media (max-width:760px){
+  html[data-brand=klik] body:has(#workspace:not([hidden])){overflow:hidden;overscroll-behavior:none}
+  html[data-brand=klik] .messages:has(> .welcome){display:flex;flex-direction:column;justify-content:center;padding-top:8px!important;padding-bottom:8px!important}
+  html[data-brand=klik] .welcome{padding:0!important;margin:0 auto!important;width:100%;max-width:100%!important;min-width:0}
+  html[data-brand=klik] .welcome .cube.large{width:38px!important;height:38px!important}
+  html[data-brand=klik] .welcome .eyebrow{margin:12px 0 6px!important;font-size:9px!important}
+  html[data-brand=klik] .welcome h1{font-size:32px!important;margin:0 0 6px!important}
+  html[data-brand=klik] .welcome>.muted{font-size:12.5px!important;margin:0!important}
+  /* öneriler: tek satır, yana kayan kısa kartlar (başlık yeter) */
+  html[data-brand=klik] .suggestions{display:flex!important;gap:8px;margin:16px -16px 0!important;padding:2px 16px 4px;overflow-x:auto;scrollbar-width:none;width:calc(100% + 32px)!important;max-width:none!important;scroll-snap-type:x mandatory}
+  html[data-brand=klik] .suggestions::-webkit-scrollbar{display:none}
+  html[data-brand=klik] .suggestions button{flex:0 0 auto;padding:11px 14px!important;border-radius:14px!important;scroll-snap-align:start;min-height:0!important}
+  html[data-brand=klik] .suggestions button small,html[data-brand=klik] .suggestions button::after{display:none!important}
+  html[data-brand=klik] .suggestions span{margin:0!important;white-space:nowrap}
+}
+@media (max-width:760px) and (max-height:640px){
+  html[data-brand=klik] .welcome .eyebrow,html[data-brand=klik] .welcome>.muted{display:none!important}
 }

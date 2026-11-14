@@ -8,6 +8,8 @@
 (() => {
   const kok = document.documentElement;
   const klik = () => kok.dataset.brand === 'klik';
+  // Ayarlar > Sürprizler kapalıysa hiçbiri tetiklenmez (app.js aynı anahtarı yazar)
+  const acik = () => { try { return localStorage.getItem('kubik.surpriz-kapali') !== '1'; } catch { return true; } };
   const max = () => kok.dataset.plan === 'max';
   const sakin = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const MAX_RENK = ['#c46bff', '#8a63ff', '#6b5cff', '#3fa0ff', '#18d2ff'];
@@ -325,7 +327,7 @@
   // --- ekran koruyucu: 520 sn hareketsizlikte logo köşelere çarparak gezer ---
   let bosZaman, koruyucu;
   function koruyucuAc() {
-    if (koruyucu || oyun || document.hidden || document.querySelector('dialog[open]') || !klik()) return;
+    if (koruyucu || oyun || document.hidden || document.querySelector('dialog[open]') || !klik() || !acik()) return;
     koruyucu = Object.assign(document.createElement('div'), {className: 'surpriz-koruyucu'});
     const logo = Object.assign(document.createElement('img'), {alt: '', src: new URL(`logo/${max() ? 'klik-max' : 'klik'}.svg`, document.querySelector('script[src*="surpriz.js"]').src).href});
     koruyucu.append(logo);
@@ -358,7 +360,7 @@
     if (!klik()) return;
     // yazı kutusuna /komut: gönderilmez, sürpriz çalışır (app.js'in submit'inden önce, belge yakalama aşamasında)
     document.addEventListener('submit', e => {
-      if (e.target.id !== 'chatForm') return;
+      if (e.target.id !== 'chatForm' || !acik()) return;
       const p = document.getElementById('prompt'), k = p?.value.trim().toLocaleLowerCase('tr').match(/^\/(\S+)$/)?.[1];
       if (!k || !KOMUT[k]) return;
       e.preventDefault();
@@ -378,6 +380,7 @@
         if (oyun.tus?.(e)) { e.preventDefault(); e.stopPropagation(); }
         return;
       }
+      if (!acik()) return;
       tuslar = [...tuslar, e.key.length === 1 ? e.key.toLowerCase() : e.key].slice(-10);
       if (tuslar.join(' ') === KONAMI) { tuslar = []; matrix('konami'); return; }
       if (e.target.closest?.('input, textarea, select, [contenteditable]') || e.ctrlKey || e.metaKey || e.altKey) return;
@@ -388,7 +391,7 @@
 
     // boş yere çift tık: bit dalgası
     addEventListener('dblclick', e => {
-      if (oyun || e.target.closest('button, a, input, textarea, select, label, dialog, .message, .composer, pre, code, [contenteditable]')) return;
+      if (!acik() || oyun || e.target.closest('button, a, input, textarea, select, label, dialog, .message, .composer, pre, code, [contenteditable]')) return;
       getSelection()?.removeAllRanges();
       dalga(e.clientX, e.clientY);
       buldu('dalga');
@@ -397,6 +400,7 @@
     // büyük logo (karşılama): 5 hızlı tık
     let tik = [];
     document.addEventListener('click', e => {
+      if (!acik()) return;
       const logo = e.target.closest('.welcome .cube.large');
       if (logo) {
         const t = performance.now();
@@ -418,7 +422,7 @@
     let sonSalla = 0;
     addEventListener('devicemotion', e => {
       const a = e.accelerationIncludingGravity || e.acceleration;
-      if (!a || Math.hypot(a.x || 0, a.y || 0, a.z || 0) < 28 || Date.now() - sonSalla < 1500) return;
+      if (!acik() || !a || Math.hypot(a.x || 0, a.y || 0, a.z || 0) < 28 || Date.now() - sonSalla < 1500) return;
       sonSalla = Date.now();
       dalga(innerWidth / 2, innerHeight / 2, 1.8);
       buldu('salla');
